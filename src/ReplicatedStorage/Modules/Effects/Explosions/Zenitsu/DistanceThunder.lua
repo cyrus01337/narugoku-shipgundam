@@ -56,7 +56,7 @@ function CreateLightning(Start,End,numberofparts)
 		Part.BottomSurface = Enum.SurfaceType.SmoothNoOutlines
 		Part.CanCollide = false
 		Part.Anchored = true
-		Part.CastShadow = false	
+		Part.CastShadow = false
 		Part.Size = Vector3.new(.25,.25,newdisance)
 		Part.CFrame = CFrame.new(lastcf,newcframe.p) * CFrame.new(0,0,-newdisance / 2)
 		Part.Parent = Lightning
@@ -80,7 +80,7 @@ local function createhugelightning(Start,End,numberofparts,player)
 	Lightning.Name = "lightasd"
 	Lightning.Parent = workspace.World.Visuals
 	Debris:AddItem(Lightning,1.4)
-	
+
 	for Index = 1,numberofparts do
 		local x,y,z = math.random(-2,2) * math.clamp(numberofparts,5,99999) ,math.random(-2,2) * math.clamp(numberofparts,5,99999),math.random(-2,2) * math.clamp(numberofparts,5,99999)
 		if Index == numberofparts then
@@ -95,7 +95,7 @@ local function createhugelightning(Start,End,numberofparts,player)
 		Part.BottomSurface = Enum.SurfaceType.SmoothNoOutlines
 		Part.CanCollide = false
 		Part.Anchored = true
-		Part.CastShadow = false	
+		Part.CastShadow = false
 		Part.Size = Vector3.new(.7,.7,newdisance)
 		Part.CFrame = CFrame.new(lastcf,newcframe.p) * CFrame.new(0,0,-newdisance / 2)
 		Part.Parent = Lightning
@@ -114,12 +114,12 @@ end
 function createhugelightning2(Start,End,numberofparts,player)
 	local lastcf = Start
 	local Distance = (Start - End).Magnitude / numberofparts
-	
+
 	local Lightning = Instance.new("Folder")
 	Lightning.Name = "lightasd"
 	Lightning.Parent = workspace.World.Visuals
 	Debris:AddItem(Lightning,2)
-	
+
 	for Index = 1,numberofparts do
 		local X,Y,Z = math.random(-2,2) * math.clamp(numberofparts,5,99999),math.random(-2,2) * math.clamp(numberofparts,5,99999),math.random(-2,2) * math.clamp(numberofparts,5,99999)
 		if Index == numberofparts then
@@ -127,7 +127,7 @@ function createhugelightning2(Start,End,numberofparts,player)
 		end
 		local newcframe = CFrame.new(lastcf,End + Vector3.new(X,Y,Z)) * CFrame.new(0,0,-Distance)
 		local newdisance = (lastcf - newcframe.p).Magnitude
-		
+
 		local Part = Instance.new("Part")
 		Part.Material = Enum.Material.Neon
 		Part.Color = Color3.fromRGB(128, 187, 219)
@@ -135,20 +135,20 @@ function createhugelightning2(Start,End,numberofparts,player)
 		Part.BottomSurface = Enum.SurfaceType.SmoothNoOutlines
 		Part.CanCollide = false
 		Part.Anchored = true
-		Part.CastShadow = false	
+		Part.CastShadow = false
 		Part.Size = Vector3.new(.7,.7,newdisance)
 		Part.CFrame = CFrame.new(lastcf,newcframe.p) * CFrame.new(0,0,-newdisance / 2)
 		Part.Parent = Lightning
-		
+
 		coroutine.resume(coroutine.create(function()
 			wait(Index / 20)
-			
+
 			local Ti24 = TweenInfo.new(.14,Enum.EasingStyle.Sine,Enum.EasingDirection.Out,0,false,0)
 
 			local Tween = TweenService:Create(Part,Ti24,{["Size"] = Vector3.new(0,0,newdisance),["Color"] = Color3.fromRGB(253, 234, 141)})
 			Tween:Play()
 			Tween:Destroy()
-			
+
 			Debris:AddItem(Part,.24)
 		end))
 		lastcf = newcframe.p
@@ -164,7 +164,7 @@ local RingTween = TweenInfo.new(.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Ou
 return function(Data)
 	local Character = Data.Character
 	local Root = Character:FindFirstChild("HumanoidRootPart")
-	
+
 	local circleoutline = Effects.circleoutline:Clone()
 	circleoutline.Size = Vector3.new(45,45,45)
 	circleoutline.BrickColor = BrickColor.new("Medium blue")
@@ -173,7 +173,7 @@ return function(Data)
 	circleoutline.CFrame = CFrame.new(Data.Position)
 	circleoutline.Parent = workspace.World.Visuals
 	Debris:AddItem(circleoutline, 1)
-	
+
 	local circle2 = Effects.windshockwave2:Clone()
 	circle2.BrickColor = BrickColor.new("Dark stone grey")
 	circle2.Material = "Neon"
@@ -182,11 +182,11 @@ return function(Data)
 	circle2.CFrame = CFrame.new(Data.Position)
 	circle2.Parent = workspace.World.Visuals
 	Debris:AddItem(circle2, 1)
-	
+
 	local Tween = TweenService:Create(circle2,TweenInfo.new(1,Enum.EasingStyle.Linear,Enum.EasingDirection.Out),{Transparency = 1, Size = Vector3.new(50,50,50), CFrame = circle2.CFrame * CFrame.fromEulerAnglesXYZ(0,1,0)})
 	Tween:Play()
 	Tween:Destroy()
-	
+
 	task.spawn(function()
 		for Index = 1, 3 do
 			circleoutline.Transparency = 0
@@ -197,31 +197,31 @@ return function(Data)
 			wait(.05)
 		end
 	end)
-	
+
 	VfxHandler.Spherezsz({
-		Cframe = CFrame.new(Data.Position), 
-		TweenDuration1 = .3, 
-		TweenDuration2 = .5, 
-		Range = 12, 
-		MinThick = 35, 
-		MaxThick = 80, 
-		Part = nil, 
+		Cframe = CFrame.new(Data.Position),
+		TweenDuration1 = .3,
+		TweenDuration2 = .5,
+		Range = 12,
+		MinThick = 35,
+		MaxThick = 80,
+		Part = nil,
 		Color = BrickColor.new("Cool yellow").Color,
 		Amount = 5
 	})
 
 	VfxHandler.Spherezsz({
-		Cframe = CFrame.new(Data.Position), 
-		TweenDuration1 = .3, 
-		TweenDuration2 = .5, 
-		Range = 12, 
-		MinThick = 35, 
-		MaxThick = 80, 
-		Part = nil, 
+		Cframe = CFrame.new(Data.Position),
+		TweenDuration1 = .3,
+		TweenDuration2 = .5,
+		Range = 12,
+		MinThick = 35,
+		MaxThick = 80,
+		Part = nil,
 		Color = BrickColor.new("Pastel blue-green").Color,
 		Amount = 8
 	})
-	
+
 	local DistanceThudnerFolder = Instance.new("Folder")
 	DistanceThudnerFolder.Name = "Distance Thunder"
 	DistanceThudnerFolder.Parent = workspace.World.Visuals
@@ -240,7 +240,7 @@ return function(Data)
 	Tween:Destroy()
 
 	Debris:AddItem(Ring,1.5)
-	
+
 	local SizeRange = 10.85
 
 	VfxHandler.DexCrater({
@@ -304,30 +304,30 @@ return function(Data)
 
 		Debris:AddItem(SlashEffect,.12)
 	end
-		
+
 	local Part = script.Part:Clone()
 	Part.CFrame = CFrame.new(Data.Position)
 	Part.Anchored = true
 	Part.Parent = workspace.World.Visuals
-	
+
 	VfxHandler.Emit(Part.Attachment.ParticleEmitter,15)
 	Debris:AddItem(Part,5)
-		
+
 	local Ball = Effects.ball:Clone()
 	Ball.Shape = "Cylinder"
 	Ball.BrickColor = BrickColor.new("Medium blue")
 	Ball.Material = "Neon"
 	Ball.Size = Vector3.new(1000,15,15)
 	Ball.Transparency = .5
-	Ball.CFrame = CFrame.new(Data.Position) * CFrame.fromEulerAnglesXYZ(0,0,math.rad(90))	
+	Ball.CFrame = CFrame.new(Data.Position) * CFrame.fromEulerAnglesXYZ(0,0,math.rad(90))
 	Ball.Parent = workspace.World.Visuals
-	
+
 	local Tween = TweenService:Create(Ball,TweenInfo.new(1,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{["Transparency"] = 1})
 	Tween:Play()
 	Tween:Destroy()
-	
+
 	Debris:AddItem(Ball, 1)
-	
+
 	-- SoundManager:AddSound("Lightnining_Impact",{Parent = Root, Volume = 1},"Client")
 
 	local Part = Instance.new("Part")
@@ -336,7 +336,7 @@ return function(Data)
 	Part.Anchored = true
 	Part.Transparency = 1
 	Part.CFrame = CFrame.new(Data.Position)
-	---- SoundManager:AddSound("LightningExplosion2",{Parent = Root},"Client")
+	-- SoundManager:AddSound("LightningExplosion2",{Parent = Root},"Client")
 
 	-- SoundManager:AddSound("Ground Stomp",{Parent = Root, Volume = .85, Playing = true},"Client",{ExectueTween = 1})
 	Debris:AddItem(Part,2)
@@ -358,7 +358,7 @@ return function(Data)
 
 	local Tween = TweenService:Create(Ball,A1,{["Size"] = Vector3.new(30,30,30)})
 	Tween:Play()
-	Tween:Destroy() 
+	Tween:Destroy()
 
 	local Distance = 1 - math.clamp((Camera.CFrame.Position - Data.Position).Magnitude,0,150) / 150
 	local ColorCorrection = Instance.new("ColorCorrectionEffect")
@@ -381,10 +381,10 @@ return function(Data)
 	Tween:Destroy()
 
 	Debris:AddItem(ColorCorrection2,2)
-	
+
 	createhugelightning(Root.Position,Data.Position,25,Players:GetPlayerFromCharacter(Character))
 	createhugelightning(Root.Position,Data.Position,math.clamp(math.floor((Root.Position - Data.Position).Magnitude / 15), 3, 999),Players:GetPlayerFromCharacter(Character))
-	
+
 	for Index = 1,math.random(5,6) do
 		local RandomIndex = math.random(1,2)
 		if RandomIndex == 2 then
@@ -413,5 +413,5 @@ return function(Data)
 
 		Debris:AddItem(Part,.2)
 		wait(.01)
-	end	
+	end
 end

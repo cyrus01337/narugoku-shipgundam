@@ -88,7 +88,7 @@ function SetProjectileDebounce(Projectile)
 	local Debounce = Instance.new("BoolValue")
 	Debounce.Parent = Projectile
 	Debounce.Name = "Projectile"
-	Debounce.Value = false	
+	Debounce.Value = false
 
 	return Debounce
 end
@@ -98,18 +98,18 @@ end
 local function BreakBomb(Character,KillerQueenData,KeyData,CharacterName)
 	local Player = Players:GetPlayerFromCharacter(Character)
 	local Root = Character:FindFirstChild("HumanoidRootPart")
-	
+
 	local Stand = Character:FindFirstChild(Character.Name.." - Stand")
 	local Weld = Stand.PrimaryPart.Weld
 
-	local StandHum = Stand:FindFirstChild("Humanoid")	
-	
+	local StandHum = Stand:FindFirstChild("Humanoid")
+
 	coroutine.wrap(function()
 		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = 10, Key = KeyData.SerializedKey, ToolName = CharacterName})
 		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-		
+
 		local LastHitData = StateManager:ReturnData(Character,"LastHit")
-		
+
 		StateManager:ChangeState(workspace.World.Live[LastHitData.LastTarget], "Blocking", false)
 
 		if LastHitData.LastTarget == "" then
@@ -121,14 +121,14 @@ local function BreakBomb(Character,KillerQueenData,KeyData,CharacterName)
 		KillerQueenData.Damage = 15
 		KillerQueenData.Cooldown = 10
 
-		local Sound = -- SoundManager:AddSound("SwitchOn",{Parent = Root, Volume = 5}, "Server" ,{Player = Player, Distance = 10})
+		-- local Sound = SoundManager:AddSound("SwitchOn",{Parent = Root, Volume = 5}, "Server" ,{Player = Player, Distance = 10})
 
 		local Anim = StandHum:LoadAnimation(KillerQueenAnimations["KillerQueenSwitch"])
 		Anim:Play()
 		Anim:AdjustSpeed(.35)
 
 		wait(1.225)
-		local Sound = -- SoundManager:AddSound("Click",{Parent = Root, Volume = 7.5}, "Server" ,{Player = Player, Distance = 10})
+		-- local Sound = SoundManager:AddSound("Click",{Parent = Root, Volume = 7.5}, "Server" ,{Player = Player, Distance = 10})
 
 		wait(.2)
 		local BodyVelocity = Instance.new("BodyVelocity")
@@ -140,7 +140,7 @@ local function BreakBomb(Character,KillerQueenData,KeyData,CharacterName)
 
 		VfxHandler.FireProc({Character = Character, Victim = workspace.World.Live[LastHitData.LastTarget], Duration = 3, Damage = 1})
 		DamageManager.DeductDamage(Character,workspace.World.Live[LastHitData.LastTarget],KeyData.SerializedKey,CharacterName,{Type = "Combat", KeysLogged = 1})
-		CameraRemote:FireClient(Player,"CreateBlur",{Size = 15, Length = .25})	
+		CameraRemote:FireClient(Player,"CreateBlur",{Size = 15, Length = .25})
 		NetworkStream.FireOneClient(Player,"ClientRemote",5,{Character = Character, Victim = workspace.World.Live[LastHitData.LastTarget], Module = "Killer QueenVFX", Function = "RemoveBomb", Distance = 100})
 		if Players:GetPlayerFromCharacter(workspace.World.Live[LastHitData.LastTarget]) then
 			NetworkStream.FireOneClient(Players:GetPlayerFromCharacter(workspace.World.Live[LastHitData.LastTarget]),"ClientRemote",5,{Character = Character, Victim = workspace.World.Live[LastHitData.LastTarget], Module = "Killer QueenVFX", Function = "RemoveBomb", Distance = 100})
@@ -149,23 +149,23 @@ local function BreakBomb(Character,KillerQueenData,KeyData,CharacterName)
 		StateManager:ChangeState(Character, "LastHit", .5, {LastTarget = ""})
 		KillerQueenData.Damage = 5
 	end)()
-	KillerQueenData.HasBomb = false	
+	KillerQueenData.HasBomb = false
 end
-	
+
 local Killer_Queen = {
 
 	["FirstAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
 		local Character = Player.Character
 		local Root,Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-		
-		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})	
+
+		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
 		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-		
+
 		local Stand = Character:FindFirstChild(Character.Name.." - Stand")
 		local Weld = Stand.PrimaryPart.Weld
 
 		StateManager:ChangeState(Character,"Stunned",3)
-	
+
 		local PlayerCombo = AbilityData.ReturnData(Player,"PlayerCombos","GlobalInformation")
 
 		local TimeEvaluation = os.clock() - PlayerCombo.LastPressed <= .8 and true or false
@@ -255,7 +255,7 @@ local Killer_Queen = {
 		local Mouse = MouseRemote:InvokeClient(Player)
 		if (Root.Position - Mouse.Position).Magnitude > 30 then return end
 
-		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})	
+		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
 		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
 
 		local Stands = Character
@@ -273,7 +273,7 @@ local Killer_Queen = {
 
 		local CoinAnimation = StandHum:LoadAnimation(KillerQueenAnimations["CoinFlip"])
 		CoinAnimation:AdjustSpeed()
-		CoinAnimation:Play() 
+		CoinAnimation:Play()
 
 		wait(.175)
 		MoveStand.MoveStand(Character, {Priority = 1.25, Duration = 2})
@@ -312,7 +312,7 @@ local Killer_Queen = {
 					wait(.25)
 					NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Coin = Coin, Module = "Killer QueenVFX", Function = "Coin Toss", Distance = 100})
 					wait(.5)
-					CameraRemote:FireClient(Player,"CreateBlur",{Size = 15, Length = .25})				
+					CameraRemote:FireClient(Player,"CreateBlur",{Size = 15, Length = .25})
 					HitboxModule.GetTouchingParts(Player,{ExistTime = 2, Type = "Combat", KeysLogged = math.random(1,3), Size = Vector3.new(18.712, 19.86, 21.681), Transparency = 1, PositionCFrame = Coin.CFrame} ,KeyData.SerializedKey,CharacterName)
 
 					Debris:AddItem(Coin,.5)
@@ -329,7 +329,7 @@ local Killer_Queen = {
 		StateManager:ChangeState(Character,"Stunned",.75)
 
 		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)				
+		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
 	end,
 
 	["ThirdAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
@@ -341,7 +341,7 @@ local Killer_Queen = {
 		local Stand = Character:FindFirstChild(Character.Name.." - Stand")
 		local Weld = Stand.PrimaryPart.Weld
 
-		local StandHum = Stand:FindFirstChild("Humanoid")	
+		local StandHum = Stand:FindFirstChild("Humanoid")
 
 		StateManager:ChangeState(Character, "Attacking", .8,{AllowedSkills = {["Dash"] = true}})
 		SpeedManager.changeSpeed(Character,4,.8,2) --function(Character,Speed,Duration,Priority)
@@ -353,7 +353,7 @@ local Killer_Queen = {
 			KillerQueenData.HasBomb = false
 		else
 			local CoinAnimation = StandHum:LoadAnimation(KillerQueenAnimations["KillerQueenSlap"])
-			CoinAnimation:Play() 
+			CoinAnimation:Play()
 			CoinAnimation:AdjustSpeed(.75)
 
 			-- SoundManager:AddSound("KillerQueenCall",{Parent = Root, Volume = 5}, "Server" ,{Player = Player, Distance = 10})
@@ -363,22 +363,22 @@ local Killer_Queen = {
 			if HitResult then
 				local Victim = HitObject.Parent
 				local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
-				
-				
+
+
 				if not StateManager:Peek(Victim,"Blocking") or StateManager:Peek(Victim,"IFrame") then
-					if StateManager:Peek(Victim,"Blocking") then 
+					if StateManager:Peek(Victim,"Blocking") then
 						CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
 						DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-						return 
+						return
 					end
 					KillerQueenData.HasBomb = true
 					local StartTime = os.clock()
-					
+
 					coroutine.wrap(function()
 						while KillerQueenData.HasBomb do
 							RunService.Heartbeat:Wait()
 							local LastHitData = StateManager:ReturnData(Character,"LastHit")
-							
+
 							if os.clock() - StartTime >= 10 then
 								BreakBomb(Character,KillerQueenData,KeyData,CharacterName)
 								break
@@ -395,13 +395,13 @@ local Killer_Queen = {
 					StateManager:ChangeState(Character, "LastHit", 524525, {LastTarget = Victim.Name})
 					CameraRemote:FireClient(Player,"CameraShake",{FirstText = 3, SecondText = 12})
 					NetworkStream.FireOneClient(Player,"ClientRemote",5,{Character = Character, Victim = Victim, Module = "Killer QueenVFX", Function = "Add Bomb", Distance = 100})
-					
+
 					KillerQueenData.Cooldown = 3
 
 					if Players:GetPlayerFromCharacter(Victim) then
 						NetworkStream.FireOneClient(Players:GetPlayerFromCharacter(Victim),"ClientRemote",5,{Character = Character, Victim = Victim, Module = "Killer QueenVFX", Function = "Add Bomb", Distance = 100})
 					end
-				end	
+				end
 			end
 		end
 		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
@@ -411,15 +411,15 @@ local Killer_Queen = {
 	["FourthAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
 		local Character = Player.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
-		local Data = ProfileService:GetPlayerProfile(Player)	
+
+		local Data = ProfileService:GetPlayerProfile(Player)
 		if Data.Character == "Killer Queen" then
 			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
 			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
 		end
-		
+
 		local Stand = Character:FindFirstChild(Character.Name.." - Stand")
- 
+
 		StateManager:ChangeState(Character,"Attacking",1.75)
 		SpeedManager.changeSpeed(Character,4,2,2) --function(Character,Speed,Duration,Priority)
 
@@ -437,7 +437,7 @@ local Killer_Queen = {
 		if HitResult then
 			local Victim = HitObject.Parent
 			local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
-			
+
 			StateManager:ChangeState(Character,"Stunned",2)
 			StateManager:ChangeState(Character, "IFrame", 1.5, {IFrameType = ""})
 

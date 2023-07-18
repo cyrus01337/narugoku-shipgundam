@@ -84,7 +84,7 @@ local function GetNearPlayers(Character,Radius)
 
 			if (EnemyRootPart.Position - HumanoidRootPart.Position).Magnitude <= Radius then
 				if Victim ~= Character then
-					ChosenVictim = Victim 
+					ChosenVictim = Victim
 				end
 			end
 		end
@@ -93,8 +93,8 @@ local function GetNearPlayers(Character,Radius)
 end
 
 local function RaycastTarget(Radius,Character)
-	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))	
-	
+	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
+
 	local Root = Character:FindFirstChild("HumanoidRootPart")
 
 	local RaycastResult = Ray.new(Root.CFrame.p, (MouseHit.Position - Root.CFrame.Position).Unit * Radius)
@@ -102,32 +102,32 @@ local function RaycastTarget(Radius,Character)
 
 	if Target and Target:FindFirstAncestorWhichIsA("Model"):FindFirstChild("Humanoid") then
 		local Victim = Target:FindFirstAncestorWhichIsA("Model")
-		if Victim ~= Character then 
+		if Victim ~= Character then
 			return Victim,Position or nil
 		end
-	end	
+	end
 end
 
 local function GetMouseTarget(Target,Character)
 	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
 
 	local Root = Character:FindFirstChild("HumanoidRootPart")
-	if (Root.Position - MouseHit.Position).Magnitude > 80 then return end	
+	if (Root.Position - MouseHit.Position).Magnitude > 80 then return end
 
 	if Target and Target:IsA("BasePart") and not Target:IsDescendantOf(Character) and GlobalFunctions.IsAlive(Target.Parent) then
 		return Target.Parent or nil
 	end
 end
 
-local function GetNearestFromMouse(Character, Range)	
+local function GetNearestFromMouse(Character, Range)
 	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
-	
+
 	for _, Entity in ipairs(workspace.World.Live:GetChildren()) do
 		if Entity:IsA("Model") and GlobalFunctions.IsAlive(Entity) and Entity ~= Character then
 			local EntityPrimary = Entity:FindFirstChild("HumanoidRootPart")
 			local Distance = (MouseHit.Position - EntityPrimary.Position).Magnitude
 
-			if Distance <= Range then 
+			if Distance <= Range then
 				return Entity or nil
 			end
 		end
@@ -143,26 +143,26 @@ local NatsuMode = {
 	["Transformation"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
 		local Character = Player.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
+
 		local Data = ProfileService:GetPlayerProfile(Player)
-		
+
 		--AnimationRemote:FireClient(Player,"ZenitsuTransformation","Play")
-		             		
+
 		StateManager:ChangeState(Character,"IFrame",1.35,  {IFrameType = ""})
 		SpeedManager.changeSpeed(Character,0,1.35,4e4)
-		
-		TaskScheduler:AddTask(1,function() -- SoundManager:AddSound("ZenitVoiceLine",{Parent = Root, Volume = 2}, "Client") end)		
+
+		-- TaskScheduler:AddTask(1,function() SoundManager:AddSound("ZenitVoiceLine",{Parent = Root, Volume = 2}, "Client") end)
 		Root.Anchored = true
-		
+
 		--NetworkStream.FireClientDistance(Character, "ClientRemote", 350, {Character = Character , Module = Data.Character.."Mode", Function = "Transformation"})
 		--NetworkStream.FireOneClient(Player,"ClientRemote",5,{Character = Character, Module = "AokijiMode", Function = "Cutscene"})
 
 		local CreateFrameData = {Size = UDim2.new(1,0,1,0); Position = UDim2.new(0,0,0,0); Color = Color3.fromRGB(202, 195, 89); Duration = 1}
 
 		TaskScheduler:AddTask(1.15,function()
-			--NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Module = "ZenitsuVFX", Function = "Rice Spirit"})		
+			--NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Module = "ZenitsuVFX", Function = "Rice Spirit"})
 			-- SoundManager:AddSound("Thund",{Parent = Root, PlaybackSpeed = 1 - (((1 - 1) * 3) / 10)}, "Client")
-			
+
 			CameraRemote:FireClient(Player,"CreateFlashUI",CreateFrameData)
 			Root.Anchored = false
 		end)
@@ -176,7 +176,7 @@ local NatsuMode = {
 		if not Victim then return end
 		StateManager:ChangeState(Character,"Guardbroken",1.5)
 
-		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})	
+		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
 		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
 
 		StateManager:ChangeState(Character,"IFrame",.65, {IFrameType = ""})
@@ -190,7 +190,7 @@ local NatsuMode = {
 		end)
 
 		--[[ Fire Animation ]]--
-		AnimationRemote:FireClient(Player, "ShadowGash", "Play")	
+		AnimationRemote:FireClient(Player, "ShadowGash", "Play")
 
 		--Hum.AutoRotate = false
 		wait(.25)
@@ -222,21 +222,21 @@ local NatsuMode = {
 		AnimationRemote:FireClient(Player,"LightningDragonHammer","Play", {AdjustSpeed = 1.5})
 
 		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)	
+		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
 
-		GlobalFunctions.NewInstance("StringValue",{Parent = Character, Name = "Aiming", Value = Victim.Name},.5)	
+		GlobalFunctions.NewInstance("StringValue",{Parent = Character, Name = "Aiming", Value = Victim.Name},.5)
 
 		Humanoid.AutoRotate = false
 		delay(2.05,function()
 			Humanoid.AutoRotate = true
 		end)
-		
+
 		--[[ Fire Client ]]--
 		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Distance = 100, SSJRock = true, Enemy = Victim, Module = "NatsuMode", Function = "LightningDragonCrimsonStart"})
 		wait(0.5)
 		--[[ Fire Client ]]--
 		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Distance = 100, Enemy = Victim, Module = "NatsuMode", Function = "LightningDragonCrimsonMove"})
-		
+
 		for _, v in ipairs(Root:GetChildren()) do
 			if v:IsA("BodyPosition") then
 				v:Destroy()
@@ -251,7 +251,7 @@ local NatsuMode = {
 		BodyPosition.Parent = Character.HumanoidRootPart
 		BodyPosition.Position = (Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-DISTANCE)).Position--Victim.Torso.Position
 		Debris:AddItem(BodyPosition, 1)
-		
+
 		local Weld = Instance.new("Weld")
 		Weld.Part0 = Root
 		Weld.Part1 = Victim.HumanoidRootPart
@@ -259,16 +259,16 @@ local NatsuMode = {
 		Weld.Parent = Victim.HumanoidRootPart
 
 		Debris:AddItem(Weld,3)
-		
+
 		local VictimPlayer = Players:GetPlayerFromCharacter(Victim)
 		local Anim = Victim.Humanoid:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Characters.Mob.PhyscoSlamVictim)
 		local _ = (VictimPlayer and AnimationRemote:FireClient(VictimPlayer,"PhyscoSlamVictim","Play")) or (not VictimPlayer and Anim and Anim:Play())
-		
+
 		wait(.9)
 
 		local HitResult,HitObject = HitboxModule.MagnitudeModule(Character, {Range = 12, KeysLogged = 1, Type = "Combat"}, KeyData.SerializedKey, CharacterName)
 		if HitResult then
-			local Victim = HitObject.Parent 
+			local Victim = HitObject.Parent
 			local VRoot,VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
 
 			DamageManager.DeductDamage(Character,Victim,KeyData.SerializedKey,CharacterName,{Type = "Sword", KeysLogged = ExtraData.KeysLogged})
@@ -290,16 +290,16 @@ local NatsuMode = {
 
 			--[[ BodyMover ]]--
 			BodyPosition:Destroy()
-		end	
+		end
 	end,
-	
+
 	["ThirdAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
 		local Character = Player.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
 		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
 		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-		
+
 		NetworkStream.FireClientDistance(Character,"ClientRemote",30,{Character = Character, Distance = 100, Module = "AokijiMode", Function = "Cutscene"})
 		NetworkStream.FireClientDistance(Character,"ClientRemote",30,{Character = Character, Distance = 100, Module = "NatsuMode", Function = "NatsuScreen"})
 		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Distance = 100, Module = "NatsuMode", Function = "DragonTransformation"})
@@ -344,7 +344,7 @@ local NatsuMode = {
 				--[[ Set Ray Variables ]]--
 				local partHit, pos, normVector = ray.Instance or nil, ray.Position or nil, ray.Normal or nil
 				if partHit then
-					--[[ Fire Client ]]--						
+					--[[ Fire Client ]]--
 					NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Distance = 100, ContactPoint = pos, Module = "HieiVFX", Function = "BlackDragonHellfire"})
 					--[[ Screen Shake ]]--
 					CameraRemote:FireClient(Player,"CameraShake",{
@@ -364,10 +364,10 @@ local NatsuMode = {
 						BodyVelocity.Parent = Entity.PrimaryPart
 
 						Debris:AddItem(BodyVelocity,.3)
-						Ragdoll.DurationRagdoll(Entity, 1)	
-					end				
+						Ragdoll.DurationRagdoll(Entity, 1)
+					end
 				end
-			end	
+			end
 			wait(0.5)
 		end
 	end

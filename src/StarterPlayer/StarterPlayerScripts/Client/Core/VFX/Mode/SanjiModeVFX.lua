@@ -62,7 +62,7 @@ local function AdjustableToSet(Part, Number)
 	local SizeIndex = Part.Size * math.random(90, 130) / 100
 	local RandomCalculation = math.random(100, 1000) / 5000
 	Part.Size = Vector3.new(RandomCalculation, RandomCalculation, Part.Size.Z)
-	
+
 	local Tween = TweenService:Create(Part, TweenInfo.new(.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {["CFrame"] = Part.CFrame * CFrame.new(0, 0, -Number / 2), ["Size"] = SizeIndex, ["Transparency"] = 1})
 	Tween:Play()
 	Tween:Destroy()
@@ -72,7 +72,7 @@ local function AdjustableToSet(Part, Number)
 			if Decals:IsA("Decal") then
 				local Tween = TweenService:Create(Decals, TweenInfo.new(.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {["Transparency"] = 1})
 				Tween:Play()
-				Tween:Destroy()	
+				Tween:Destroy()
 			end
 		end
 	end
@@ -104,8 +104,8 @@ local function ToPart(Cframe, Part2CFrame, Color, ToTweenSize, Size, Duration, T
 		TweenInfoData = TweenInfo.new(Duration, TweenDetail, Enum.EasingDirection.Out, 0, false, 0)
 	end
 	local TweenData = {
-		Size = ToTweenSize, 
-		CFrame = Cframe, 
+		Size = ToTweenSize,
+		CFrame = Cframe,
 		Transparency = 1
 	}
 	if ToTweenColor then
@@ -132,11 +132,11 @@ local function ToBurn(Part, Random1, Random2, CFrameParameter, LastRandom)
 
 		local Tween = TweenService:Create(ShadowAttachment, TweenInfo.new(.25, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {["WorldPosition"] = (Part.CFrame * CFrame.new(0, 0, CFrameParameter)).p + Vector3.new(math.random(-LastRandom, LastRandom), math.random(-LastRandom, LastRandom), math.random(-LastRandom, LastRandom))})
 		Tween:Play()
-		Tween:Destroy()	
+		Tween:Destroy()
 
 		local Tween = TweenService:Create(Beam, TweenInfo.new(.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Width0"] = 0, ["Width1"] = 0})
 		Tween:Play()
-		Tween:Destroy()	
+		Tween:Destroy()
 
 		Debris:AddItem(Beam, 0.25)
 	end
@@ -151,7 +151,7 @@ function FastWait(Duration)
 end
 
 local SanjiModeVFX = {
-	
+
 	["FLASHKICKHITTTTT"] = function(PathData)
 		local Character = PathData.Character
 		local Victim = PathData.Victim
@@ -174,16 +174,16 @@ local SanjiModeVFX = {
 		Debris:AddItem(EnemyVelocity,.1)
 
 		--Victim.Humanoid:LoadAnimation(ReplicatedStorage.Assets.Animations.HitReactions["Hit4"]):Play()
-		---- SoundManager:AddSound("Punched4",{Parent = Character:FindFirstChild("HumanoidRootPart"),Volume = 9},"Client")
+		-- SoundManager:AddSound("Punched4",{Parent = Character:FindFirstChild("HumanoidRootPart"),Volume = 9},"Client")
 	end,
-	
+
 	["DemonAxeExplode"] = function(PathData)
 		local Character = PathData.Character
 		local Humanoid,Root = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
-		
+
 		local Victim = PathData.Victim
 		local VHum,VRoot = Victim:FindFirstChild("Humanoid"),Victim:FindFirstChild("HumanoidRootPart")
-		
+
 		local ColorIndex = script.DemonAxeExplode.Part.Color
 		local Color = Color3.fromRGB(255, 81, 0)
 
@@ -195,7 +195,7 @@ local SanjiModeVFX = {
 
 		local RaycastResult = Ray.new(VRoot.Position, Vector3.new(0,-1000,0))
 		local Target,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals}, false, false)
-		if Target then		
+		if Target then
 			local Dust = script.DemonAxeExplode.dust:Clone()
 			Dust.CFrame = CFrame.new(Position) * CFrame.Angles(math.rad(-90), 0, 0)
 			Dust.Parent = workspace.World.Visuals
@@ -207,9 +207,9 @@ local SanjiModeVFX = {
 			Dust.Attachment.BurningPart.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 5, 5), NumberSequenceKeypoint.new(0.5, 20, 5), NumberSequenceKeypoint.new(1, 0, 0) })
 			Dust.Attachment.BurningPart:Emit(80)
 			Dust.Attachment.BurningPart2:Emit(30)
-			
+
 			Debris:AddItem(Dust, 1)
-			
+
 			VfxHandler.Shockwave2(Dust.CFrame, Dust.CFrame, BrickColor.new("White"), Vector3.new(100, 4, 100), Vector3.new(30, 4, 30), 0.5, -1, Enum.EasingStyle.Quad, Color3.fromRGB(255, 255, 255), Enum.Material.Neon, "Rings")
 
 			local PartTing2 = script.DemonAxeExplode.Part:Clone()
@@ -221,11 +221,11 @@ local SanjiModeVFX = {
 
 			local Tween = TweenService:Create(PartTing2.Mesh, TweenInfo.new(.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Scale"] = Vector3.new(75, 75, 75)})
 			Tween:Play()
-			Tween:Destroy()	
+			Tween:Destroy()
 
 			local Tween = TweenService:Create(PartTing2, TweenInfo.new(.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Transparency"] = 1})
 			Tween:Play()
-			Tween:Destroy()	
+			Tween:Destroy()
 
 			Debris:AddItem(PartTing2, .25)
 
@@ -236,27 +236,27 @@ local SanjiModeVFX = {
 
 			local Tween = TweenService:Create(PartTing.Mesh, TweenInfo.new(.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Scale"] = Vector3.new(0, PartTing.Mesh.Scale.Y + 15, 0), ["Offset"] = Vector3.new(0, 22.5, 0)})
 			Tween:Play()
-			Tween:Destroy()	
+			Tween:Destroy()
 
 			Debris:AddItem(PartTing, .15)
 
 			local EndCalculation = CFrame.new((VRoot.CFrame * CFrame.new(0, 5, 0)).Position)
 
 			VfxHandler.Spherezsz({
-				Cframe = EndCalculation, 
-				TweenDuration1 = .25, 
-				TweenDuration2 = .35, 
-				Range = 25, 
-				MinThick = 2, 
-				MaxThick = 5, 
-				Part = Root, 
-				Color = Color3.fromRGB(255, 255, 255), 
+				Cframe = EndCalculation,
+				TweenDuration1 = .25,
+				TweenDuration2 = .35,
+				Range = 25,
+				MinThick = 2,
+				MaxThick = 5,
+				Part = Root,
+				Color = Color3.fromRGB(255, 255, 255),
 				Amount = 20
 			})
 
 			local End = CFrame.new(VRoot.Position, VRoot.Position + Position) * CFrame.Angles(math.rad(-90), 0, 0)
 
-			for Index = 1, 8 do				
+			for Index = 1, 8 do
 				local PartTingz = script.DemonAxeExplode.Part:Clone()
 				PartTingz.CFrame = CFrame.new(Position) * CFrame.Angles(0, math.rad(Index * 45), 0) * CFrame.new(0, -2, 22.5)
 				PartTingz.CFrame = CFrame.new(Position, Position) * CFrame.Angles(0, math.rad(90), 0)
@@ -275,7 +275,7 @@ local SanjiModeVFX = {
 			end
 		end
 	end,
-	
+
 	["AscendKick"] = function(PathData)
 		local Character = PathData.Character
 		local Humanoid,Root = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
@@ -287,20 +287,20 @@ local SanjiModeVFX = {
 
 		local Tween = TweenService:Create(SphereEffect.Mesh, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Offset"] = Vector3.new(0, 47.5, 0), ["Scale"] = Vector3.new(0, SphereEffect.Mesh.Scale.Y + 15, 0)})
 		Tween:Play()
-		Tween:Destroy()	
+		Tween:Destroy()
 
 		Debris:AddItem(SphereEffect, 0.15)
 
 		local CFrameCalculation = Root.CFrame * CFrame.new(0, 0, 3) * CFrame.Angles(math.rad(-90), 0, 0)
 
 		VfxHandler.Spherezsz({
-			Cframe = CFrameCalculation, 
-			TweenDuration1 = .2, 
-			TweenDuration2 = .2, 
-			Range = 0, 
-			MinThick = 20, 
-			MaxThick = 40, 
-			Part = nil, 
+			Cframe = CFrameCalculation,
+			TweenDuration1 = .2,
+			TweenDuration2 = .2,
+			Range = 0,
+			MinThick = 20,
+			MaxThick = 40,
+			Part = nil,
 			Color = script.AscendKick.sphere.Color,
 			Amount = 25
 		})
@@ -361,7 +361,7 @@ local SanjiModeVFX = {
 		PunchedParticle.Attachment.back2:Emit(50)
 		PunchedParticle.Attachment.ring:Emit(1)
 		PunchedParticle.Attachment.new3.Size = NumberSequence.new(18, 0)
-		
+
 		Debris:AddItem(PunchedParticle, 2)
 
 		for _ = 1, 20 do
@@ -376,7 +376,7 @@ local SanjiModeVFX = {
 			local RandomIndex2 = math.random(200, 400) / 1000
 
 			local Tween = TweenService:Create(Sph.Mesh, TweenInfo.new(RandomIndex2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-				["Scale"] = Vector3.new(0, Sph.Mesh.Scale.Y, 0), 
+				["Scale"] = Vector3.new(0, Sph.Mesh.Scale.Y, 0),
 				["Offset"] = Vector3.new(0, -Sph.Mesh.Scale.Y * math.random(2, 5), 0)
 			})
 			Tween:Play()
@@ -385,7 +385,7 @@ local SanjiModeVFX = {
 			Debris:AddItem(Sph, RandomIndex2)
 		end
 	end,
-	
+
 	["TeleportKick"] = function(PathData)
 		local Character = PathData.Character
 		local Hum,Root = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
@@ -399,7 +399,7 @@ local SanjiModeVFX = {
 		Tween:Play()
 		Tween:Destroy()
 	end,
-	
+
 	["AscendTrail"] = function(PathData)
 		local Character = PathData.Character
 		local Humanoid,Root = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
@@ -409,12 +409,12 @@ local SanjiModeVFX = {
 		local _ = Character.Name == Players.LocalPlayer.Name and GlobalFunctions.FreshShake(180,100,1,.15)
 
 		VfxHandler.RockExplosion({
-			Pos = Root.Position, 
-			Quantity = 12, 
+			Pos = Root.Position,
+			Quantity = 12,
 			Radius = 5,
-			Size = Vector3.new(1,1,1), 
-			Duration = 2, 
-		})	
+			Size = Vector3.new(1,1,1),
+			Duration = 2,
+		})
 
 		coroutine.resume(coroutine.create(function()
 			local Part = Instance.new("Part")
@@ -437,11 +437,11 @@ local SanjiModeVFX = {
 
 		local Tween = TweenService:Create(TrailPart, TweenInfo.new(.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Color"] = Color3.fromRGB(255, 81, 0)})
 		Tween:Play()
-		Tween:Destroy()	
+		Tween:Destroy()
 
 		local Tween = TweenService:Create(TrailPart.Mesh, TweenInfo.new(.25, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {["Offset"] = Vector3.new(0, -MagnitudeIndex / 2, 0), ["Scale"] = Vector3.new(0, 0, 0)})
 		Tween:Play()
-		Tween:Destroy()	
+		Tween:Destroy()
 
 		Debris:AddItem(TrailPart, 1)
 
@@ -451,7 +451,7 @@ local SanjiModeVFX = {
 
 		local Tween = TweenService:Create(TpBall.PointLight, TweenInfo.new(.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Range"] = 13, ["Brightness"] = 0})
 		Tween:Play()
-		Tween:Destroy()	
+		Tween:Destroy()
 
 		Debris:AddItem(TpBall, 3)
 
@@ -473,12 +473,12 @@ local SanjiModeVFX = {
 
 			local Tween = TweenService:Create(Trail.PointLight, TweenInfo.new(.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Color"] = BrickColor.new("Gold").Color, ["Range"] = 0})
 			Tween:Play()
-			Tween:Destroy()	
+			Tween:Destroy()
 
 			Debris:AddItem(Trail, 1)
 		end
 	end,
-	
+
 	["SetDash"] = function(PathData)
 		local Character = PathData.Character
 		local Hum,Root = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
@@ -502,11 +502,11 @@ local SanjiModeVFX = {
 			end
 		end
 	end,
-		
+
 	["Anti_Manner_Kick_Course"] = function(PathData)
 		local Character = PathData.Character
 		local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-		
+
 		local Victim = PathData.Character
 		local VRoot,VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
 
@@ -520,7 +520,7 @@ local SanjiModeVFX = {
 		Twister.CFrame = CFrame.new(Root.Position) * CFrame.Angles(0, 0, math.rad(-180))
 		Twister.Size = Vector3.new(35, 5, 35)
 		Twister.Parent = workspace.World.Visuals
-		
+
 		local Burst = script.AscendKick.Burst:Clone()
 		Burst.Position = Root.Position
 		Burst.Transparency = 1
@@ -565,10 +565,10 @@ local SanjiModeVFX = {
 			Dust.Attachment.Rocks:Emit(25)
 			Dust.Attachment.Rocks2:Emit(25)
 		end
-		Debris:AddItem(Dust,3)		
+		Debris:AddItem(Dust,3)
 
 		local Rot = CFrame.new(Root.CFrame.Position)
-		
+
 		for Index = 1, 10 do
 			local RandomCalculation = math.random(10, 35) / 100
 
@@ -586,14 +586,14 @@ local SanjiModeVFX = {
 		end
 
 		VfxHandler.Spherezsz({
-			Cframe = EndCalculation, 
-			TweenDuration1 = .25, 
-			TweenDuration2 = .35, 
-			Range = 25, 
-			MinThick = 2, 
-			MaxThick = 5, 
-			Part = Root, 
-			Color = Color3.fromRGB(255, 255, 255), 
+			Cframe = EndCalculation,
+			TweenDuration1 = .25,
+			TweenDuration2 = .35,
+			Range = 25,
+			MinThick = 2,
+			MaxThick = 5,
+			Part = Root,
+			Color = Color3.fromRGB(255, 255, 255),
 			Amount = 20
 		})
 
@@ -606,7 +606,7 @@ local SanjiModeVFX = {
 			RocksLength = 3 -- How long the rocks stay for
 		})
 	end,
-	
+
 	["PartyTable"] = function(PathData)
 		local Character = PathData.Character
 		local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
@@ -652,11 +652,11 @@ local SanjiModeVFX = {
 		Dust.Attachment.dust1.Enabled = false
 		Debris:AddItem(Dust,1)
 	end,
-	
+
 	["Spectre"] = function(PathData)
 		local Character = PathData.Character
 		local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-				
+
 		Character["Right Leg"].Transparency = 1
 		Character["Right Leg"].Flame.Transparency = 1
 		for _,v in ipairs(Character["Right Leg"].Flame:GetDescendants()) do
@@ -665,9 +665,9 @@ local SanjiModeVFX = {
 			end
 		end
 
-		local StartTime = os.clock()	
+		local StartTime = os.clock()
 
-		while true do 
+		while true do
 			RunService.RenderStepped:Wait()
 
 			local SpectreModel = script.Model:Clone()
@@ -687,15 +687,15 @@ local SanjiModeVFX = {
 
 			local Tween = TweenService:Create(RingEffect, TweenInfo.new(.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {["Size"] = Vector3.new(RandomCalculation, RingEffect.Size.Y, RandomCalculation), ["Transparency"] = 1})
 			Tween:Play()
-			Tween:Destroy()		
+			Tween:Destroy()
 
-			VfxHandler.Orbies({Parent = RingEffect, Speed = .2, Cframe = CFrame.new(0,0,math.random(3,5)), Amount = 1, Circle = true})			
+			VfxHandler.Orbies({Parent = RingEffect, Speed = .2, Cframe = CFrame.new(0,0,math.random(3,5)), Amount = 1, Circle = true})
 			Debris:AddItem(RingEffect, 0.25)
 
 			if os.clock() - StartTime >= 1.5 then break end
 		end
 		Character["Right Leg"].Transparency = 0
-		
+
 		if Character["Right Leg"]:FindFirstChild("Flame") then
 			Character["Right Leg"].Flame.Transparency = 0
 			for _,Particle in ipairs(Character["Right Leg"].Flame:GetDescendants()) do
@@ -703,8 +703,8 @@ local SanjiModeVFX = {
 					Particle.Enabled = true
 				end
 			end
-		end			
-	end,	
+		end
+	end,
 
 }
 

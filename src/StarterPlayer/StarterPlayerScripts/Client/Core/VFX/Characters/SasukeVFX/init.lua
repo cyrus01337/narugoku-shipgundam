@@ -16,7 +16,7 @@ local RaycastManager = require(ReplicatedStorage.Modules.Shared.RaycastManager)
 local VFXHandler = require(ReplicatedStorage.Modules.Effects.VfxHandler)
 
 --|| Variables ||--
-local Player = Players.LocalPlayer 
+local Player = Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
 
 local CurrentCamera = workspace.CurrentCamera
@@ -30,7 +30,7 @@ end)
 camShake:Start()
 
 function GetMousePos(X,Y,Z,Boolean)
-	local RayMag1 = workspace.CurrentCamera:ScreenPointToRay(X, Y) 
+	local RayMag1 = workspace.CurrentCamera:ScreenPointToRay(X, Y)
 	local NewRay = Ray.new(RayMag1.Origin, RayMag1.Direction * ((Z and Z) or 200))
 	local Target,Position,Surface = workspace:FindPartOnRayWithIgnoreList(NewRay, {Character,workspace.World.Visuals})
 	if Boolean then
@@ -83,7 +83,7 @@ function Current(Raycast,Part2,Length,Spread,Size)
 end
 
 function CreateBoltOnRay(Raycast,Color,SP)
-	local Part = script[Color]:GetChildren()[math.random(1,#script[Color]:GetChildren())] 
+	local Part = script[Color]:GetChildren()[math.random(1,#script[Color]:GetChildren())]
 	Current(Raycast,Part,SP.Bolt.Length,SP.Bolt.Spread,SP.Bolt.Size)
 end
 
@@ -115,15 +115,15 @@ function DirtEffect(Pos,Character,pos2)
 			Rock.Color = Target.Color
 			Rock.Material = Target.Material
 			Rock.BodyAngularVelocity.AngularVelocity = Vector3.new(math.random(-4,4),math.random(-4,4),math.random(-4,4))
-			
+
 			local Tween = TweenService:Create(Rock, TweenInfo.new(2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = Vector3.new(),["Transparency"] = 1})
 			Tween:Play()
 			Tween:Destroy()
-			
+
 			Rock.BodyVelocity.Velocity = Vector3.new(math.random(-30,30)/10,20,math.random(-30,30)/10)
 			Rock.Parent = workspace.World.Visuals
 			Rock:CanCollideWith(Target)
-			
+
 			Debris:AddItem(Rock.BodyVelocity,.1)
 		end
 		delay(3,function()
@@ -156,7 +156,7 @@ local SasukeVFX = {
 				v.Rotation = NumberRange.new(math.random(80,160))
 				delay(.15,function() v.Enabled = false end)
 			end
-		end		
+		end
 		Slash.Parent = VRoot
 		Debris:AddItem(Slash,.6)
 
@@ -184,7 +184,7 @@ local SasukeVFX = {
 						BloodStain.CFrame = CFrame.new(Position, Position + Surface) * CFrame.Angles(math.rad(90), math.rad(math.random(-360, 360)), 0)
 						BloodStain.Size = Vector3.new(0, 0, 0)
 						BloodStain.Anchored = false
-						BloodStain.CanCollide = false							
+						BloodStain.CanCollide = false
 						BloodStain.Parent = workspace.World.Visuals
 
 						local SizeCalc = math.random(100, 400) / 100
@@ -214,10 +214,10 @@ local SasukeVFX = {
 					Connection = nil
 					return
 				end
-			end) 
+			end)
 		end
 	end,
-	
+
 	["Shuriken"] = function(PathData)
 		local Character = PathData.Character
 		local Humanoid,Root = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
@@ -273,7 +273,7 @@ local SasukeVFX = {
 			RightDust.Parent = workspace.World.Visuals
 
 			Debris:AddItem(RightDust,3)
-		end		
+		end
 
 		local Fireball = ReplicatedStorage.Assets.Effects.Meshes.FireballJutsu:Clone()
 		Fireball.CFrame = Root.CFrame * CFrame.new(0,0,-1)
@@ -304,11 +304,11 @@ local SasukeVFX = {
 				end
 
 				fireballHit = true
-				
+
 				if GlobalFunctions.CheckDistance(Player, 20) then
 					GlobalFunctions.FreshShake(100,45,1,.2,0)
 				end
-				
+
 
 				local Smoke = script.smoke:Clone()
 				Smoke.CFrame = Fireball.CFrame
@@ -357,14 +357,14 @@ local SasukeVFX = {
 		local EndCalculation = CFrame.new((Root.CFrame * CFrame.new(0, 5, 0)).Position)
 
 		VFXHandler.Spherezsz({
-			Cframe = EndCalculation, 
-			TweenDuration1 = .25, 
-			TweenDuration2 = .35, 
-			Range = 5, 
-			MinThick = 2, 
-			MaxThick = 5, 
-			Part = Root, 
-			Color = Color3.fromRGB(255, 122, 69), 
+			Cframe = EndCalculation,
+			TweenDuration1 = .25,
+			TweenDuration2 = .35,
+			Range = 5,
+			MinThick = 2,
+			MaxThick = 5,
+			Part = Root,
+			Color = Color3.fromRGB(255, 122, 69),
 			Amount = 12
 		})
 
@@ -381,7 +381,7 @@ local SasukeVFX = {
 
 			local Tween = TweenService:Create(Part.Mesh, TweenInfo.new(.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Scale"] = Vector3.new(0, MagnitudeIndex, 0)})
 			Tween:Play()
-			Tween:Destroy() 
+			Tween:Destroy()
 
 			local Tween = TweenService:Create(Part, TweenInfo.new(.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Color"] = BrickColor.new("Persimmon").Color})
 			Tween:Play()
@@ -397,15 +397,15 @@ local SasukeVFX = {
 	["Chidori"] = function(PathData)
 		local Character = PathData.Character
 		local Humanoid,Root = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
-		
-		local po  
+
+		local po
 		local Clone = script.Effects.Ball:Clone()
 		Clone.Parent = Character
 		Clone.Weld.Part0 = Character["Right Arm"]
 		--Clone.ChidoriLights.Disabled = false
-		
-		local Sound = -- SoundManager:AddSound("ChidoriStart",{Parent = Root, Volume = 1.5},"Client")
-	
+
+		-- local Sound = SoundManager:AddSound("ChidoriStart",{Parent = Root, Volume = 1.5},"Client")
+
 		Debris:AddItem(Clone,4)
 
 		local Clone2 = script.Effects.Part2:Clone()
@@ -416,7 +416,7 @@ local SasukeVFX = {
 		local Tween = TweenService:Create(Clone2, TweenInfo.new(.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Transparency"] = 1, ["Size"] = Vector3.new(20,20,20)})
 		Tween:Play()
 		Tween:Destroy()
-				
+
 		coroutine.resume(coroutine.create(function()
 			for _ = 1,2 do
 				local Ring = ReplicatedStorage.Assets.Effects.Meshes.myring:Clone()
@@ -428,13 +428,13 @@ local SasukeVFX = {
 
 				local Tween = TweenService:Create(Ring, TweenInfo.new(.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {["Transparency"] = 1, ["Size"] = Vector3.new(35,.3,35)})
 				Tween:Play()
-				Tween:Destroy()	
+				Tween:Destroy()
 				wait(.2)
 			end
 		end))
-		
+
 		local StartTime = os.clock()
-		
+
 		coroutine.resume(coroutine.create(function()
 			while os.clock() - StartTime <= 4 do
 				local p1,p2 = DirtEffect(Clone.Position,Character,po)
@@ -442,7 +442,7 @@ local SasukeVFX = {
 					po = p2
 				end
 				wait(.1)
-				if Character:FindFirstChild("BreakChidoriClient") then 
+				if Character:FindFirstChild("BreakChidoriClient") then
 					Clone:Destroy()
 					break
 				end
@@ -451,10 +451,10 @@ local SasukeVFX = {
 
 		coroutine.wrap(function()
 			for _ = 1,48 do
-				if Character:FindFirstChild("BreakChidoriClient") then 
+				if Character:FindFirstChild("BreakChidoriClient") then
 					Clone:Destroy()
 					break
-				end				
+				end
 				local B = script.Effects.Ball.ChidoriGlow:Clone()
 				B.Parent = Clone.Attachment
 
@@ -470,28 +470,28 @@ local SasukeVFX = {
 
 		wait(.5)
 		VFXHandler.RockExplosion({
-			Pos = Root.Position, 
-			Quantity = 12, 
+			Pos = Root.Position,
+			Quantity = 12,
 			Radius = 5,
-			Size = Vector3.new(1,1,1), 
-			Duration = 2, 
-		})			
+			Size = Vector3.new(1,1,1),
+			Duration = 2,
+		})
 		local Raycast = Ray.new(Root.Position + Vector3.new(0,30,0),Vector3.new(0,-60,0))
 		Activate(Raycast,"Blue",20,{Extra = {Start = 20,End = 20},Bolt = {Spread = 20, Size = 3, Length = 10}})
 		camShake:ShakeOnce(14,28,0,1)
 	end,
-	
+
 	["ChidoriHit"] = function(PathData)
 		local Character = PathData.Character
 		local Humanoid,Root = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
 
 		local Victim = PathData.Victim
 		local VRoot,VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
-		
+
 		-- SoundManager:AddSound("ChidoriHit",{Parent = Root, Volume = .8},"Client")
 		-- SoundManager:AddSound("SwordHit",{Parent = Root},"Client")
 		camShake:ShakeOnce(14,28,0,1)
-		
+
 		local ChidoriExplosion = ReplicatedStorage.Assets.Effects.Meshes.ChidoriExplosion:Clone()
 		ChidoriExplosion.CFrame = VRoot.CFrame
 		ChidoriExplosion.Parent = Character
@@ -499,21 +499,21 @@ local SasukeVFX = {
 
 		local Blood = script.Effects.UntrainedChidori.Blood.Attachment:Clone()
 		Blood.ParticleEmitter:Emit(25)
-		Blood.Parent = Character["Right Arm"] 
+		Blood.Parent = Character["Right Arm"]
 
 		Debris:AddItem(Blood,2)
-		
+
 		local EndCalculation = CFrame.new((Root.CFrame * CFrame.new(0, 5, 0)).Position)
 
 		VFXHandler.Spherezsz({
-			Cframe = EndCalculation, 
-			TweenDuration1 = .3, 
-			TweenDuration2 = .475, 
-			Range = 10, 
-			MinThick = 2, 
-			MaxThick = 5, 
-			Part = Root, 
-			Color = Color3.fromRGB(119, 255, 226), 
+			Cframe = EndCalculation,
+			TweenDuration1 = .3,
+			TweenDuration2 = .475,
+			Range = 10,
+			MinThick = 2,
+			MaxThick = 5,
+			Part = Root,
+			Color = Color3.fromRGB(119, 255, 226),
 			Amount = 25
 		})
 		VFXHandler.Orbies({Parent = Victim.HumanoidRootPart, Speed = .35, Cframe = CFrame.new(0,0,3), Amount = 12, Circle = true})
@@ -522,7 +522,7 @@ local SasukeVFX = {
 			local Base2 = ChidoriExplosion.ChidoriSparks2:Clone()
 			Base2.Transparency = 0
 			Base2.CFrame = ChidoriExplosion.CFrame * CFrame.new(0,0,0) * CFrame.Angles(math.random(-999,999),math.random(-999,999),math.random(-999,999))
-			Base2.Parent = ChidoriExplosion			
+			Base2.Parent = ChidoriExplosion
 
 			local RandomIndex = math.random(10,16)
 
@@ -536,7 +536,7 @@ local SasukeVFX = {
 		local Tween = TweenService:Create(ChidoriExplosion.ChidoriGlow,TweenInfo.new(1, Enum.EasingStyle.Quint, Enum.EasingDirection.Out,0,false,0),{Brightness = 0, Range = 40})
 		Tween:Play()
 		Tween:Destroy()
-		
+
 		for _ = 1,2 do
 			local Ring = ReplicatedStorage.Assets.Effects.Meshes.myring:Clone()
 			Ring.Size = Vector3.new(12,.3,12)
@@ -547,7 +547,7 @@ local SasukeVFX = {
 
 			local Tween = TweenService:Create(Ring, TweenInfo.new(.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {["Transparency"] = 1, ["Size"] = Vector3.new(35,.3,35)})
 			Tween:Play()
-			Tween:Destroy()	
+			Tween:Destroy()
 			wait(.2)
 		end
 	end,

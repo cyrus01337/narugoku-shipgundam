@@ -61,10 +61,10 @@ local NatsuVFX = {
 	["Fire Dragon's Iron Fist"] = function(Data)
 		local Character = Data.Character
 		local Victim = Data.Victim
-		
+
 		--[[ Play Sound ]]--
 		-- SoundManager:AddSound("Fire1",{ Parent = Character:FindFirstChild("HumanoidRootPart"), Volume = 0.5}, "Client")
-		
+
 		--[[ Orbs ]]--
 		coroutine.wrap(function()
 			wait(.35)
@@ -85,14 +85,14 @@ local NatsuVFX = {
 					beam.Transparency = 0
 					beam.Parent = workspace.World.Visuals
 
-					beam.CFrame = CFrame.new(originalPos.Position + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), RootPosition.Position) 
+					beam.CFrame = CFrame.new(originalPos.Position + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), RootPosition.Position)
 					local tween = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = beam.Size + Vector3.new(0,0, math.random(1,2)), ["Position"] = RootPosition.Position})
-					local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,10)})		
+					local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,10)})
 					tween:Play()
 					tween:Destroy()
 					tween2:Play()
 					tween2:Destroy()
-					Debris:AddItem(beam, .15)						
+					Debris:AddItem(beam, .15)
 				end
 				wait(.15)
 			end
@@ -190,18 +190,18 @@ local NatsuVFX = {
 				beam.Transparency = 0
 				beam.Parent = workspace.World.Visuals
 
-				beam.CFrame = CFrame.new(originalPos + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), originalPos) 
+				beam.CFrame = CFrame.new(originalPos + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), originalPos)
 				local tween = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = beam.Size + Vector3.new(0,0, math.random(1,2)), ["CFrame"] = beam.CFrame * CFrame.new(0,0,50)})
-				local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,20)})		
+				local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,20)})
 				tween:Play()
 				tween:Destroy()
 				tween2:Play()
 				tween2:Destroy()
-				Debris:AddItem(beam, .15)						
+				Debris:AddItem(beam, .15)
 			end
-		end)()	
+		end)()
 	end;
-	
+
 	["CrimsonLotusStart"] = function(Data)
 		local Character = Data.Character
 
@@ -209,8 +209,8 @@ local NatsuVFX = {
 
 		--[[ Play Sound ]]--
 		-- SoundManager:AddSound("Fire1",{ Parent = Character:FindFirstChild("HumanoidRootPart"), Volume = 2}, "Client")
-		
-		
+
+
 		--[[ Fire P00rticle XD ]]--
 		coroutine.wrap(function()
 			for i = 1,2 do
@@ -245,12 +245,12 @@ local NatsuVFX = {
 				end)()
 				Debris:AddItem(Attachment, 1.75)
 			end
-			
+
 			wait(0.5)
-			
+
 			--[[ Fire P00rticle XD ]]--
 			coroutine.wrap(function()
-				
+
 				local Fire = EffectParticles.FireMagicParticle:Clone()
 				local Attachment = Fire.Attachment
 				Attachment.Parent = Character.HumanoidRootPart
@@ -291,7 +291,7 @@ local NatsuVFX = {
 				Debris:AddItem(Stars, 1)
 				wait(0.2)
 				Stars.Stars.Enabled = false
-				
+
 				wait(0.75)
 				for i = 1,3 do
 					local Fire = EffectParticles.FireMagicParticle:Clone()
@@ -334,7 +334,7 @@ local NatsuVFX = {
 					wait(0.25)
 				end
 			end)()
-			
+
 			--[[ Orbs ]]--
 			coroutine.wrap(function()
 				wait(.35)
@@ -355,22 +355,22 @@ local NatsuVFX = {
 						beam.Transparency = 0
 						beam.Parent = Visuals
 
-						beam.CFrame = CFrame.new(originalPos.Position + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), RootPosition.Position) 
+						beam.CFrame = CFrame.new(originalPos.Position + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), RootPosition.Position)
 						local tween = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = beam.Size + Vector3.new(0,0, math.random(1,2)), ["Position"] = RootPosition.Position})
-						local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,10)})		
+						local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,10)})
 						tween:Play()
 						tween:Destroy()
 						tween2:Play()
 						tween2:Destroy()
-						Debris:AddItem(beam, .15)						
+						Debris:AddItem(beam, .15)
 					end
 					wait(0.1)
 				end
 			end)()
-			
+
 		end)()
 	end;
-	
+
 	["CrimsonLotusLand"] = function(Data)
 		local Character = Data.Character
 
@@ -378,7 +378,7 @@ local NatsuVFX = {
 		local ContactPoint = Data.ContactPoint
 
 		--[[ Play Sound ]]--
-		local Sound = -- SoundManager:AddSound("Fire2",{ Parent = Character:FindFirstChild("HumanoidRootPart"), Volume = 3, TimePosition = .35}, "Client")
+		-- local Sound = SoundManager:AddSound("Fire2",{ Parent = Character:FindFirstChild("HumanoidRootPart"), Volume = 3, TimePosition = .35}, "Client")
 
 		--[[ Ball Effect ]]--
 		local Ball = EffectMeshes.ball:Clone()
@@ -451,7 +451,7 @@ local NatsuVFX = {
 
 		--[[ Flying Debris Rock ]]--
 		for i = 1,2 do
-			for j = 1,5 do		
+			for j = 1,5 do
 				--[[ Raycast ]]--
 				local StartPosition = (Vector3.new(math.sin(360*i)*15, 0, math.cos(360*i)*15) + Character.HumanoidRootPart.Position)
 				local EndPosition = CFrame.new(StartPosition).UpVector * -10
@@ -505,7 +505,7 @@ local NatsuVFX = {
 
 		local tween = TweenService:Create(RingInnit, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = Vector3.new(120, 1, 120), ["Transparency"] = 1})
 		tween:Play()
-		tween:Destroy()	
+		tween:Destroy()
 
 		--[[ Expand Lines Out ]]--
 		coroutine.wrap(function()
@@ -523,14 +523,14 @@ local NatsuVFX = {
 					beam.Transparency = 0
 					beam.Parent = Visuals
 
-					beam.CFrame = CFrame.new(originalPos + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), originalPos) 
+					beam.CFrame = CFrame.new(originalPos + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), originalPos)
 					local tween = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = beam.Size + Vector3.new(0,0, math.random(2,5)), ["CFrame"] = beam.CFrame * CFrame.new(0,0,100)})
-					local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,25)})		
+					local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,25)})
 					tween:Play()
 					tween:Destroy()
 					tween2:Play()
 					tween2:Destroy()
-					Debris:AddItem(beam, .15)						
+					Debris:AddItem(beam, .15)
 				end
 				--Utilities:Wait(0.15)
 			end
@@ -570,7 +570,7 @@ local NatsuVFX = {
 					Debris:AddItem(Block, 2)
 				end
 			end
-		end	
+		end
 
 		--[[ Delete Rocks ]]--
 		wait(1.5)
@@ -579,16 +579,16 @@ local NatsuVFX = {
 				v.Anchored = false
 			end
 		end
-	end;	
-	
+	end;
+
 	["FireDragonRoar"] = function(Data)
 		local Character = Data.Character
-		
+
 		local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-		
+
 		--[[ Play Sound ]]--
 		-- SoundManager:AddSound("Fire1",{ Parent = Character:FindFirstChild("HumanoidRootPart"), Volume = 0.75}, "Client")
-		
+
 		--[[ Play Sound ]]--
 		-- SoundManager:AddSound("FireDragonRoar",{ Parent = Character:FindFirstChild("HumanoidRootPart"), Volume = 2}, "Client")
 
@@ -673,14 +673,14 @@ local NatsuVFX = {
 				beam.Color = Color3.fromRGB(170, 85, 255)
 				beam.Transparency = 0
 				beam.Parent = Visuals
-				beam.CFrame = CFrame.new(originalPos.Position + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), RootPosition.Position) 
+				beam.CFrame = CFrame.new(originalPos.Position + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), RootPosition.Position)
 				local tween = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = beam.Size + Vector3.new(0,0, math.random(1,2)), ["Position"] = RootPosition.Position})
-				local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,5)})		
+				local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,5)})
 				tween:Play()
 				tween:Destroy()
 				tween2:Play()
 				tween2:Destroy()
-				Debris:AddItem(beam, .15)						
+				Debris:AddItem(beam, .15)
 			end
 			Attachment.FancyWave:Emit(5)
 			wait(0.1)
@@ -700,14 +700,14 @@ local NatsuVFX = {
 				beam.Transparency = 0
 				beam.Parent = Visuals
 
-				beam.CFrame = CFrame.new(originalPos + Vector3.new(math.random(-1,1),1,math.random(-1,1)), originalPos) 
+				beam.CFrame = CFrame.new(originalPos + Vector3.new(math.random(-1,1),1,math.random(-1,1)), originalPos)
 				local tween = TweenService:Create(beam, TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = beam.Size + Vector3.new(0,0, math.random(2,5)), ["CFrame"] = beam.CFrame * CFrame.new(0,0,math.random(20,40))})
-				local tween2 = TweenService:Create(beam, TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,10)})		
+				local tween2 = TweenService:Create(beam, TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,10)})
 				tween:Play()
 				tween:Destroy()
 				tween2:Play()
 				tween2:Destroy()
-				Debris:AddItem(beam, .2)						
+				Debris:AddItem(beam, .2)
 			end
 		end)()
 
@@ -740,7 +740,7 @@ local NatsuVFX = {
 		local RoarFire = EffectParticles.FireMagicParticle:Clone()
 		RoarFire.Shape = "Block"
 		RoarFire.Attachment.Fire.Parent = RoarFire
-		
+
 		RoarFire.Size = Vector3.new(10,10,100)
 		RoarFire.Transparency = 1
 		RoarFire.CFrame = Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-45)
@@ -795,13 +795,13 @@ local NatsuVFX = {
 			wait(0.025)
 		end
 	end;
-	
+
 	["PurgatoryDragonFire"] = function(Data)
-		
+
 		local Character = Data.Character
 
 		local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-		
+
 		--[[ Play Sound ]]--
 		-- SoundManager:AddSound("Fire1",{ Parent = Character:FindFirstChild("HumanoidRootPart"), Volume = 2}, "Client")
 
@@ -846,18 +846,18 @@ local NatsuVFX = {
 				beam.Color = Color3.fromRGB(255, 85, 0)
 				beam.Transparency = 0
 				beam.Parent = Visuals
-				beam.CFrame = CFrame.new(originalPos.Position + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), RootPosition.Position) 
+				beam.CFrame = CFrame.new(originalPos.Position + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), RootPosition.Position)
 				local tween = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = beam.Size + Vector3.new(0,0, math.random(1,2)), ["Position"] = RootPosition.Position})
-				local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,5)})		
+				local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,5)})
 				tween:Play()
 				tween:Destroy()
 				tween2:Play()
 				tween2:Destroy()
-				Debris:AddItem(beam, .15)						
+				Debris:AddItem(beam, .15)
 			end
 			wait(0.1)
 		end
-		
+
 		--[[ Smash Ground ]]--
 
 		--[[ Ball Effect ]]--
@@ -932,7 +932,7 @@ local NatsuVFX = {
 
 		--[[ Flying Debris Rock ]]--
 		for i = 1,2 do
-			for j = 1,5 do		
+			for j = 1,5 do
 				--[[ Raycast ]]--
 				local StartPosition = (Vector3.new(math.sin(360*i)*15, 0, math.cos(360*i)*15) + Character.HumanoidRootPart.Position)
 				local EndPosition = CFrame.new(StartPosition).UpVector * -10
@@ -986,7 +986,7 @@ local NatsuVFX = {
 
 		local tween = TweenService:Create(RingInnit, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = Vector3.new(120, 1, 120), ["Transparency"] = 1})
 		tween:Play()
-		tween:Destroy()	
+		tween:Destroy()
 
 		--[[ Expand Lines Out ]]--
 		coroutine.wrap(function()
@@ -1003,14 +1003,14 @@ local NatsuVFX = {
 				beam.Transparency = 0
 				beam.Parent = Visuals
 
-				beam.CFrame = CFrame.new(originalPos + Vector3.new(math.random(-1,1),1,math.random(-1,1)), originalPos) 
+				beam.CFrame = CFrame.new(originalPos + Vector3.new(math.random(-1,1),1,math.random(-1,1)), originalPos)
 				local tween = TweenService:Create(beam, TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = beam.Size + Vector3.new(0,0, math.random(2,5)), ["CFrame"] = beam.CFrame * CFrame.new(0,0,math.random(20,40))})
-				local tween2 = TweenService:Create(beam, TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,10)})		
+				local tween2 = TweenService:Create(beam, TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,10)})
 				tween:Play()
 				tween:Destroy()
 				tween2:Play()
 				tween2:Destroy()
-				Debris:AddItem(beam, .2)						
+				Debris:AddItem(beam, .2)
 			end
 		end)()
 
@@ -1048,7 +1048,7 @@ local NatsuVFX = {
 					Debris:AddItem(Block, 2)
 				end
 			end
-		end	
+		end
 
 		--[[ Delete Rocks ]]--
 		wait(1.5)
@@ -1058,21 +1058,21 @@ local NatsuVFX = {
 			end
 		end
 	end;
-	
+
 	["NatsuScreen"] = function(Data)
 		local Character = Data.Character or nil
 		local EnemyCharacter = Data.EnemyCharacter or nil
 		local ContactPoint = Data.ContactPoint
 
 		local Blur = Instance.new("BlurEffect")
-		Blur.Size = 24	
-		Blur.Parent = Lighting 
+		Blur.Size = 24
+		Blur.Parent = Lighting
 
 		local ColorCorrection = Instance.new("ColorCorrectionEffect")
 		ColorCorrection.Brightness = -0.5
 		ColorCorrection.Contrast = 1
 		ColorCorrection.Saturation = -1
-		ColorCorrection.Parent = Lighting 
+		ColorCorrection.Parent = Lighting
 
 		local tween = TweenService:Create(Blur, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = 0})
 		tween:Play()
@@ -1084,7 +1084,7 @@ local NatsuVFX = {
 
 		Debris:AddItem(Blur, 1)
 		Debris:AddItem(ColorCorrection, 1)
-	end;	
+	end;
 }
 
 

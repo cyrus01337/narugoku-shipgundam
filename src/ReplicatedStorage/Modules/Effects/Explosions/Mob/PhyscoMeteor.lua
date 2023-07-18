@@ -27,7 +27,7 @@ local CurrentCamera = workspace.CurrentCamera
 
 local CameraShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(shakeCFrame)
 	CurrentCamera.CFrame = CurrentCamera.CFrame * shakeCFrame
-end)	
+end)
 
 --|| Variables ||--
 local Effects = ReplicatedStorage.Assets.Effects.Meshes
@@ -48,7 +48,7 @@ return function(Data)
 		CameraShake:Start()
 		CameraShake:ShakeOnce(12, 8, 0, 1.5)
 	end
-	
+
 	for _ = 1,2 do
 		local Rock = Effects.Rock:Clone()
 		Rock.Position = Result.Position
@@ -64,22 +64,22 @@ return function(Data)
 		BodyVelocity.Velocity = Vector3.new(math.random(-80,80),math.random(80,120),math.random(-80,80))
 		BodyVelocity.MaxForce = Vector3.new(100000,100000,100000)
 		BodyVelocity.Parent = Rock
-		
+
 		local BlockTrail = Particles.BlockSmoke:Clone()
 		BlockTrail.Color = ColorSequence.new(Result.Instance.Color)
 		BlockTrail.Enabled = true
 		BlockTrail.Parent = Rock
-		
+
 		Debris:AddItem(Rock,3)
 		Debris:AddItem(BodyVelocity,.1)
 	end
-	
+
 	VfxHandler.RockExplosion({
-		Pos = Result.Position, 
-		Quantity = 15, 
+		Pos = Result.Position,
+		Quantity = 15,
 		Radius = 30,
-		Size = Vector3.new(4,4,4), 
-		Duration = 2, 
+		Size = Vector3.new(4,4,4),
+		Duration = 2,
 	})
 
 	LightningExplosion.new(Result.Position, 5, 10, ColorSequence.new(Color3.fromRGB(255, 82, 39)), ColorSequence.new(Color3.fromRGB(255, 85, 0)), nil)
@@ -155,11 +155,11 @@ return function(Data)
 	ColorChange:Play()
 	ColorChange:Destroy()
 
-	GlobalFunctions.TweenFunction({["Instance"] = Cylinder,["EasingStyle"] = Enum.EasingStyle.Quad,["EasingDirection"] = Enum.EasingDirection.Out,["Duration"] = .5,},{ ["Size"] = Vector3.new(500, 0, 0)})	
+	GlobalFunctions.TweenFunction({["Instance"] = Cylinder,["EasingStyle"] = Enum.EasingStyle.Quad,["EasingDirection"] = Enum.EasingDirection.Out,["Duration"] = .5,},{ ["Size"] = Vector3.new(500, 0, 0)})
 
 	local Number, Orbie = VfxHandler.Orbies({Parent = Result, Speed = .5, Size = Vector3.new(2, 2, 30), Cframe = CFrame.new(0,0,50), Amount = 12, Sphere = true, Type = "Yes"})
 
-	local Sound = -- SoundManager:AddSound("tsshh", {Volume = 5, Parent = Root}, "Client")
+	-- local Sound = SoundManager:AddSound("tsshh", {Volume = 5, Parent = Root}, "Client")
 	-- SoundManager:AddSound("Explosionbzz", {Volume = .7, Parent = Root}, "Client")
 
 	for _ = 1,2 do
@@ -185,7 +185,7 @@ return function(Data)
 		local Pillow = TweenService:Create(Shockwave, TweenInfo.new(.5 + math.random(), Enum.EasingStyle.Bounce, Enum.EasingDirection.Out, 0, false, 0), {Position = Shockwave.Position + Vector3.new(0, math.random(5,50),0), Transparency = 1})
 		Pillow:Play();
 		Pillow:Destroy()
-		
+
 		Debris:AddItem(Shockwave,1.15)
 	end
 
@@ -210,10 +210,10 @@ return function(Data)
 	end))
 
 	local ShockwaveTing = Effects.shockwave5:Clone()
-	ShockwaveTing.Position = Result.Position 
+	ShockwaveTing.Position = Result.Position
 	ShockwaveTing.Size = Vector3.new(50, 100, 50)
 
-	ShockwaveTing.Transparency = 0 
+	ShockwaveTing.Transparency = 0
 	ShockwaveTing.Material = "Neon"
 	ShockwaveTing.BrickColor = BrickColor.new("Institutional white");
 
@@ -239,7 +239,7 @@ return function(Data)
 		local Ring = Effects.ring:Clone()
 		Ring.Color = Color3.fromRGB(225, 115, 5)
 		Ring.Material = "Neon"
-		Ring.Transparency = 0 
+		Ring.Transparency = 0
 
 		Ring.Position = MeteorExplosion.Position
 		Ring.Rotation = Vector3.new(math.random(-360, 360) * Index,math.random(-360, 360) * Index, math.random(-360, 360) * Index)
@@ -251,5 +251,5 @@ return function(Data)
 
 		Debris:AddItem(Ring, .5)
 		wait(.1)
-	end	
+	end
 end

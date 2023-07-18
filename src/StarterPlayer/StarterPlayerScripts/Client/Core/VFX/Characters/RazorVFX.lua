@@ -72,7 +72,7 @@ function VelocityCalculation(End,Start,Gravity,Time)
 end
 
 function GetMousePos(X,Y,Z,Boolean)
-	local RayMag1 = Camera:ScreenPointToRay(X, Y) 
+	local RayMag1 = Camera:ScreenPointToRay(X, Y)
 	local NewRay = Ray.new(RayMag1.Origin, RayMag1.Direction * ((Z and Z) or 200))
 	local Target,Position,Surface = workspace:FindPartOnRayWithIgnoreList(NewRay, {Character,workspace.World.Visuals})
 	if Boolean then
@@ -101,7 +101,7 @@ local RazorVFX = {
 
 		-- SoundManager:AddSound("Teleport", {Parent = Root, Volume = 1}, "Client")
 		VfxHandler.AfterImage({Character = Character, Duration = 1, StartTransparency = .25,})
-		
+
 		local Part = Instance.new("Part")
 		Part.Anchored = true
 		Part.CFrame = Root.CFrame
@@ -109,13 +109,13 @@ local RazorVFX = {
 		Part.Orientation = Vector3.new(3.87, -4.36, -2.25)
 		Part.Parent = workspace.World.Visuals
 
-		Debris:AddItem(Part,2)	
-		
+		Debris:AddItem(Part,2)
+
 		local End = Root.CFrame
 		local PositionCalc1,PositionCalc2 = End.Position, End.upVector * -200
 
 		local RaycastResult = workspace:Raycast(PositionCalc1,PositionCalc2,raycastParams)
-		if RaycastResult and RaycastResult.Instance and (RaycastResult.Position - PositionCalc1).Magnitude < 30 then	
+		if RaycastResult and RaycastResult.Instance and (RaycastResult.Position - PositionCalc1).Magnitude < 30 then
 			local Dust = ReplicatedStorage.Assets.Effects.Particles.ParticleAttatchments["Dust"]:Clone()
 			Dust.P1.Color = ColorSequence.new(RaycastResult.Instance.Color)
 			Dust.Parent = Part
@@ -172,9 +172,9 @@ local RazorVFX = {
 
 		local Tween = TweenService:Create(Volleyball.PrimaryPart,TweenInfo.new(.5,Enum.EasingStyle.Elastic,Enum.EasingDirection.InOut,0,false,0),{Size = Vector3.new(1.545, 1.545, 1.545)})
 		Tween:Play()
-		Tween:Destroy()		
+		Tween:Destroy()
 
-		TaskScheduler:AddTask(.5,function() -- SoundManager:AddSound("GigCast", {Parent = Root, Volume = 2}, "Client")	end)
+		-- TaskScheduler:AddTask(.5,function() SoundManager:AddSound("GigCast", {Parent = Root, Volume = 2}, "Client")	end)
 
 		local Weld = Instance.new("Weld")
 		Weld.Part0 = Character["Right Arm"]
@@ -203,7 +203,7 @@ local RazorVFX = {
 		for _ = 1, 10 do
 			VfxHandler.UpwardOrbies({
 				Quantity = math.random(5,7);
-				Pos = Root.CFrame * CFrame.new(0,-5,0).Position, 
+				Pos = Root.CFrame * CFrame.new(0,-5,0).Position,
 				Properties = {
 					Material = Enum.Material.Neon;
 					Transparency = 0.5;
@@ -234,7 +234,7 @@ local RazorVFX = {
 				Color = Color3.fromRGB(255, 85, 85), TweenColor = Color3.fromRGB(136, 26, 26),
 				Transparency = 1,
 				Duration = 1,
-				Delay = .1,	
+				Delay = .1,
 				Type = "Trail"
 			})
 		end))
@@ -253,7 +253,7 @@ local RazorVFX = {
 		local BodyVelocity = Instance.new("BodyVelocity")
 		BodyVelocity.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
 		BodyVelocity.Velocity = CFrame.new(Volleyball.PrimaryPart.Position,Position).lookVector * 200 * 1
-		BodyVelocity.Parent = Volleyball.PrimaryPart	
+		BodyVelocity.Parent = Volleyball.PrimaryPart
 
 		local Vel = Data.Velocity
 		local LifeT = Data.Lifetime
@@ -262,16 +262,16 @@ local RazorVFX = {
 		local Points = RaycastService:GetSquarePoints(CFrame.new(Volleyball.PrimaryPart.Position), Volleyball.PrimaryPart.Size.X, Volleyball.PrimaryPart.Size.X)
 
 		RaycastService:CastProjectileHitbox({
-			Points = Points, 
-			Direction = Direction, 
-			Velocity = Vel, 
-			Lifetime = LifeT, 
-			Iterations = 50, 
+			Points = Points,
+			Direction = Direction,
+			Velocity = Vel,
+			Lifetime = LifeT,
+			Iterations = 50,
 			Visualize = false,
 			Function = function(RaycastResult)
 				Explosions.ExplodingThrow({Character = Character, RaycastResult = RaycastResult, Volleyball = Volleyball.PrimaryPart, BodyVelocity = BodyVelocity, Distance = Data.Distance})
 			end,
-			Ignore = {Character, workspace.World.Visuals} 
+			Ignore = {Character, workspace.World.Visuals}
 		})
 	end,
 
@@ -292,7 +292,7 @@ local RazorVFX = {
 		for _ = 1, 10 do
 			VfxHandler.UpwardOrbies({
 				Quantity = math.random(5,7);
-				Pos = Root.CFrame * CFrame.new(0,-5,0).p, 
+				Pos = Root.CFrame * CFrame.new(0,-5,0).p,
 				Properties = {
 					Material = Enum.Material.Neon;
 					Transparency = 0.5;
@@ -323,7 +323,7 @@ local RazorVFX = {
 				Color = Color3.fromRGB(255, 255, 255), TweenColor = Color3.fromRGB(136, 136, 136),
 				Transparency = 1,
 				Duration = 1,
-				Delay = .1,	
+				Delay = .1,
 				Type = "Trail"
 			})
 		end))
@@ -342,7 +342,7 @@ local RazorVFX = {
 		local BodyVelocity = Instance.new("BodyVelocity")
 		BodyVelocity.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
 		BodyVelocity.Velocity = CFrame.new(Volleyball.PrimaryPart.Position,Position).lookVector * 200 * 1
-		BodyVelocity.Parent = Volleyball.PrimaryPart	
+		BodyVelocity.Parent = Volleyball.PrimaryPart
 
 		local Vel = Data.Velocity
 		local LifeT = Data.Lifetime
@@ -351,16 +351,16 @@ local RazorVFX = {
 		local Points = RaycastService:GetSquarePoints(CFrame.new(Volleyball.PrimaryPart.Position), Volleyball.PrimaryPart.Size.X, Volleyball.PrimaryPart.Size.X)
 
 		RaycastService:CastProjectileHitbox({
-			Points = Points, 
-			Direction = Direction, 
-			Velocity = Vel, 
-			Lifetime = LifeT, 
-			Iterations = 50, 
+			Points = Points,
+			Direction = Direction,
+			Velocity = Vel,
+			Lifetime = LifeT,
+			Iterations = 50,
 			Visualize = false,
 			Function = function(RaycastResult)
 				Explosions.VolleyKick({Character = Character, RaycastResult = RaycastResult, Volleyball = Volleyball.PrimaryPart, BodyVelocity = BodyVelocity, Distance = Data.Distance})
 			end,
-			Ignore = {Character, workspace.World.Visuals} 
+			Ignore = {Character, workspace.World.Visuals}
 		})
 	end,
 
@@ -383,13 +383,13 @@ local RazorVFX = {
 		local Index,Part = VfxHandler.ImpactLines({
 			Character = Volleyball,
 			Amount = 25,
-			Delay = 0, 
+			Delay = 0,
 			Type = "volleyblallz",
 		})
 
 		local cs = ReplicatedStorage.Assets.Effects.Meshes.Ring2:Clone()
 		cs.Size = Vector3.new(5, 2, 5)
-		local c1,c2 = Root.CFrame*CFrame.new(0,0,-40)*CFrame.Angles(math.pi/2,0,0) ,Root.CFrame*CFrame.new(0,0,10)*CFrame.Angles(math.pi/2,0,0) 
+		local c1,c2 = Root.CFrame*CFrame.new(0,0,-40)*CFrame.Angles(math.pi/2,0,0) ,Root.CFrame*CFrame.new(0,0,10)*CFrame.Angles(math.pi/2,0,0)
 		cs.CFrame = c1
 		cs.Material = Enum.Material.Neon
 		cs.Parent = workspace.World.Visuals
@@ -426,7 +426,7 @@ local RazorVFX = {
 		shockwaveOG.Transparency = 0
 		shockwaveOG.Material = "Neon"
 		shockwaveOG.BrickColor = BrickColor.new("Institutional white")
-		shockwaveOG.Parent = workspace.World.Visuals	
+		shockwaveOG.Parent = workspace.World.Visuals
 
 		GlobalFunctions.TweenFunction({
 			["Instance"] = shockwaveOG,
@@ -438,7 +438,7 @@ local RazorVFX = {
 			["Size"] = Vector3.new(0,0,0),
 		})
 
-		Debris:AddItem(shockwaveOG,.3)		
+		Debris:AddItem(shockwaveOG,.3)
 
 		for _ = 1,3 do
 			local slash = ReplicatedStorage.Assets.Effects.Meshes.ThreeDSlashEffect:Clone()
@@ -466,7 +466,7 @@ local RazorVFX = {
 		local BodyVelocity = Instance.new("BodyVelocity")
 		BodyVelocity.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
 		BodyVelocity.Velocity = CFrame.new(Volleyball.PrimaryPart.Position,Position).lookVector * 200 * 1
-		BodyVelocity.Parent = Volleyball.PrimaryPart		
+		BodyVelocity.Parent = Volleyball.PrimaryPart
 
 		local Vel = Data.Velocity
 		local LifeT = Data.Lifetime
@@ -475,16 +475,16 @@ local RazorVFX = {
 		local Points = RaycastService:GetSquarePoints(CFrame.new(Volleyball.PrimaryPart.Position), Volleyball.PrimaryPart.Size.X, Volleyball.PrimaryPart.Size.X)
 
 		RaycastService:CastProjectileHitbox({
-			Points = Points, 
-			Direction = Direction, 
-			Velocity = Vel, 
-			Lifetime = LifeT, 
-			Iterations = 50, 
+			Points = Points,
+			Direction = Direction,
+			Velocity = Vel,
+			Lifetime = LifeT,
+			Iterations = 50,
 			Visualize = false,
 			Function = function(RaycastResult)
 				Explosions.HardThrow({Character = Character, RaycastResult = RaycastResult, Volleyball = Volleyball.PrimaryPart, BodyVelocity = BodyVelocity, Distance = Data.Distance})
 			end,
-			Ignore = {Character, workspace.World.Visuals} 
+			Ignore = {Character, workspace.World.Visuals}
 		})
 	end,
 

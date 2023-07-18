@@ -1,98 +1,93 @@
---|| Services ||--
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerStorage = game:GetService("ServerStorage")
-
 local ServerScriptService = game:GetService("ServerScriptService")
+-- local ServerStorage = game:GetService("ServerStorage")
 
---|| Directories ||--
-local Modules = ReplicatedStorage.Modules
-local Metadata = Modules.Metadata
-local Shared = Modules.Shared
-local CharacterData = Metadata.CharacterData
+local CharacterData = ReplicatedStorage.Modules.Metadata.CharacterData
+local CharacterInfo = require(CharacterData.CharacterInfo)
+local ProfileService = require(ServerScriptService.Server.ProfileService)
+-- local SoundManager = require(Shared.SoundManager)
+local ToSwapCharacter = require(script.ToSwapCharacter)
 
 local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 
 
---|| Modules ||--
-local CharacterInfo = require(CharacterData.CharacterInfo)
-local SoundManager = require(Shared.SoundManager)
+return function(player: Player, request: any, character: string, Datastore, Type)-- Player:Instance, Character:String, Data:Table
+	local Data = ProfileService:GetPlayerProfile(player)
 
-local ToSwapCharacter = require(script.ToSwapCharacter)
-
-local ProfileService = require(ServerScriptService.Server.ProfileService)
-
-return function(Player, Request, Character, Datastore, Type)-- Player:Instance, Character:String, Data:Table
-	local Data = ProfileService:GetPlayerProfile(Player)
-		
-	if Type == "Select" and table.find(Data["Unlocked"],Character) then
+	if Type == "Select" and table.find(Data["Unlocked"], character) then
 		local WarningText = " Alucard is banned."
 
-		if Data.Character == Character then return end
-		
-		if Character == "Alucard" then
-			GUIRemote:FireClient(Player,"Notification",{
-				Function = "Initiate",
-				Player = Player,
-				Color = Color3.new(0.407843, 0.258824, 1),
-				Text = ("<font color= 'rgb(%s, %s, %s)'>&lt; "..WarningText.."&gt;</font> lol.")
-			})	
-			
-			-- SoundManager:AddSound("Baka!",{
-				Volume = 1,
-				TimePosition = .1,
-				Parent = Player.Character:FindFirstChild("HumanoidRootPart") or workspace.World.Sounds
+		if Data.Character == character then return end
 
-			}, "Server", {Player = Player, Distance = 5})
+		if character == "Alucard" then
+			GUIRemote:FireClient(player, "Notification", {
+				Function = "Initiate",
+				Player = player,
+				Color = Color3.new(0.407843, 0.258824, 1),
+				Text = ("<font color= 'rgb(%s, %s, %s)'>&lt; " .. WarningText .. "&gt;</font> lol.")
+			})
+
+			-- SoundManager:AddSound("Baka!", {
+			-- 	Volume = 1,
+			-- 	TimePosition = .1,
+			-- 	Parent = Player.Character:FindFirstChild("HumanoidRootPart") or workspace.World.Sounds
+
+			-- }, "Server", {Player = Player, Distance = 5})
+
 			return
 		end
 
-		Data.Character = CharacterInfo[Character] and Character or Data.Character
-		ProfileService:Replicate(Player)
-		
-		Player:ClearCharacterAppearance()
-		local _ = Player.Character:FindFirstChild("Hats") and Player.Character.Hats:Destroy()
-		ToSwapCharacter({ToSwap = Data.Character, Player = Player})	
+		local playerChar = player.Character :: Model
+		Data.Character = if CharacterInfo[character] then character else Data.Character
+
+		ProfileService:Replicate(player)
+		player:ClearCharacterAppearance()
+
+		local hatsFound = playerChar:FindFirstChild("Hats")
+
+		if hatsFound then
+			playerChar.Hats:Destroy()
+		end
+
+		ToSwapCharacter({ToSwap = Data.Character, Player = player})
+
 		return
 	end
-	
-	if Data and not table.find(Data["Unlocked"],Character) and Data.Cash >= CharacterInfo[Character]["Cost"] and Type == "Purchase" then
-		Data["Cash"] = Data["Cash"] - CharacterInfo[Character].Cost
-		local WarningText = " Sugoi!, you unlocked "..Character
 
-		table.insert(Data.Unlocked,Character)
-		ProfileService:Replicate(Player)
-		
-		GUIRemote:FireClient(Player,"Notification",{
+	if Data and not table.find(Data["Unlocked"], character) and Data.Cash >= CharacterInfo[character]["Cost"] and Type == "Purchase" then
+		Data["Cash"] = Data["Cash"] - CharacterInfo[character].Cost
+		local WarningText = " Sugoi!, you unlocked "..character
+
+		table.insert(Data.Unlocked,character)
+		ProfileService:Replicate(player)
+
+		GUIRemote:FireClient(player,"Notification",{
 			Function = "Initiate",
-			Player = Player,
+			Player = player,
 			Color = Color3.new(0.490196, 1, 0.172549),
 			Text = ("<font color= 'rgb(%s, %s, %s)'>&lt; "..WarningText.."&gt;</font> as a character!")
-		})	
+		})
 
-		Data.Character = CharacterInfo[Character] and Character or Data.Character
+		Data.Character = CharacterInfo[character] and character or Data.Character
 		-- SoundManager:AddSound("Sugoi!",{
-			Volume = 1,
-			TimePosition = .1,
-			Parent = Player.Character:FindFirstChild("HumanoidRootPart") or workspace.World.Sounds
-
-		}, "Server", {Player = Player, Distance = 5})
-		
-	elseif Data and not table.find(Data["Unlocked"],Character) and Data.Cash <= CharacterInfo[Character]["Cost"] then
+		-- 	Volume = 1,
+		-- 	TimePosition = .1,
+		-- 	Parent = Player.Character:FindFirstChild("HumanoidRootPart") or workspace.World.Sounds
+		-- }, "Server", {Player = Player, Distance = 5})
+	elseif Data and not table.find(Data["Unlocked"], character) and Data.Cash <= CharacterInfo[character]["Cost"] then
 		local WarningText = " insufficient funds"
-		
-		-- SoundManager:AddSound("Baka!",{
-			Volume = 1,
-			TimePosition = .1,
-			Parent = Player.Character:FindFirstChild("HumanoidRootPart") or workspace.World.Sounds
 
-		}, "Server", {Player = Player, Distance = 5})
-		
-		
-		GUIRemote:FireClient(Player,"Notification",{
+		-- SoundManager:AddSound("Baka!",{
+		-- 	Volume = 1,
+		-- 	TimePosition = .1,
+		-- 	Parent = Player.Character:FindFirstChild("HumanoidRootPart") or workspace.World.Sounds
+		-- }, "Server", {Player = Player, Distance = 5})
+
+		GUIRemote:FireClient(player,"Notification",{
 			Function = "Initiate",
-			Player = Player,
+			Player = player,
 			Color = Color3.new(1,0,0),
 			Text = ("<font color= 'rgb(%s, %s, %s)'>&lt; "..WarningText.."&gt;</font> need more before unlocking this character.")
-		})		
+		})
 	end
 end

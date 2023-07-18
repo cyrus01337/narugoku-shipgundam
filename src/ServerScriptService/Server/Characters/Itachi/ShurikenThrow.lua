@@ -81,11 +81,11 @@ function module.Activate(Character,Position,Spread,Target,ExtraData)
 				elseif Hit and Hit.Parent ~= Character and (Hit.Parent:findFirstChild("Humanoid") or Hit.Parent.Parent:findFirstChild("Humanoid")) then
 					local Victim = Hit.Parent:findFirstChild("Humanoid") or Hit.Parent.Parent:findFirstChild("Humanoid")
 					Shuriken.CFrame = CFrame.new(Position, Position + Shuriken.CFrame.lookVector)
-					delay(.1,function()	-- SoundManager:AddSound("ShurikenHit",{Parent = Shuriken, Volume = 5, Pitch = math.random(14,15) / 10}, "Client") end)
+					-- delay(.1,function()	SoundManager:AddSound("ShurikenHit",{Parent = Shuriken, Volume = 5, Pitch = math.random(14,15) / 10}, "Client") end)
 					---- SoundManager:AddSound("ClinkSound",{Parent = Shuriken, Volume = 5, Pitch = math.random(14,15) / 10}, "Client")
 					Shuriken.Trail:Destroy()
 
-					local VictimCharacter = Victim.Parent					
+					local VictimCharacter = Victim.Parent
 					DamageManager.DeductDamage(Character,VictimCharacter,ExtraData.KeyData.SerializedKey,ExtraData.CharacterName,{Type = "Combat", KeysLogged = math.random(1,3)})
 					NetworkStream.FireClientDistance(Character,"ClientRemote",80,{Character = VictimCharacter, Module = "SasukeVFX", Function = "ShurikenHit"})
 

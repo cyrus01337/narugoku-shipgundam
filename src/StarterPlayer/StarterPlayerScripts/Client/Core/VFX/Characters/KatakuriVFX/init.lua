@@ -140,8 +140,8 @@ local function ToPart(Cframe, Part2CFrame, Color, ToTweenSize, Size, Duration, T
 		TweenInfoData = TweenInfo.new(Duration, TweenDetail, Enum.EasingDirection.Out, 0, false, 0)
 	end;
 	local TweenData = {
-		Size = ToTweenSize, 
-		CFrame = Cframe, 
+		Size = ToTweenSize,
+		CFrame = Cframe,
 		Transparency = 1
 	}
 	if ToTweenColor then
@@ -177,7 +177,7 @@ local IchigoVFX = {
 		end
 
 		-- SoundManager:AddSound("Dodge", {Parent = Character.HumanoidRootPart}, "Client")
-	end;	
+	end;
 
 	["MoguraFlow"] = function(PathData)
 		local Character = PathData.Character or nil
@@ -227,17 +227,17 @@ local IchigoVFX = {
 			else
 				Dust.Attachment.dust1.Enabled = false;
 			end
-			ToPart(End * CFrame.new(2, math.random(-10, 10) / 10 + 2, 0), End, BrickColorIndex, Vector3.new(Rot.X, 0, Rot.z), Rot / 4, math.random(15, 35) / 100, nil, Enum.EasingStyle.Back, Color3Index, Enum.Material.Neon);	
+			ToPart(End * CFrame.new(2, math.random(-10, 10) / 10 + 2, 0), End, BrickColorIndex, Vector3.new(Rot.X, 0, Rot.z), Rot / 4, math.random(15, 35) / 100, nil, Enum.EasingStyle.Back, Color3Index, Enum.Material.Neon);
 
 			if os.clock() - StartTime >= .75 then break end
 		end
 		Dust.Attachment.dust1.Enabled = false
 		Debris:AddItem(Dust,1)
-	end;	
+	end;
 
 	["MochiRoll"] = function(PathData)
 		local Character = PathData.Character or nil
-		local ContactPoint = PathData.ContactPoint	
+		local ContactPoint = PathData.ContactPoint
 
 		VfxHandler.ImpactLines({Character = Character, Amount = 20})
 		-- SoundManager:AddSound("Dodge", {Parent = Character.HumanoidRootPart, Volume = 3}, "Client")
@@ -249,7 +249,7 @@ local IchigoVFX = {
 		for _, v in ipairs(Character:GetDescendants()) do
 			if v:IsA("BasePart") or v:IsA("MeshPart") then
 				if v.Parent ~= "Katana" and v.Parent ~= "Sheath" and v.Name ~= "HumanoidRootPart" and v.Name ~= "FakeHead" then
-					v.Transparency = 1	
+					v.Transparency = 1
 				end
 			end
 		end		--
@@ -307,7 +307,8 @@ local IchigoVFX = {
 
 		--// mochi on gorund
 		coroutine.wrap(function()
-			local Sound = -- SoundManager:AddSound("CartoonRun", {Parent = Character.HumanoidRootPart, Volume = 2}, "Client")
+			-- local Sound = SoundManager:AddSound("CartoonRun", {Parent = Character.HumanoidRootPart, Volume = 2}, "Client")
+
 			while BodyVelocity.Parent do
 				if not BodyVelocity.Parent then break end
 				MochiGround(Character, 2, Character.HumanoidRootPart.Position)
@@ -316,7 +317,8 @@ local IchigoVFX = {
 				end
 				wait(.35)
 			end
-			Sound:Destroy()
+
+			-- Sound:Destroy()
 		end)()
 
 		local i = 0
@@ -343,7 +345,7 @@ local IchigoVFX = {
 
 				local partHit, pos, normVector = ray.Instance or nil, ray.Position or nil, ray.Normal or nil
 				if partHit then
-					Trail.Position = pos 
+					Trail.Position = pos
 					if not Trail.Trail.Enabled then
 						Trail.Trail.Enabled = true
 					end
@@ -381,7 +383,7 @@ local IchigoVFX = {
 		BodyGyro:Destroy()
 		BodyVelocity:Destroy()
 
-		--// Set visible 
+		--// Set visible
 		for i, v in pairs(Character:GetDescendants()) do
 			if v:IsA("BasePart") or v:IsA("MeshPart") then
 				if v.Parent ~= "Katana" and v.Parent ~= "Sheath" and v.Name ~= "HumanoidRootPart" and v.Name ~= "Handle" and v.Name ~= "FakeHead" then
@@ -393,7 +395,7 @@ local IchigoVFX = {
 
 	["FlowingMochi"] = function(PathData)
 		local Character = PathData.Character or nil
-		local ContactPoint = PathData.ContactPoint				
+		local ContactPoint = PathData.ContactPoint
 
 		--// play dragon roar
 		-- SoundManager:AddSound("OnDemonStep",{Parent = Character.HumanoidRootPart, Volume = 2}, "Client")
@@ -501,7 +503,7 @@ local IchigoVFX = {
 				wait()
 			end
 
-			--// Lightning 
+			--// Lightning
 			local StartPosition = (Dragon.Position )
 			local EndPosition = CFrame.new(StartPosition).UpVector * -10
 
@@ -549,7 +551,7 @@ local IchigoVFX = {
 					RocksLength = 2 -- How long the rocks stay for
 				})
 			end
-		end	
+		end
 
 		--[[ Setpath Properties ]]--
 		local StartPosition = Character.HumanoidRootPart.Position
@@ -566,7 +568,7 @@ local IchigoVFX = {
 
 		local TrailPosition = nil;
 		local EndTrail = false;
-		
+
 		--// mochi on gorund
 		coroutine.wrap(function()
 			while not EndTrail do
@@ -576,7 +578,7 @@ local IchigoVFX = {
 				wait()
 			end
 		end)()
-		
+
 		--[[ Lerp to Path ]]--
 		local Trail;
 		local Speed = 2;

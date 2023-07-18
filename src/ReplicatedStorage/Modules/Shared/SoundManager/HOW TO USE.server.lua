@@ -9,24 +9,24 @@ Note: to be able to use the music/or table function make sure you add a "Music" 
 
 Client Side Example:
 
--- SoundManager:AddSound("SoundName",{
+SoundManager:AddSound("SoundName",{
 	-- any properties you would like to adjust will be dealt wit here;
-	
+
 	Volume = 1,
 	Looped = false,
 	Parent = Character:FindFirstChild("HumanoidRootPart") or workspace
-	
+
 }, "Client")
 
 
 or
--- SoundManager:AddSound("SoundName",{Volume = 1, Looped = false, Parent = Character:FindFirstChild("HumanoidRootPart")}, "Client")
+SoundManager:AddSound("SoundName",{Volume = 1, Looped = false, Parent = Character:FindFirstChild("HumanoidRootPart")}, "Client")
 
 Server Side Example: (Only works on the server)
 
--- SoundManager:AddSound("SoundName",{
+SoundManager:AddSound("SoundName",{
 	-- any properties you would like to adjust will be dealt wit here;
-	
+
 	Volume = 1,
 	TimePosition = .5,
 	Parent = Character:FindFirstChild("HumanoidRootPart") or workspace
@@ -36,12 +36,12 @@ Server Side Example: (Only works on the server)
 
 Table Side Example: (Could be used for a music system)
 
--- SoundManager:AddSound({"5153611141", "303967360", "1214579613", "1214579613"} -- insert sound IDS, {Volume = .28, Parent = PlayerGui)}, "Table")
+SoundManager:AddSound({"5153611141", "303967360", "1214579613", "1214579613"} -- insert sound IDS, {Volume = .28, Parent = PlayerGui)}, "Table")
 
 
-Create Instanced Side : Example 
+Create Instanced Side : Example
 
--- SoundManager:AddSound("1214579613" --insert Sound Id, {
+SoundManager:AddSound("1214579613" --insert Sound Id, {
 
 	Name = "Music",
 	Volume = .75,

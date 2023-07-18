@@ -60,7 +60,7 @@ local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 local MouseRemote = ReplicatedStorage.Remotes.GetMouse
 
 local function RaycastTarget(Radius,Character)
-	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))	
+	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
 
 	local Root = Character:FindFirstChild("HumanoidRootPart")
 
@@ -69,13 +69,13 @@ local function RaycastTarget(Radius,Character)
 
 	if Target and Target:FindFirstAncestorWhichIsA("Model"):FindFirstChild("Humanoid") then
 		local Victim = Target:FindFirstAncestorWhichIsA("Model")
-		if Victim ~= Character then 
+		if Victim ~= Character then
 			return Victim,Position or nil
 		end
 	end
 end
 
-local function GetNearestFromMouse(Character, Range)	
+local function GetNearestFromMouse(Character, Range)
 	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
 
 	for _, Entity in ipairs(workspace.World.Live:GetChildren()) do
@@ -83,7 +83,7 @@ local function GetNearestFromMouse(Character, Range)
 			local EntityPrimary = Entity:FindFirstChild("HumanoidRootPart")
 			local Distance = (MouseHit.Position - EntityPrimary.Position).Magnitude
 
-			if Distance <= Range then 
+			if Distance <= Range then
 				return Entity or nil
 			end
 		end
@@ -104,18 +104,18 @@ local Sasuke = {
 		local Root,Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
 		AnimationRemote:FireClient(Player,"Fireball Jutsu","Play")
-		
-		local Sound = -- SoundManager:AddSound("Handsigns",{Parent = Root},"Client")
+
+		local Sound = SoundManager:AddSound("Handsigns",{Parent = Root},"Client")
 		StateManager:ChangeState(Character,"Attacking",Sound.TimeLength + .35)
-		
+
 		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName) 
+		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
 
 		TaskScheduler:AddTask(Sound.TimeLength,function()
 			if StateManager:Peek(Character,"Stunned") then return end
 
 			CameraRemote:FireClient(Player,"TweenObject",CameraData)
-			local Sound = -- SoundManager:AddSound("Release",{Parent = Root},"Client")
+			-- local Sound = SoundManager:AddSound("Release",{Parent = Root},"Client")
 
 			local Velocity = 200
 			local Lifetime = 10
@@ -135,7 +135,7 @@ local Sasuke = {
 
 			local Size = Assets.Models.Misc.Volleyballs.volleyball2.Size
 
-			local Points = RaycastManager:GetSquarePoints(StartPoint, Size.X * 2, Size.X * 2)		
+			local Points = RaycastManager:GetSquarePoints(StartPoint, Size.X * 2, Size.X * 2)
 
 			local MouseHit = MouseRemote:InvokeClient(Player)
 			local Direction = (MouseHit.Position - StartPoint.Position).Unit
@@ -168,17 +168,17 @@ local Sasuke = {
 	["SecondAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
 		local Character = Player.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
+
 		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName) 
-		
+		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
+
 		local ChidoriValue = GlobalFunctions.NewInstance("NumberValue",{Value = 0,Parent = Character},4)
 		StateManager:ChangeState(Character,"Attacking",4)
 
 		-- SoundManager:AddSound("ChidoriSasuke",{Parent = Root, Volume = 5}, "Client")
 
 		AnimationRemote:FireClient(Player,"ChidoriStart","Play")
-		---- SoundManager:AddSound("Chidori",{Parent = Root, Volume = .8}, "Client")
+		-- SoundManager:AddSound("Chidori",{Parent = Root, Volume = .8}, "Client")
 
 		ClientRemote:FireAllClients{Character = Character, Module = "SasukeVFX", Function = "Chidori"}
 		CameraRemote:FireClient(Player, "CreateBlur", {Size = 25; Length = .5})
@@ -186,7 +186,7 @@ local Sasuke = {
 		Humanoid.WalkSpeed = 30
 
 		StateManager:ChangeState(Character,"IFrame",.5, {IFrameType = ""})
- 
+
 		wait(.5)
 		Root.Anchored = false
 		Humanoid.WalkSpeed = 30
@@ -260,14 +260,14 @@ local Sasuke = {
 		while os.clock() - StartTime <= 3.35 and not Character:FindFirstChild("BreakChidoriClient") do
 			if Humanoid.MoveDirection == Vector3.new() then
 				ChidoriValue.Value = 1
-				SpeedManager.changeSpeed(Character,14,.35,6e6) --function(Character,Speed,Duration,Priority)				
+				SpeedManager.changeSpeed(Character,14,.35,6e6) --function(Character,Speed,Duration,Priority)
 			else
 				ChidoriValue.Value = 2
 				SpeedManager.changeSpeed(Character,32,.35,6e6) --function(Character,Speed,Duration,Priority)
 			end
-			if Character:FindFirstChild("BreakChidoriClient") then 
+			if Character:FindFirstChild("BreakChidoriClient") then
 				break
-			end	
+			end
 			RunService.Heartbeat:Wait()
 		end
 		Humanoid.WalkSpeed = 14
@@ -278,7 +278,7 @@ local Sasuke = {
 		delay(.1,function() AnimationRemote:FireClient(Player,"ChidoriStart","Stop") end)
 
 		ValueConnection:Disconnect()
-		ValueConnection = nil		
+		ValueConnection = nil
 	end,
 
 	["ThirdAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData,Modules)
@@ -294,7 +294,7 @@ local Sasuke = {
 			if StateManager:Peek(Victim,"Blocking") then return end
 
 			local VictimPlayer = Players:GetPlayerFromCharacter(Victim) or warn"no valid player"
-			local VHum,VRoot = Victim:FindFirstChild("Humanoid"),Victim:FindFirstChild("HumanoidRootPart")					
+			local VHum,VRoot = Victim:FindFirstChild("Humanoid"),Victim:FindFirstChild("HumanoidRootPart")
 
 			local Data = ProfileService:GetPlayerProfile(VictimPlayer)
 
@@ -302,18 +302,18 @@ local Sasuke = {
 			local CopiedData = AbilityData.ReturnData(Player,SkillData.Skill,Data.Character)
 
 			SasukeData.CopiedSkillData = CopiedData
-			
+
 			if SasukeData.CopiedSkillData and SasukeData.CopiedSkillData.Copyable and SasukeData.CopiedSkillData.Copyable == true then
 				SasukeData.Cooldown = 3
 
 				CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-				DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)						
-				
+				DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
+
 				CameraRemote:FireClient(Player,"Sharingan")
 				CameraRemote:FireClient(VictimPlayer,"Sharingan")
 
-				local CharacterIndex = VictimPlayer and Data.Character or Victim.Name	
-				
+				local CharacterIndex = VictimPlayer and Data.Character or Victim.Name
+
 				SasukeData.CopiedSkillData = CopiedData
 				SasukeData.StoredSkill = SkillData.Skill
 				SasukeData.SharinganContact = Data.Character
@@ -321,7 +321,7 @@ local Sasuke = {
 				-- SoundManager:AddSound("SharinganSasuke",{Parent = Root, Volume = 3.5, Looped = true}, "Client", {Duration = 1})
 				-- SoundManager:AddSound("SharinganActivate",{Parent = Root, Volume = .5}, "Client")
 			end
-		else			
+		else
 			local CacheModule = Modules[SasukeData.SharinganContact][SasukeData.StoredSkill]
 
 			local SkillData = AbilityData.ReturnData(Player,SasukeData.StoredSkill,SasukeData.SharinganContact)
@@ -330,8 +330,8 @@ local Sasuke = {
 			SasukeData.Cooldown = SasukeData.CopiedSkillData.Cooldown
 
 			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)			
-			
+			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
+
 			CacheModule(Player,SasukeData.SharinganContact,{
 				SerializedKey = SasukeData.StoredSkill,
 				KeyName = SasukeData.StoredSkill == "FirstAbility" and "Z" or SasukeData.StoredSkill == "SecondAbility" and "X" or SasukeData.StoredSkill == "ThirdAbility" and "C" or "V"
@@ -346,48 +346,48 @@ local Sasuke = {
 	["FourthAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
 		local Character = Player.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
+
 		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
 		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-				
+
 		if not Humanoid:GetState() == Enum.HumanoidStateType.Landed and Humanoid:GetState() ~= Enum.HumanoidStateType.Freefall and Humanoid:GetState() ~= Enum.HumanoidStateType.Jumping then return end
-		
+
 		AnimationRemote:FireClient(Player,"ShurikenThrow","Play")
 		StateManager:ChangeState(Character,"Guardbroken",1)
-		
+
 		TaskScheduler:AddTask(.2,function()
 			Humanoid.Jump = true
 		end)
-		
-		wait(.5)		
-		CameraRemote:FireClient(Player, "CameraShake", {FirstText = 2, SecondText = 6})			
+
+		wait(.5)
+		CameraRemote:FireClient(Player, "CameraShake", {FirstText = 2, SecondText = 6})
 		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Module = "SasukeVFX", Function = "Shuriken"})
 
 		local SasukeData = AbilityData.ReturnData(Player,"FourthAbility","Sasuke")
 		SasukeData.Falling = Humanoid:GetState() == Enum.HumanoidStateType.Freefall and true or false
-		
-		local _ = SasukeData.Falling and GlobalFunctions.NewInstance("BodyVelocity",{Parent = Root, MaxForce = Vector3.new(100000000, 100000000, 100000000), Velocity = Vector3.new(0,20,0)},.15)		
-		
+
+		local _ = SasukeData.Falling and GlobalFunctions.NewInstance("BodyVelocity",{Parent = Root, MaxForce = Vector3.new(100000000, 100000000, 100000000), Velocity = Vector3.new(0,20,0)},.15)
+
 		SpeedManager.changeSpeed(Character,4,1.5,3) --function(Character,Speed,Duration,Priority)
-		
+
 		coroutine.wrap(function()
 			for Index = 1,3 do
 				wait(.05)
-				local Sound = -- SoundManager:AddSound("ShurikenThrow",{Parent = Root, Pitch = math.random(14,15) / 10}, "Client")
-				Sound.Pitch = Index >= 2 and math.random(14,15) / 10 or Sound.Pitch
+				-- local Sound = SoundManager:AddSound("ShurikenThrow",{Parent = Root, Pitch = math.random(14,15) / 10}, "Client")
+				-- Sound.Pitch = Index >= 2 and math.random(14,15) / 10 or Sound.Pitch
 			end
 		end)()
-				
+
 		for Index = 1,3 do
 			if Index >= 2 then
 				SasukeData.Spread = 2.6
 			end
 			if ExtraData.Victim == nil then ExtraData.Victim = nil end
 			if ExtraData.Victim then SasukeData.Spread = 2.6 end
-			
+
 			ShurikenThrow.Activate(Character,ExtraData.MouseHit,SasukeData.Spread,ExtraData.Victim,{KeyData = KeyData, CharacterName = CharacterName})
 		end
-	end	
+	end
 }
 
 return Sasuke

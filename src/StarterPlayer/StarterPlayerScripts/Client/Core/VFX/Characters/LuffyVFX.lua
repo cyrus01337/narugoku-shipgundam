@@ -75,7 +75,7 @@ local LuffyVFX = {
 		local Victim = Data.Victim
 		local VRoot = Victim:FindFirstChild("HumanoidRootPart")
 
-		VfxHandler.Orbies({Parent = VRoot, Size = Vector3.new(.4, .4, 5.79), Color = Color3.fromRGB(255, 255, 255), Speed = .2, Cframe = CFrame.new(0,0,0), Amount = 1, Sphere = true})		
+		VfxHandler.Orbies({Parent = VRoot, Size = Vector3.new(.4, .4, 5.79), Color = Color3.fromRGB(255, 255, 255), Speed = .2, Cframe = CFrame.new(0,0,0), Amount = 1, Sphere = true})
 		VfxHandler.Orbies({Parent = VRoot, Size = Vector3.new(.565, .565, .565), Color = Color3.fromRGB(255, 255, 255), Speed = .2, Cframe = CFrame.new(0,0,3), Amount = 15, Circle = true})
 	end;
 
@@ -83,7 +83,7 @@ local LuffyVFX = {
 		local Character = PathData.Character
 		local Root = Character:FindFirstChild("HumanoidRootPart")
 
-		local Sound = -- SoundManager:AddSound("JetGatling",{Parent = Root, Looped = true},"Client",{Duration = 2})
+		-- local Sound = SoundManager:AddSound("JetGatling",{Parent = Root, Looped = true},"Client",{Duration = 2})
 
 		--[[ Set Arms Invisible ]]--
 		local RightArm = Character["Right Arm"]
@@ -140,7 +140,7 @@ local LuffyVFX = {
 				--[[ Ring Behind Player ]]--
 				local cs = ReplicatedStorage.Assets.Effects.Meshes.Ring2:Clone()
 				cs.Size = Vector3.new(5, 2, 5)
-				local c1,c2 = Root.CFrame*CFrame.new(0,0,-40)*CFrame.Angles(math.pi/2,0,0) ,Root.CFrame*CFrame.new(0,0,10)*CFrame.Angles(math.pi/2,0,0) 
+				local c1,c2 = Root.CFrame*CFrame.new(0,0,-40)*CFrame.Angles(math.pi/2,0,0) ,Root.CFrame*CFrame.new(0,0,10)*CFrame.Angles(math.pi/2,0,0)
 				cs.CFrame = c1
 				cs.Material = Enum.Material.Neon
 				cs.Parent = workspace.World.Visuals
@@ -192,7 +192,7 @@ local LuffyVFX = {
 				wait(.15)
 			end
 		end)()
-		
+
 		coroutine.wrap(function()
 			local WIDTH, LENGTH = 0.25, 10
 			for j = 1,55 do
@@ -219,7 +219,7 @@ local LuffyVFX = {
 		end)()
 
 		--
-		for _ = 1,115 do 
+		for _ = 1,115 do
 			local ToCFrame = Root.CFrame * CFrame.new(0,0,-30)
 
 			local CFrameConfig = CFrame.new((Root.CFrame * CFrame.new(math.random(-3,3),math.random(-2,2),math.random(-4,-3))).p,ToCFrame.p) * CFrame.Angles(math.rad(90),0,0)
@@ -320,7 +320,7 @@ local LuffyVFX = {
 
 		--[[ Effects ]]--
 
-		--[[ Shockwave 5 ]]--		
+		--[[ Shockwave 5 ]]--
 		local shockwave5 = EffectMeshes.shockwave5:Clone()
 		shockwave5.Transparency = 0
 		shockwave5.Material = "Neon"
@@ -501,7 +501,7 @@ local LuffyVFX = {
 					Smoke.Smoke:Emit(50)
 					wait(0.1)
 				end
-				Smoke.Smoke.Enabled = false					
+				Smoke.Smoke.Enabled = false
 			end)()
 			Debris:AddItem(Smoke, 2.5)
 
@@ -538,7 +538,7 @@ local LuffyVFX = {
 
 					end
 				end
-			end	
+			end
 
 			--[[ Delete Rocks ]]--
 			wait(1.5)
@@ -583,7 +583,7 @@ local LuffyVFX = {
 		--[[ Effects ]]--
 		wait(0.05)
 
-		--[[ Shockwave 5 ]]--	
+		--[[ Shockwave 5 ]]--
 		local shockwave5 = EffectMeshes.shockwave5:Clone()
 		shockwave5.Transparency = 0
 		shockwave5.Material = "Neon"
@@ -687,7 +687,7 @@ local LuffyVFX = {
 
 		local tween = TweenService:Create(Ring2, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = Vector3.new(50, 50, 1), ["Transparency"] = 1})
 		tween:Play()
-		tween:Destroy()	
+		tween:Destroy()
 
 		--[[ Foot Lands Earth ]]--
 
@@ -707,9 +707,9 @@ local LuffyVFX = {
 				beam.Transparency = 0
 				beam.Parent = Visuals
 
-				beam.CFrame = CFrame.new(originalPos + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), originalPos) 
+				beam.CFrame = CFrame.new(originalPos + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), originalPos)
 				local tween = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = beam.Size + Vector3.new(0,0, math.random(1,2)), ["CFrame"] = beam.CFrame * CFrame.new(0,0,35)})
-				local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,math.random(0,5))})		
+				local tween2 = TweenService:Create(beam, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {["Size"] = Vector3.new(0,0,math.random(0,5))})
 				tween:Play()
 				tween:Destroy()
 				tween2:Play()
@@ -725,7 +725,7 @@ local LuffyVFX = {
 		Block.Material = "Neon"
 		Block.Size = Vector3.new(50,5,5)
 		Block.Position = Character.HumanoidRootPart.Position + Vector3.new(0,50,0)
-		Block.CFrame = Block.CFrame * CFrame.fromEulerAnglesXYZ(0,0,math.rad(90))		
+		Block.CFrame = Block.CFrame * CFrame.fromEulerAnglesXYZ(0,0,math.rad(90))
 		Block.Parent = Visuals
 
 		local tween = TweenService:Create(Block, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = Vector3.new(100, 0, 0)})
@@ -772,7 +772,7 @@ local LuffyVFX = {
 				--[[ Rocks Fall Down ]]--
 				coroutine.wrap(function() GroundTouched(pos, partHit) end)()
 			end
-		end	
+		end
 		wait(.2)
 		GomuArm:Destroy()
 	end;
@@ -791,7 +791,7 @@ local LuffyVFX = {
 
 		for i = 1,2 do
 			local Arm;
-			if i == 1 then 
+			if i == 1 then
 				Arm = Character["Right Arm"]
 			else
 				Arm = Character["Left Arm"]
@@ -861,7 +861,7 @@ local LuffyVFX = {
 		--[[ Now ReLEASE !!! ]]--
 		for i = 1,2 do
 			local Arm;
-			if i == 1 then 
+			if i == 1 then
 				Arm = Character["Right Arm"]
 			else
 				Arm = Character["Left Arm"]
@@ -925,7 +925,7 @@ local LuffyVFX = {
 
 				--[[ Effects ]]--
 
-				--[[ Shockwave 5 ]]--		
+				--[[ Shockwave 5 ]]--
 				local shockwave5 = EffectMeshes.shockwave5:Clone()
 				shockwave5.Transparency = 0
 				shockwave5.Material = "Neon"
@@ -1007,7 +1007,7 @@ local LuffyVFX = {
 		Block.Transparency = 0
 		Block.Material = "Neon"
 		Block.Size = Vector3.new(50,5,5)
-		Block.CFrame = Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-15) * CFrame.fromEulerAnglesXYZ(0,math.rad(90),math.rad(180))		
+		Block.CFrame = Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-15) * CFrame.fromEulerAnglesXYZ(0,math.rad(90),math.rad(180))
 		Block.Parent = Visuals
 
 		local tween = TweenService:Create(Block, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {["Size"] = Vector3.new(50, 0, 0)})
@@ -1030,7 +1030,7 @@ local LuffyVFX = {
 		Debris:AddItem(shockwave5, 0.2)
 
 		--[[ Terrain Rocks on Ground ]]--
-		local RootPos = Character.HumanoidRootPart.CFrame	
+		local RootPos = Character.HumanoidRootPart.CFrame
 		for loops = 1,2 do
 			coroutine.wrap(function()
 				local OffsetX = 10
@@ -1066,11 +1066,11 @@ local LuffyVFX = {
 							Block.Material = partHit.Material
 							Block.Parent = Visuals
 							GroundRocks[i] = Block;
-							Debris:AddItem(Block, 0.25)							
+							Debris:AddItem(Block, 0.25)
 						end
 					end
 					game:GetService("RunService").Heartbeat:Wait()
-				end	
+				end
 			end)()
 		end
 
@@ -1083,7 +1083,7 @@ local LuffyVFX = {
 		BodyPosition.Parent = Character.HumanoidRootPart
 		BodyPosition.Position = (Character.HumanoidRootPart.CFrame * CFrame.new(0,0,10)).Position
 		Debris:AddItem(BodyPosition, 0.1)
-	end;	
+	end;
 }
 
 return LuffyVFX

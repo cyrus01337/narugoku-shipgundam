@@ -71,15 +71,15 @@ raycastParams.FilterDescendantsInstances = {workspace.World.Map}
 raycastParams.FilterType = Enum.RaycastFilterType.Include
 
 local KilluaVFX = {
-	
+
 	["WhirldWindSlam"] = function(Data)
 		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-		
+
 		if GlobalFunctions.CheckDistance(Player, 35) then
 			GlobalFunctions.FreshShake(100,30,1,.2,0)
 		end
-				
+
 		local RaycastResult = Ray.new(Root.Position, Vector3.new(0,-1000,500))
 		local Target,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals}, false, false)
 		if Target then
@@ -103,8 +103,8 @@ local KilluaVFX = {
 
 				Debris:AddItem(Orbie,.2)
 				Orbie.Parent = workspace.World.Visuals
-			end	
-			
+			end
+
 			local CrashSmoke = ReplicatedStorage.Assets.Effects.Particles.CrashSmoke:Clone()
 			CrashSmoke.Size = Vector3.new(12, 1, 12)
 			CrashSmoke.Position = Position
@@ -117,12 +117,12 @@ local KilluaVFX = {
 			Debris:AddItem(CrashSmoke,3)
 
 			VfxHandler.RockExplosion({
-				Pos = Position, 
-				Quantity = 8, 
+				Pos = Position,
+				Quantity = 8,
 				Radius = 15,
-				Size = Vector3.new(2.5,2.5,2.5), 
-				Duration = 2, 
-			})	
+				Size = Vector3.new(2.5,2.5,2.5),
+				Duration = 2,
+			})
 
 			for _ = 1, 10 do
 				local Rock = Effects.Rock:Clone()
@@ -153,28 +153,28 @@ local KilluaVFX = {
 		if Result and Result.Instance then
 		end
 	end,
-	
+
 	["WhirlWindHit"] = function(Data)
 		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-		
+
 		local contactPointCFrame = Data.ContactPointCFrame.CFrame
-		
+
 		if GlobalFunctions.CheckDistance(Player, 35) then
 			GlobalFunctions.FreshShake(85,25,1,.2,0)
 		end
-		
+
 		VfxHandler.Orbies({
 			Parent = contactPointCFrame,
-			Size = Vector3.new(0,0,math.random(1.8,3.5)), 
-			Color = Color3.fromRGB(0,0,0), 
+			Size = Vector3.new(0,0,math.random(1.8,3.5)),
+			Color = Color3.fromRGB(0,0,0),
 			Speed = .35,
 			Cframe = CFrame.new(0,0,50),
-			Amount = 15, 
+			Amount = 15,
 			Circle = true
 		})
 		-- SoundManager:AddSound("Thunder_explosion",{Parent = Root, Volume = 5},"Client")
-			
+
 		local Dust = Effects.Dust:Clone()
 		Dust.CFrame = contactPointCFrame * CFrame.new(0,-1,0)
 		Dust.Orientation = Vector3.new(0,0,0)
@@ -187,11 +187,11 @@ local KilluaVFX = {
 		Dust.Particle.Lifetime = NumberRange.new(1.5)
 		Dust.Particle.Drag = 2
 		Dust.Particle.Enabled = true
-		Dust.Particle.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))	
+		Dust.Particle.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
 		Dust.Particle:Clear()
-		
+
 		VfxHandler.Emit(Dust.Particle,100)
-		Debris:AddItem(Dust, 3)	
+		Debris:AddItem(Dust, 3)
 
 		local Dust2 = Effects.Dust:Clone()
 		Dust2.CFrame = contactPointCFrame * CFrame.new(0,-1,0)
@@ -200,13 +200,13 @@ local KilluaVFX = {
 		Dust2.Size = Vector3.new(0,0,0)
 		Dust2.Particle.EmissionDirection = "Back"
 		Dust2.Particle.Speed = NumberRange.new(50)
-		Dust2.Particle.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))	
+		Dust2.Particle.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
 		Dust2.Particle.Lifetime = NumberRange.new(1)
 		Dust2.Particle.Enabled = true
 		Dust2.Particle:Clear()
-		Dust2.Particle:Emit(100)		
-		Debris:AddItem(Dust2, 2)		
-		
+		Dust2.Particle:Emit(100)
+		Debris:AddItem(Dust2, 2)
+
 		local GroundDebris = Effects.grounddebris:Clone()
 		GroundDebris.CFrame = contactPointCFrame
 		GroundDebris.Parent = workspace.World.Visuals
@@ -219,7 +219,7 @@ local KilluaVFX = {
 			["Transparency"] = 1,
 			["Size"] = GroundDebris.Size + Vector3.new(60,0,60),
 		})
-		
+
 		Debris:AddItem(GroundDebris, .35)
 
 		--
@@ -238,7 +238,7 @@ local KilluaVFX = {
 		windshockwave2.Material = "Neon"
 		windshockwave2.BrickColor = BrickColor.new("Institutional white")
 		windshockwave2.Parent = workspace.World.Visuals
-		
+
 		GlobalFunctions.TweenFunction({
 			["Instance"] = windshockwave2,
 			["EasingStyle"] = Enum.EasingStyle.Quad,
@@ -249,7 +249,7 @@ local KilluaVFX = {
 			["Size"] = Vector3.new(80,80,80),
 			["CFrame"] = windshockwave2.CFrame * CFrame.fromEulerAnglesXYZ(0,10,0)
 		})
-		
+
 		GlobalFunctions.TweenFunction({
 			["Instance"] = windshockwave,
 			["EasingStyle"] = Enum.EasingStyle.Quad,
@@ -260,19 +260,19 @@ local KilluaVFX = {
 			["Size"] = Vector3.new(80,80,80),
 			["CFrame"] = windshockwave.CFrame * CFrame.fromEulerAnglesXYZ(0,10,0)
 		})
-		
+
 		Debris:AddItem(windshockwave2, .35)
 		Debris:AddItem(windshockwave, .35)
-	
-				
+
+
 		local Result = workspace:Raycast(Root.Position, Root.CFrame.upVector * -15, raycastParams)
 		if Result and Result.Instance then
-			Dust.Particle.Color = ColorSequence.new(Result.Instance.Color)	
-			Dust2.Particle.Color = ColorSequence.new(Result.Instance.Color)	
-			
+			Dust.Particle.Color = ColorSequence.new(Result.Instance.Color)
+			Dust2.Particle.Color = ColorSequence.new(Result.Instance.Color)
+
 			Dust.Position = Result.Position
 			Dust2.Position = Result.Position
-			
+
 			for _ = 1, 10 do
 				local Rock = Effects.Rock:Clone()
 				Rock.Position = Result.Position
@@ -298,40 +298,40 @@ local KilluaVFX = {
 				Debris:AddItem(BodyVelocity,.1)
 			end
 		end
-	end,	
-	
+	end,
+
 	["WhirlWindRelease"] = function(Data)
 		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-						
+
 		for Index = 1, 9 do
 			-- SoundManager:AddSound("Lightning_Release",{Parent = Root, Volume = 4},"Client")
 
 			-- SoundManager:AddSound("LightningExplosion2",{Parent = Root,Volume = 2},"Client")
-			
+
 			if GlobalFunctions.CheckDistance(Player, 35) then
 				GlobalFunctions.FreshShake(100,30,1,.2,0)
 			end
-			
+
 			local ColorIndex = Index >= 4 and Color3.fromRGB(117, 237, 255) or Color3.fromRGB(255,255,255)
-			
+
 			coroutine.resume(coroutine.create(function()
 				for _ = 1, 3 do
 					local OriginalPosition = Root.Position
-					
+
 					local Orbie = Effects.block:Clone()
 					Orbie.Size = Vector3.new(2, 2, 20)
 					Orbie.Material = "Neon"
 					Orbie.Color = ColorIndex
 					Orbie.Transparency = 0
-					Orbie.CFrame = CFrame.new(OriginalPosition + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), OriginalPosition) 
+					Orbie.CFrame = CFrame.new(OriginalPosition + Vector3.new(math.random(-1,1),math.random(-1,1),math.random(-1,1)), OriginalPosition)
 
 					local SpecialMesh = Instance.new("SpecialMesh")
 					SpecialMesh.MeshType = "Sphere"
-					SpecialMesh.Parent = Orbie					
-					
+					SpecialMesh.Parent = Orbie
+
 					Orbie.Parent = workspace.World.Visuals
-					
+
 					GlobalFunctions.TweenFunction({
 						["Instance"] = Orbie,
 						["EasingStyle"] = Enum.EasingStyle.Quad,
@@ -341,7 +341,7 @@ local KilluaVFX = {
 						["Size"] = Orbie.Size + Vector3.new(0,0,math.random(1.8,3.5)),
 						["CFrame"] = Orbie.CFrame * CFrame.new(0,0,40)
 					})
-					
+
 					GlobalFunctions.TweenFunction({
 						["Instance"] = Orbie,
 						["EasingStyle"] = Enum.EasingStyle.Quad,
@@ -351,8 +351,8 @@ local KilluaVFX = {
 						["Transparency"] = .8,
 						["Size"] = Vector3.new(0,0,.8)
 					})
-					
-					Debris:AddItem(Orbie,.35)				
+
+					Debris:AddItem(Orbie,.35)
 				end
 			end))
 			local Slash = Effects.slash:Clone()
@@ -362,7 +362,7 @@ local KilluaVFX = {
 			Slash.CFrame = Root.CFrame * CFrame.fromEulerAnglesXYZ(math.random(-360,360),math.random(-360,360),math.random(-360,360))
 			Slash.Transparency = 0
 			Slash.Parent = workspace.World.Visuals
-			
+
 			GlobalFunctions.TweenFunction({
 				["Instance"] = Slash,
 				["EasingStyle"] = Enum.EasingStyle.Quad,
@@ -372,16 +372,16 @@ local KilluaVFX = {
 				["Transparency"] = 1,
 				["Size"] = Vector3.new(30,30,30)
 			})
-			
-			Debris:AddItem(Slash, .25)		
-			
+
+			Debris:AddItem(Slash, .25)
+
 			local SwingShockwave = Effects.SwingShockwave:Clone()
 			SwingShockwave.Color = ColorIndex
 			SwingShockwave.Material = "Neon"
 			SwingShockwave.CFrame = Root.CFrame
 			SwingShockwave.Rotation = Vector3.new(math.random(-60,60) * Index,math.random(-60,60) * Index, math.random(-60,60) * Index)
 			SwingShockwave.Parent = workspace.World.Visuals
-			
+
 			GlobalFunctions.TweenFunction({
 				["Instance"] = SwingShockwave,
 				["EasingStyle"] = Enum.EasingStyle.Quad,
@@ -392,9 +392,9 @@ local KilluaVFX = {
 				["Size"] = Vector3.new(50, 0.05, 50),
 				["CFrame"] = SwingShockwave.CFrame * CFrame.fromEulerAnglesXYZ(0,10,0)
 			})
-			
+
 			Debris:AddItem(SwingShockwave,.25)
-			
+
 			local Ring = Effects.ring:Clone()
 			Ring.Color = math.random(1,2) == 1 and Color3.fromRGB(117, 237, 255) or Color3.fromRGB(255,255,255)
 			Ring.Material = "Neon"
@@ -402,19 +402,19 @@ local KilluaVFX = {
 			Ring.CFrame = Root.CFrame
 			Ring.Size = Vector3.new(5,1,5)
 			Ring.Parent = workspace.World.Visuals
-			
+
 			local OutRing = Ring:Clone()
 			OutRing.Material = "Neon"
 			OutRing.Color = ColorIndex
 			OutRing.Size = Vector3.new(10,1,10)
 			OutRing.CFrame = Root.CFrame * CFrame.new(0,5,0) * CFrame.fromEulerAnglesXYZ(math.random(-360,360),math.random(-360,360),math.random(-360,360))
 			OutRing.Parent = Ring
-			
+
 			Debris:AddItem(Ring, 1)
-			
+
 			GlobalFunctions.TweenFunction({["Instance"] = Ring,["EasingStyle"] = Enum.EasingStyle.Quart,["EasingDirection"] = Enum.EasingDirection.Out,["Duration"] = .5,},{["Size"] = Vector3.new(15,1,15), ["CFrame"] = Ring.CFrame * CFrame.fromEulerAnglesXYZ(0,100,0)})
 			GlobalFunctions.TweenFunction({["Instance"] = OutRing,["EasingStyle"] = Enum.EasingStyle.Quart,["EasingDirection"] = Enum.EasingDirection.Out,["Duration"] = .5,},{["Size"] = Vector3.new(30,1,30),["CFrame"] = OutRing.CFrame * CFrame.fromEulerAnglesXYZ(0,100,0)})
-			
+
 			GlobalFunctions.TweenFunction({["Instance"] = Ring,["EasingStyle"] = Enum.EasingStyle.Quad,["EasingDirection"] = Enum.EasingDirection.Out,["Duration"] = .25,},{["Transparency"] = 1, ["CFrame"] = Ring.CFrame * CFrame.fromEulerAnglesXYZ(0,100,0)})
 			GlobalFunctions.TweenFunction({["Instance"] = OutRing,["EasingStyle"] = Enum.EasingStyle.Quad,["EasingDirection"] = Enum.EasingDirection.Out,["Duration"] = .25,},{["Transparency"] = 1, ["CFrame"] = OutRing.CFrame * CFrame.fromEulerAnglesXYZ(0,100,0)})
 			wait(.15)
@@ -429,7 +429,7 @@ local KilluaVFX = {
 		local LastRushEff = 0;
 
 		-- SoundManager:AddSound("StandSummon", {Parent = Skateboard, Volume = 1.75}, "Client")
-		local Sound = -- SoundManager:AddSound("Skateboard", {Parent = Root, Volume = .5, TimePosition = .1}, "Client")
+		-- local Sound = SoundManager:AddSound("Skateboard", {Parent = Root, Volume = .5, TimePosition = .1}, "Client")
 
 		local Sparks = Particles["PE1"]:Clone()
 		Sparks:Emit(35)
@@ -443,20 +443,20 @@ local KilluaVFX = {
 			DirtStep.ParticleEmitter.Enabled = true
 			DirtStep.CFrame = Root.CFrame * CFrame.new(0,-1.85,.225)
 			DirtStep.ParticleEmitter.Rate = 12
-			DirtStep.ParticleEmitter.Color = ColorSequence.new(Result.Instance.Color) 
+			DirtStep.ParticleEmitter.Color = ColorSequence.new(Result.Instance.Color)
 			DirtStep.Parent = Root
 
-			local WeldConstraint = Instance.new("WeldConstraint"); 
+			local WeldConstraint = Instance.new("WeldConstraint");
 			WeldConstraint.Part0 = Root
 			WeldConstraint.Part1 = DirtStep;
-			WeldConstraint.Parent = DirtStep	
+			WeldConstraint.Parent = DirtStep
 
 			Trash[#Trash + 1] = DirtStep
 		end
 
 		--HUD.RushEffect.ImageTransparency = 1 - (300 -20) / 250;
 
-		while wait() do	
+		while wait() do
 			VfxHandler.ImpactLines({Character = Character, Amount = 1, Color = BrickColor.new("Really black")})
 		--[[if os.clock() - LastRushEff > .1 then
 				LastRushEff = os.clock()
@@ -465,7 +465,7 @@ local KilluaVFX = {
 			if Root:FindFirstChild("SkateBoard") == nil then break end
 		end
 	--	HUD.RushEffect.ImageTransparency = 1;
-		Sound:Destroy()
+		-- Sound:Destroy()
 		-- SoundManager:AddSound("StandPoof", {Parent = Root, Volume = 1}, "Client")
 
 		local Sparks = Particles["PE1"]:Clone()
@@ -473,7 +473,7 @@ local KilluaVFX = {
 		Sparks.Parent = Skateboard
 
 		Debris:AddItem(Sparks,1)
-		
+
 		if Root:FindFirstChild("DirtStep") then
 			if Root.DirtStep:FindFirstChild("ParticleEmitter") then
 				Root.DirtStep.ParticleEmitter.Enabled = false
@@ -484,17 +484,17 @@ local KilluaVFX = {
 	end,
 
 	["LightningPalmAOE"] = function(Data)
-		local Character = Data.Character		
+		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
 		-- SoundManager:AddSound("LightningExplosion", {Parent = Root, Volume = math.random(4,5)}, "Client")
 		Explosions.LightningPalm({Character = Character})
 	end,
 
-	["ThunderPalmRelease"] = function(BackData)			
-		local Character = BackData.Character 
-		local Root = Character:FindFirstChild("HumanoidRootPart")		
-		VfxHandler.RemoveBodyMover(Character)		
+	["ThunderPalmRelease"] = function(BackData)
+		local Character = BackData.Character
+		local Root = Character:FindFirstChild("HumanoidRootPart")
+		VfxHandler.RemoveBodyMover(Character)
 
 		-- SoundManager:AddSound("LightningExplosion", {Parent = Root, Volume = 2.5}, "Client")
 
@@ -509,7 +509,7 @@ local KilluaVFX = {
 
 			Clone.Attachment.Rocks:Emit(15)
 			Clone.Smoke:Emit(10)
-			Clone.Smoke.Color = ColorSequence.new(Result.Instance.Color) 
+			Clone.Smoke.Color = ColorSequence.new(Result.Instance.Color)
 			Clone.Parent = workspace.World.Visuals
 
 			Debris:AddItem(Clone,3)
@@ -537,7 +537,7 @@ local KilluaVFX = {
 		PointLight.Brightness = 20
 		PointLight.Range = 40;
 
-		PointLight.Parent = Beam	
+		PointLight.Parent = Beam
 		Debris:AddItem(PointLight,.2)
 
 		local PointLight2 = Instance.new("PointLight")
@@ -548,8 +548,8 @@ local KilluaVFX = {
 		PointLight2.Parent = Root
 		Debris:AddItem(PointLight2,.2)
 
-		for _ = 1, 10 do			
-			local startPos = Root.Position 
+		for _ = 1, 10 do
+			local startPos = Root.Position
 			local endPos = (Beam.CFrame * CFrame.new(0,0,-5)).p
 			local amount = 15
 			local width = .5
@@ -557,52 +557,52 @@ local KilluaVFX = {
 
 			local Model = VfxHandler.Lightning({
 				StartPosition = startPos,
-				EndPosition = endPos, 
-				Amount = amount, 
-				Width = width, 
+				EndPosition = endPos,
+				Amount = amount,
+				Width = width,
 				OffsetRange = offsetRange,
 				Color = "Pastel blue-green"
 			})
 
 			for _,Part in ipairs(Model:GetChildren()) do
 				GlobalFunctions.TweenFunction({["Instance"] = Part,["EasingStyle"] = Enum.EasingStyle.Quad,["EasingDirection"] = Enum.EasingDirection.In,["Duration"] = .1,},{["Size"] = Vector3.new(0,0,0)})
-			end 
+			end
 
 			Debris:AddItem(Model, .1)
 			Debris:AddItem(PointLight, .1)
 
-			PointLight2.Brightness = PointLight2.Brightness - 1  
-			PointLight.Brightness = PointLight.Brightness - 1         
+			PointLight2.Brightness = PointLight2.Brightness - 1
+			PointLight.Brightness = PointLight.Brightness - 1
 			wait(.01)
-		end    
+		end
 	end;
 
 	["LightningDash"] = function(Data)
-		local Character = Data.Character		
+		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
 		local Light = Instance.new("PointLight")
 		Light.Color = Color3.fromRGB(110, 153, 202)
 		Light.Brightness = 10
 		Light.Range = 40
-		Light.Parent = Root	
+		Light.Parent = Root
 
 		local Result = workspace:Raycast(Root.Position, Root.CFrame.upVector * -15, raycastParams)
-		if Result and Result.Instance then			
+		if Result and Result.Instance then
 			local DirtStep = Particles.LightningSmokeDash:Clone()
 			DirtStep.ParticleEmitter.Enabled = true
 			DirtStep.CFrame = Root.CFrame * CFrame.new(0,-1.85,.225)
-			DirtStep.ParticleEmitter.Color = ColorSequence.new(Result.Instance.Color) 
+			DirtStep.ParticleEmitter.Color = ColorSequence.new(Result.Instance.Color)
 			DirtStep.CanCollide = false
 			DirtStep.Parent = Root
 
-			local WeldConstraint = Instance.new("WeldConstraint"); 
+			local WeldConstraint = Instance.new("WeldConstraint");
 			WeldConstraint.Part0 = Root
 			WeldConstraint.Part1 = DirtStep;
 			WeldConstraint.Parent = DirtStep
 
 			delay(1,function() DirtStep.ParticleEmitter.Enabled = false end)
-			Debris:AddItem(DirtStep,2)	
+			Debris:AddItem(DirtStep,2)
 		end
 
 		local Max = 200
@@ -617,9 +617,9 @@ local KilluaVFX = {
 
 			local Model = VfxHandler.Lightning({
 				StartPosition = startPos,
-				EndPosition = endPos, 
-				Amount = amount, 
-				Width = width, 
+				EndPosition = endPos,
+				Amount = amount,
+				Width = width,
 				OffsetRange = offsetRange,
 				Color = "Pastel blue-green"
 			})
@@ -628,22 +628,22 @@ local KilluaVFX = {
 				Part.CanCollide = false
 				GlobalFunctions.TweenFunction({["Instance"] = Part,["EasingStyle"] = Enum.EasingStyle.Quad,["EasingDirection"] = Enum.EasingDirection.In,["Duration"] = .1,},{["Size"] = Vector3.new(0,0,0)})
 			end
-			Debris:AddItem(Model, .1) 
+			Debris:AddItem(Model, .1)
 			Debris:AddItem(Light, .1)
-			Light.Brightness = Light.Brightness - 1         
+			Light.Brightness = Light.Brightness - 1
 			wait(.01)
-		end	
+		end
 	end,
 
 	["LightningPalmStart"] = function(Data)
 		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
-		local attach = Character["Right Arm"]:FindFirstChild("RightGripAttachment")	
+		local attach = Character["Right Arm"]:FindFirstChild("RightGripAttachment")
 
 		local Lightning = ReplicatedStorage.Assets.Effects.Misc.LIGHTNING:Clone()
 		Lightning.Parent = Root
-		Debris:AddItem(Lightning,.1)	
+		Debris:AddItem(Lightning,.1)
 
 		local x,y,z = 5,5,5
 		for i = 1,6 do
@@ -715,7 +715,7 @@ local KilluaVFX = {
 	end,
 
 	["Snake Awakens"] = function(PathData)
-		local Character = PathData.Character 
+		local Character = PathData.Character
 		local Root = Character:FindFirstChild("HumanoidRootPart")
 
 		local Part = Instance.new("Part")
@@ -726,11 +726,11 @@ local KilluaVFX = {
 		Part.Massless = true
 		Part.Parent = workspace.World.Visuals
 
-		local WeldConstraint = Instance.new("WeldConstraint"); 
+		local WeldConstraint = Instance.new("WeldConstraint");
 		WeldConstraint.Part0 = Root
 		WeldConstraint.Part1 = Part;
 		WeldConstraint.Parent = Part
-			
+
 		coroutine.resume(coroutine.create(function()
 			for _ = 1,20 do
 				wait(.13)
@@ -745,7 +745,7 @@ local KilluaVFX = {
 				GlobalFunctions.TweenFunction({["Instance"] = Clone, ["EasingStyle"] = Enum.EasingStyle.Quad, ["EasingDirection"] = Enum.EasingDirection.Out, ["Duration"] = .2,},{["Transparency"] = 1;})
 			end
 		end))
-		
+
 		for _ = 1,25 do
 			wait(.1)
 			local Clone = Effects.Cuts["CrescentCut3"]:Clone()
@@ -754,7 +754,7 @@ local KilluaVFX = {
 			Clone.Parent = workspace.World.Visuals
 
 			Debris:AddItem(Clone,.5)-- up 2, down 3
-			
+
 			-- SoundManager:AddSound("SteamHiss",{Parent = Root, Volume = .5, Looped = true}, "Client", {Duration = .75})
 			GlobalFunctions.TweenFunction({["Instance"] = Clone, ["EasingStyle"] = Enum.EasingStyle.Quad, ["EasingDirection"] = Enum.EasingDirection.Out, ["Duration"] = .15,},{["CFrame"] = Part.CFrame * CFrame.Angles(math.random(-.65,14.59),math.random(-128.24,-117.79),math.random(-14.3,8.39)); ["Transparency"] = 1;})
 
@@ -762,15 +762,15 @@ local KilluaVFX = {
 		end
 		Part:Destroy()
 	end,
-	
+
 	["Snake Awakens HitVFX"] = function(Data)
 		local Character = Data.Character
 		local Root = Character:FindFirstChild("HumanoidRootPart")
-		
+
 		local Victim = Data.Victim
 		local VRoot = Victim:FindFirstChild("HumanoidRootPart")
-		
-		VfxHandler.Orbies({Parent = VRoot, Size = Vector3.new(.4, .4, 5.79), Color = Color3.fromRGB(0,0,0), Speed = .35, Cframe = CFrame.new(0,0,0), Amount = 1, Sphere = true})		
+
+		VfxHandler.Orbies({Parent = VRoot, Size = Vector3.new(.4, .4, 5.79), Color = Color3.fromRGB(0,0,0), Speed = .35, Cframe = CFrame.new(0,0,0), Amount = 1, Sphere = true})
 		VfxHandler.Orbies({Parent = VRoot, Size = Vector3.new(.35, .35, .35), Color = Color3.fromRGB(0,0,0), Speed = .35, Cframe = CFrame.new(0,0,3), Amount = 3, Circle = true})
 	end
 }

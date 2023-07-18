@@ -105,7 +105,7 @@ local function CreateRock(Result)
 end
 
 function GetMousePos(X,Y,Z,Boolean)
-	local RayMag1 = workspace.CurrentCamera:ScreenPointToRay(X, Y) 
+	local RayMag1 = workspace.CurrentCamera:ScreenPointToRay(X, Y)
 	local NewRay = Ray.new(RayMag1.Origin, RayMag1.Direction * ((Z and Z) or 200))
 	local Target,Position,Surface = workspace:FindPartOnRayWithIgnoreList(NewRay, {Character,workspace.World.Visuals})
 	if Boolean then
@@ -139,7 +139,7 @@ local function createhugelightning(Start,End,numberofparts,player)
 		Part.BottomSurface = Enum.SurfaceType.SmoothNoOutlines
 		Part.CanCollide = false
 		Part.Anchored = true
-		Part.CastShadow = false	
+		Part.CastShadow = false
 		Part.Size = Vector3.new(.7,.7,newdisance)
 		Part.CFrame = CFrame.new(lastcf,newcframe.p) * CFrame.new(0,0,-newdisance / 2)
 		Part.Parent = Lightning
@@ -158,7 +158,7 @@ end
 local ZenitsuVFX = {
 
 	["Zap"] = function(Data)
-		local Character = Data.Character		
+		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
 		for _ = 1,5 do
@@ -169,7 +169,7 @@ local ZenitsuVFX = {
 	end,
 
 	["Rice Spirit"] = function(Data)
-		local Character = Data.Character		
+		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
 		-- SoundManager:AddSound("Thund",{Parent = Root, Volume = 6, PlaybackSpeed = 1 - (((1 - 1) * 3) / 10)}, "Client")
@@ -177,7 +177,7 @@ local ZenitsuVFX = {
 	end,
 
 	["Distance Thunder"] = function(Data)
-		local Character = Data.Character		
+		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
 		local MousePosition,Part,Surface = GetMousePos(Mouse.X,Mouse.Y,300,true)
@@ -190,27 +190,27 @@ local ZenitsuVFX = {
 			MousePosition = RaycastResult.Position
 			Part = RaycastResult.Instance
 			Surface = RaycastResult.Normal
-		end	
+		end
 
 		Explosions.DistanceThunder({Character = Character, Position = MousePosition, Part = Part, Surface = Surface})
 	end,
 
 	["SleepChangeCameraTorso"] = function(Data)
-		local Character = Data.Character		
+		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
 		workspace.CurrentCamera.CameraSubject = Character["Torso"]
 	end,
 
 	["SleepRevertCamera"] = function(Data)
-		local Character = Data.Character		
+		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
 		workspace.CurrentCamera.CameraSubject = Humanoid
-	end,	
+	end,
 
 	["Sleeping"] = function(Data)
-		local Character = Data.Character		
+		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
 		local SleepingParticle = script.Sleeping.ParticleEmitter:Clone()
@@ -226,22 +226,23 @@ local ZenitsuVFX = {
 		WeldConstraint.Part1 = Character["Head"]
 		WeldConstraint.Parent = Bubbles
 
-		local Sound = -- SoundManager:AddSound("Snorting",{["Volume"] = 6, ["Parent"] = Root, ["Looped"] = true}, "Client",{["Duration"] = 4e4})
+		-- local Sound = SoundManager:AddSound("Snorting",{["Volume"] = 6, ["Parent"] = Root, ["Looped"] = true}, "Client",{["Duration"] = 4e4})
 
 		while Character:FindFirstChild("StopSleeping") == nil do
 			RunService.RenderStepped:Wait()
 		end
-		Sound:Destroy()
+
+		-- Sound:Destroy()
 
 		Bubbles.ParticleEmitter.Enabled = false
 		Debris:AddItem(Bubbles,.375)
 
 		SleepingParticle.Enabled = false
 		Debris:AddItem(SleepingParticle,1)
-	end,	
+	end,
 
 	["Menbere"] = function(Data)
-		local Character = Data.Character		
+		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
 		local ContactPointCFrame = Data.ContactPointCFrame
@@ -255,7 +256,7 @@ local ZenitsuVFX = {
 
 		local DahNoob = script["Meshes/slashground_Plane.003 (1)"]:Clone()
 		DahNoob.CFrame = CFrame.lookAt(StartPoint.Position, StartPoint.Position + Dir) * CFrame.Angles(0, math.rad(90), 0)
-		DahNoob.Parent = workspace.World.Visuals		
+		DahNoob.Parent = workspace.World.Visuals
 
 		local StartTween = TweenService:Create(DahNoob,TweenInfo.new(.85, Enum.EasingStyle.Sine, Enum.EasingDirection.Out,0,false,.135), {["Color"] = Color3.fromRGB(0, 0, 0)})
 		StartTween:Play()
@@ -265,20 +266,20 @@ local ZenitsuVFX = {
 
 		local EndTween = TweenService:Create(DahNoob,TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out),{["Transparency"] = 1})
 		EndTween:Play()
-		EndTween:Destroy()	
+		EndTween:Destroy()
 
 		Debris:AddItem(DahNoob,1)
 	end,
 
 	["Dash"] = function(Data)
-		local Character = Data.Character		
+		local Character = Data.Character
 		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
 
 		local StartTime = os.clock()
 		local RockInBetween = 0
 		local LastRock = os.clock() - RockInBetween
 
-		--VfxHandler.ImpactLines({Character = Character, Amount = 12, Color = BrickColor.new("Pastel yellow")})\		
+		--VfxHandler.ImpactLines({Character = Character, Amount = 12, Color = BrickColor.new("Pastel yellow")})\
 
 	    --[[coroutine.resume(coroutine.create(function()
 			while os.clock() - StartTime < .075 do
@@ -322,7 +323,7 @@ local ZenitsuVFX = {
 		NewLine.Parent = workspace.World.Visuals
 		Debris:AddItem(NewLine,.4)
 
-		for _ = 1,5 do	
+		for _ = 1,5 do
 			local Line = Effects.Lightning:Clone()
 			Line.CFrame = End * CFrame.new(-7, -1, 5)
 			TweenService:Create(Line,Ti2,{CFrame = End * CFrame.new(-7,-1,10)}):Play()
@@ -396,24 +397,24 @@ local ZenitsuVFX = {
 		Light.Color = Color3.fromRGB(255, 221, 82)
 		Light.Brightness = 10
 		Light.Range = 15
-		Light.Parent = Root	
+		Light.Parent = Root
 
 		local Result = workspace:Raycast(Root.Position, Root.CFrame.upVector * -15, raycastParams)
-		if Result and Result.Instance then			
+		if Result and Result.Instance then
 			local DirtStep = Particles.LightningSmokeDash:Clone()
 			DirtStep.ParticleEmitter.Enabled = true
 			DirtStep.CFrame = Root.CFrame * CFrame.new(0,-1.85,.225)
-			DirtStep.ParticleEmitter.Color = ColorSequence.new(Result.Instance.Color) 
+			DirtStep.ParticleEmitter.Color = ColorSequence.new(Result.Instance.Color)
 			DirtStep.CanCollide = false
 			DirtStep.Parent = Root
 
-			local WeldConstraint = Instance.new("WeldConstraint"); 
+			local WeldConstraint = Instance.new("WeldConstraint");
 			WeldConstraint.Part0 = Root
 			WeldConstraint.Part1 = DirtStep;
 			WeldConstraint.Parent = DirtStep
 
 			delay(.5,function() DirtStep.ParticleEmitter.Enabled = false end)
-			Debris:AddItem(DirtStep,2)	
+			Debris:AddItem(DirtStep,2)
 		end
 
 		local Max = 200
@@ -428,9 +429,9 @@ local ZenitsuVFX = {
 
 				local Model = VfxHandler.Lightning({
 					StartPosition = startPos,
-					EndPosition = endPos, 
-					Amount = amount, 
-					Width = width, 
+					EndPosition = endPos,
+					Amount = amount,
+					Width = width,
 					OffsetRange = offsetRange,
 					Color = "Cool yellow"--BrickColor.new("Cool yellow")
 				})
@@ -439,11 +440,11 @@ local ZenitsuVFX = {
 					Part.CanCollide = false
 					GlobalFunctions.TweenFunction({["Instance"] = Part,["EasingStyle"] = Enum.EasingStyle.Quad,["EasingDirection"] = Enum.EasingDirection.In,["Duration"] = .1,},{["Size"] = Vector3.new(0,0,0)})
 				end
-				Debris:AddItem(Model, .1) 
+				Debris:AddItem(Model, .1)
 				Debris:AddItem(Light, .1)
-				Light.Brightness = Light.Brightness - 1         
+				Light.Brightness = Light.Brightness - 1
 				wait(.01)
-			end	
+			end
 		end)
 
 		TaskScheduler:AddTask(.1,function()
@@ -463,9 +464,9 @@ local ZenitsuVFX = {
 
 			local Model = VfxHandler.Lightning({
 				StartPosition = startPos,
-				EndPosition = endPos, 
-				Amount = amount, 
-				Width = width, 
+				EndPosition = endPos,
+				Amount = amount,
+				Width = width,
 				OffsetRange = offsetRange,
 				Color = Color
 			})
@@ -474,11 +475,11 @@ local ZenitsuVFX = {
 				Part.CanCollide = false
 				GlobalFunctions.TweenFunction({["Instance"] = Part,["EasingStyle"] = Enum.EasingStyle.Quad,["EasingDirection"] = Enum.EasingDirection.In,["Duration"] = .1,},{["Size"] = Vector3.new(0,0,0)})
 			end
-			Debris:AddItem(Model, .1) 
+			Debris:AddItem(Model, .1)
 			Debris:AddItem(Light, .1)
-			Light.Brightness = Light.Brightness - 1         
+			Light.Brightness = Light.Brightness - 1
 			wait(.01)
-		end	
+		end
 	end,
 
 	["ThunderClapandFlash"] = function(Data)
@@ -530,9 +531,9 @@ local ZenitsuVFX = {
 
 		Debris:AddItem(Effect,.2)
 
-		local attach = Character["Right Arm"]:FindFirstChild("RightGripAttachment")	
+		local attach = Character["Right Arm"]:FindFirstChild("RightGripAttachment")
 
-		local attach = Character["Torso"]:FindFirstChild("BodyFrontAttachment")	
+		local attach = Character["Torso"]:FindFirstChild("BodyFrontAttachment")
 
 		local x,y,z = 5,5,5
 		for Index = 1,8 do
@@ -587,7 +588,7 @@ local ZenitsuVFX = {
 			wait(.1)
 		end
 
-		coroutine.resume(coroutine.create(function()			
+		coroutine.resume(coroutine.create(function()
 			local b,g,t = 5,5,5
 			for Index = 1,4 do
 				local attach2 = Instance.new("Attachment")

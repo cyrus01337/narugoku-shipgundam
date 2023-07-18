@@ -68,11 +68,11 @@ local function BezierCurve(Start, Offset, End, Alpha)
 	return BezierLerp
 end
 
-local Killer_QueenVFX = {	
+local Killer_QueenVFX = {
 	["Traced Steps Explode"] = function(Data)
 		local Character,Victim = Data.Character, Data.Victim
 		local Root,VRoot = Character:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("HumanoidRootPart")
-		
+
 		-- SoundManager:AddSound("Explosion", {Parent = Root, Volume = 1}, "Client")
 		Explosions.TracingStep({Character = Character, ContactPointCFrame = VRoot.CFrame, Distance = Data.Distance})
 	end,
@@ -81,15 +81,16 @@ local Killer_QueenVFX = {
 		local Character = Data.Character
 		local Root = Character:FindFirstChild("HumanoidRootPart")
 
-		local Sound = -- SoundManager:AddSound("nil",{Parent = Root, Volume = 1}, "Client")
-		
+		-- local Sound = SoundManager:AddSound("nil",{Parent = Root, Volume = 1}, "Client")
+
 		for Index = 1,5 do
-			VfxHandler.AfterImage({Character = Character, Duration = 1, StartTransparency = .35, Color = Color3.fromRGB(0, 0, 0)})		
+			VfxHandler.AfterImage({Character = Character, Duration = 1, StartTransparency = .35, Color = Color3.fromRGB(0, 0, 0)})
 			wait(.045)
 		end
-		if Sound then
-			Sound:Destroy()
-		end
+
+		-- if Sound then
+		-- 	Sound:Destroy()
+		-- end
 	end,
 
 	["Add Bomb"] = function(Data)
@@ -101,7 +102,7 @@ local Killer_QueenVFX = {
 		local TimerUI = ReplicatedStorage.Assets.Gui.SwitchOn:Clone()
 		TimerUI.Parent = VRoot
 	end,
-	
+
 	["RemoveBomb"] = function(Data)
 		local Character = Data.Character
 		local Root = Character:FindFirstChild("HumanoidRootPart")
@@ -151,13 +152,13 @@ local Killer_QueenVFX = {
 	end,
 
 	["Barrage"] = function(PathData)
-		local Character = PathData.Character 
+		local Character = PathData.Character
 		local Target = PathData.Target
 
 		local Root,Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 		-- SoundManager:AddSound("Shubababababa",{Parent = Root, Volume = 1, TimePosition = 1.115}, "Client")
 
-		for _ = 1,80 do 
+		for _ = 1,80 do
 			local ToCFrame = Root.CFrame * CFrame.new(0,0,-10)
 
 			local CFrameConfig = CFrame.new((Root.CFrame * CFrame.new(math.random(-3,3),math.random(-2,2),math.random(-4,-3))).p,ToCFrame.p) * CFrame.Angles(math.rad(90),0,0)

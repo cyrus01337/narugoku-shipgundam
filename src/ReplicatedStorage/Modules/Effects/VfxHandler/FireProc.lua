@@ -26,9 +26,9 @@ return function(Data)
 	if StateManager:Peek(Victim,"Blocking") then return end
 	if VRoot:FindFirstChild("FireProc") then return end
 	if not StateManager:Peek(Victim,"IFrame") then return end
-	
-	local Sound = -- SoundManager:AddSound("FireProc", {Parent = VRoot, Volume = 8, Looped = true}, "Client", {Duration = 134134718341})
-	
+
+	-- local Sound = SoundManager:AddSound("FireProc", {Parent = VRoot, Volume = 8, Looped = true}, "Client", {Duration = 134134718341})
+
 	local FireParticle = ReplicatedStorage.Assets.Effects.Particles.FireProc:Clone()
 	FireParticle.Enabled = true
 	FireParticle.Parent = VRoot
@@ -43,7 +43,7 @@ return function(Data)
 			if VHumanoid.Health <= 3 then break end
 		end
 		FireParticle.Enabled = false
-		
+
 		Debris:AddItem(FireParticle,1)
 		Debris:AddItem(Sound,1)
 	end))
