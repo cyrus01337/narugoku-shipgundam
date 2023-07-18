@@ -4,7 +4,7 @@ local Colours = {"00FF00","0000FF","FF8000","FF0080","00FF80","0080FF","00FFFF"}
 
 local webhooks = {
 	["Error"] = {
-		["WebhookUrl"] = "https://discord.com/api/webhooks/825817927508951100/0miZjB0SFIazPocSpyHVyvrwkVZk-L6b1YEFy_z-v0nu0zYSnOJekrbxRvW-rkqE4X-H";
+		["WebhookUrl"] = "https://discord.com/api/webhooks/1130931479606722650/gNUTzq7Eut_MqnFOgZEwS44c_nd2nYVDyP3jc39eSTLW2-B22OSsiMQC4LlzPG5mTvMk";
 		["Username"] = "Error Logger";
 		["Title"] = "Game Error";
 		["Colour"] = 0xFF0000;
@@ -25,7 +25,7 @@ local webhooks = {
 		end;
 	};
 	["DataError"] = {
-		["WebhookUrl"] = "https://discord.com/api/webhooks/825817927508951100/0miZjB0SFIazPocSpyHVyvrwkVZk-L6b1YEFy_z-v0nu0zYSnOJekrbxRvW-rkqE4X-H";
+		["WebhookUrl"] = "https://discord.com/api/webhooks/1130931479606722650/gNUTzq7Eut_MqnFOgZEwS44c_nd2nYVDyP3jc39eSTLW2-B22OSsiMQC4LlzPG5mTvMk";
 		["Username"] = "Data Logger";
 		["Title"] = "Data Error";
 		["Colour"] = 0xFF0000;
@@ -97,8 +97,8 @@ function HttpModule:PostToWebhook(webhookName,...)
 		webhookData.CustomFunction(webhookName,dataToSend,args)
 	end
 
-	return pcall(function() 
-		HttpService:PostAsync(webhookData.WebhookUrl,HttpService:JSONEncode(dataToSend))	
+	return pcall(function()
+		HttpService:PostAsync(webhookData.WebhookUrl,HttpService:JSONEncode(dataToSend))
 	end)
 end
 
