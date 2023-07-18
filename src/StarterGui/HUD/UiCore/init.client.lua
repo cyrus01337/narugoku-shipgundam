@@ -6,8 +6,8 @@ local playerGui = player:WaitForChild("PlayerGui")
 local GuisEffect = require(playerGui:WaitForChild("GuiEffects"))
 local Store = require(ReplicatedStorage.Modules.Store)
 local Signal = require(ReplicatedStorage.Modules.Utility.Signal)
-local SoundManager = require(ReplicatedStorage.Modules.Shared.SoundManager)
---local Frames = require(game.StarterPlayer.StarterPlayerScripts.Client.Core.Gui.CharacterSelect)
+-- local SoundManager = require(ReplicatedStorage.Modules.Shared.SoundManager)
+-- local Frames = require(game.StarterPlayer.StarterPlayerScripts.Client.Core.Gui.CharacterSelect)
 
 local OUT_POSITION = UDim2.new(1.1, 0, 0.081, 0)
 local IN_POSITION = UDim2.new(0.2, 0, 0.081, 0)
@@ -28,7 +28,7 @@ local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 local versionGui = playerGui:WaitForChild("Version")
 local versionText = versionGui:WaitForChild("VersionText")
 local CachedModules = {}
--- cyrus01337: this could be a memory leak...
+-- FIXME: cyrus01337: this could be a memory leak...
 local connections = {}
 _G.SpaceAerial = true
 _G.CameraLock = false
@@ -87,18 +87,18 @@ table.insert(connections, music.MouseButton1Down:Connect(function()
 	end
 end))
 
---Connections[#Connections + 1] = AerialTing.MouseButton1Down:Connect(function()
---	GuisEffect.ClickEffect(AerialTing, false, .8)
---	-- SoundManager:AddSound("ClickMenu", {Parent = playerGui}, "Client")
+-- Connections[#Connections + 1] = AerialTing.MouseButton1Down:Connect(function()
+-- 	GuisEffect.ClickEffect(AerialTing, false, .8)
+-- 	SoundManager:AddSound("ClickMenu", {Parent = playerGui}, "Client")
 
---	if _G.SpaceAerial then
---		AerialTing.Parent.TextLabel.Text = "SPACE FOR AERIAL: OFF"
---		_G.SpaceAerial = true
---	else
---		AerialTing.Parent.TextLabel.Text = "SPACE FOR AERIAL: ON"
---		_G.SpaceAerial = true
---	end
---end)
+-- 	if _G.SpaceAerial then
+-- 		AerialTing.Parent.TextLabel.Text = "SPACE FOR AERIAL: OFF"
+-- 		_G.SpaceAerial = true
+-- 	else
+-- 		AerialTing.Parent.TextLabel.Text = "SPACE FOR AERIAL: ON"
+-- 		_G.SpaceAerial = true
+-- 	end
+-- end)
 
 hud.RageFrame.RageBar:TweenSize(UDim2.new(points.Value / 295,0, .588, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .25)
 
@@ -164,11 +164,9 @@ ReplicateRemote.OnClientEvent:Connect(function(data)
 		Store.PopulatedFrames:Wait()
 	end
 
-	print("Here")
-
 	for _, frame in Store.Frames do
+		local unlockedCharacterFound = unlockedCharacter[frame.Name]
 		local lockedFrameImage = frame:WaitForChild("Locked", 300)
-		local unlockedCharacterFound = unlockedCharacter:FindFirstChild(frame.Name)
 		local miniPreviewImage = frame:WaitForChild("MiniPreview", 300)
 		local characterSelectionScreen = playerGui:WaitForChild("CharacterSelection", 300)
 		local displayFrame = characterSelectionScreen.CharacterSelection.Display
