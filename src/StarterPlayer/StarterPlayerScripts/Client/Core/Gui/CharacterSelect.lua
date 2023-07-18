@@ -1,114 +1,92 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
 
-local Player = Players.LocalPlayer
-local PlayerGui = Player.PlayerGui
-local Remotes = ReplicatedStorage.Remotes
--- Getting the characters 
-local Modules = ReplicatedStorage.Modules
-local Metadata = Modules.Metadata
-local Characters = Metadata.AbilityData.AbilityData:GetChildren()
-local Characterdata = Metadata.CharacterData
---local Characters = Characterdata.CharacterData:GetChildren()
---Getting the GUI Assets
-local Assets = ReplicatedStorage.Assets
-local GuiAssets = Assets.Gui
-local PlayerHUD = PlayerGui.HUD
-local CharacterTemplate = GuiAssets.CharacterTemplate
---Getting the Selections GUI
-local CharacterSelectionScreen = PlayerGui.CharacterSelection
-local DisplayFrame = CharacterSelectionScreen.CharacterSelection.Display
-local CashText = PlayerHUD.Cash
-
---Modules
+local CharacterInfo = require(ReplicatedStorage.Modules.Metadata.CharacterData.CharacterInfo)
 local GuiEffects = require(StarterGui.GuiEffects)
-local CharacterInfo = require(Characterdata.CharacterInfo)
+local Store = require(ReplicatedStorage.Modules.Store)
 
-local SkillUiModule = require(PlayerHUD.UiCore.SkillUI)
---e.e
-local ServerRequest = Remotes.ServerRequest
+local selectedCharacter: string?;
+local player = Players.LocalPlayer
+local playerGui = player.PlayerGui
+-- local Characters = Characterdata.CharacterData:GetChildren()
+local playerCharacterTemplate = ReplicatedStorage.Assets.Gui.CharacterTemplate
+local displayFrame = playerGui.CharacterSelection.CharacterSelection.Display
+-- TODO: Combine connections or replace with maid/janitor
+local clickConnections = {}
+local otherConnections = {}
+local frames = {}
 
---Tables
-local CurrentlyUnlocked = {}
-local ClickConnections = {}
-local OtherConnections = {}
-_G.Frames = {} -- im so sorry, didnt want to move the whole script to starter gui >>//Fresh<<//
 
-local Frames = {}
+local function typewrite(text: string, ...: TextLabel | TextBox)
+    local textElements = {...}
 
---CurrentlySelected
-local SelectedCharacter = nil
+    for i = 1, #text do
+        local partialText = string.sub(text, 1, i)
 
-local NewNumber = os.clock() + math.random(1,9999) + math.random(1,9999)..math.random(1,9999)
-Number = NewNumber
+        for _, element in textElements do
+            element.Text = partialText
+        end
 
---Main things
-local function DisplayCharacter(CharactersData, Frame)
-	DisplayFrame.CharacterName.Text = CharactersData.Name
-	DisplayFrame.View.Image = CharactersData["ImageId"] or ""
-	DisplayFrame.RequiredCash.Text = "$"..CharactersData["Cost"]	
-	DisplayFrame.Select.Text = Frame.Locked.ImageTransparency == 1 and "Select" or "Purchase"
-	DisplayFrame.Select.BackgroundColor3 = Frame.Locked.ImageTransparency == 1 and Color3.fromRGB(37, 255, 80) or Color3.fromRGB(255, 11, 64)
-
-	if Number == NewNumber then
-		coroutine.wrap(function()
-			for Index = 1, #CharactersData.Description do
-				if Number == NewNumber then
-					local TextEffect = string.sub(CharactersData.Description,1,Index)
-					DisplayFrame.Description.Text = TextEffect
-					script.ChatClick:Play()
-					wait()
-				end
-			end
-		end)()
-	end
-	SelectedCharacter = CharactersData.Name
+        script.ChatClick:Play()
+        task.wait(1/30)
+    end
 end
 
 
+local function displayCharacter(charactersData, frame)
+	displayFrame.CharacterName.Text = charactersData.Name
+	displayFrame.View.Image = charactersData["ImageId"] or ""
+	displayFrame.RequiredCash.Text = "$" .. charactersData["Cost"]
+	displayFrame.Select.Text = if frame.Locked.ImageTransparency == 1 then "Select" else "Purchase"
+	displayFrame.Select.BackgroundColor3 = if frame.Locked.ImageTransparency == 1 then Color3.fromRGB(37, 255, 80) else Color3.fromRGB(255, 11, 64)
 
-local function ClearGrid(Frame)
-	Frame:ClearAllChildren()
-	for _, Connection in ipairs(ClickConnections) do
-		Connection:Disconnect()
-		Connection = nil
-	end
+	task.spawn(typewrite, charactersData.Description, displayFrame.Description)
+
+	selectedCharacter = charactersData.Name
 end
 
-local function CreateGrid(Frame)
-	--if #Frame:GetChildren() > #Characters then return end
 
-	for _, Character in ipairs(Characters) do
-		local CharacterFrame = CharacterTemplate:Clone()
-		local Button = CharacterFrame:WaitForChild("ViewportFrame").Title
-		Button.Text = Character.Name
-		ClickConnections[#ClickConnections + 1] = Button.Activated:Connect(function()
-			GuiEffects.ClickEffect(Button, false, .8)
-			script.ClickMenu:Play()
-			DisplayCharacter(CharacterInfo[Character.Name], CharacterFrame)
-		end)
-		CharacterFrame.Parent = Frame
-		CharacterFrame.Name = Character.Name
-		CharacterFrame.MiniPreview.Image = CharacterInfo[Character.Name]["PreviewId"] or CharacterInfo[Character.Name]["ImageId"]
+--if #playerGui.CharacterSelection.CharacterSelection.Selection:GetChildren() < #Characters then
+--if #Frame:GetChildren() > #Characters then return end
 
-		_G.Frames[#_G.Frames + 1] = CharacterFrame
-	end
+for _, character in ReplicatedStorage.Modules.Metadata.AbilityData.AbilityData:GetChildren() do
+	local playerCharInfo = CharacterInfo[character.Name]
+	local characterFrame = playerCharacterTemplate:Clone()
+	local button = characterFrame:WaitForChild("ViewportFrame", 300).Title
+	button.Text = character.Name
+
+	table.insert(clickConnections, button.Activated:Connect(function()
+		GuiEffects.ClickEffect(button, false, .8)
+		script.ClickMenu:Play()
+		displayCharacter(playerCharInfo, characterFrame)
+	end))
+
+	characterFrame.Parent = playerGui.CharacterSelection.CharacterSelection.Selection
+	characterFrame.Name = character.Name
+	characterFrame.MiniPreview.Image = playerCharInfo["PreviewId"] or playerCharInfo["ImageId"]
+
+	table.insert(frames, characterFrame)
 end
 
---if #CharacterSelectionScreen.CharacterSelection.Selection:GetChildren() < #Characters then
-CreateGrid(CharacterSelectionScreen.CharacterSelection.Selection)
+table.insert(otherConnections, displayFrame.Select.Activated:Connect(function()
+	if _G.Data.Unlocked[selectedCharacter] and displayFrame.Select.Text == "Purchase" then return end
 
+	local requestType = if displayFrame.Select.Text == "Select" then "Select" else "Purchase"
 
-
-OtherConnections[#OtherConnections + 1] = DisplayFrame.Select.Activated:Connect(function()
-	
-	
-	if _G.Data.Unlocked[SelectedCharacter] and DisplayFrame.Select.Text == "Purchase" then return end
-	GuiEffects.ClickEffect(DisplayFrame.Select, false, 2)
+	GuiEffects.ClickEffect(displayFrame.Select, false, 2)
 	script.ClickMenu:Play()
-	local _ = (DisplayFrame.Select.Text == "Select" and ServerRequest:FireServer("CharacterChange", SelectedCharacter, "Select")) or ServerRequest:FireServer("CharacterChange", SelectedCharacter,"Purchase")	
-end)
+	ReplicatedStorage.Remotes.ServerRequest:FireServer("CharacterChange", selectedCharacter, requestType)
+end))
+
+Store.Frames = frames
+
+-- cyrus01337: when waiting for character frames to load, which requires frames
+-- to be populated and an event to be fired, for some reason it doesnt run when
+-- left alone my guess is that printing gives the script enough time to do what
+-- it needs to do and be processed in the event loop, or its something else
+-- related to loading
+print("Fired!")
+Store.PopulatedFrames:Fire()
 
 return {}
