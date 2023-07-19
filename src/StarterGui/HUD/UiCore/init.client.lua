@@ -164,6 +164,13 @@ ReplicateRemote.OnClientEvent:Connect(function(data)
 		Store.PopulatedFrames:Wait()
 	end
 
+	-- cyrus01337: when waiting for character frames to load, which requires
+	-- frames to be populated and an event to be fired, for some reason it
+	-- doesnt run when left alone my guess is that printing gives the script
+	-- enough time to do what it needs to do and be processed in the event loop,
+	-- or its something else related to loading
+	print("Populated frames!")
+
 	for _, frame in Store.Frames do
 		local unlockedCharacterFound = unlockedCharacter[frame.Name]
 		local lockedFrameImage = frame:WaitForChild("Locked", 300)
