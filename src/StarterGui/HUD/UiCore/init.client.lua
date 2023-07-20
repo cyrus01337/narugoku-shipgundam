@@ -32,7 +32,7 @@ local CachedModules = {}
 local connections = {}
 _G.SpaceAerial = true
 _G.CameraLock = false
-_G.DataSignal = Signal.New()
+_G.DataSignal = Signal.new()
 _G.FPS = 60
 
 for _, child in script:GetDescendants() do
@@ -140,7 +140,7 @@ RunService.Heartbeat:Connect(function()
 	FpsText.UIGradient.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), (Color3.new(255, 0, 0):Lerp(Color3.fromRGB(0, 255, 0), FpsText.Text / 50)));
 end)
 --]]
---[[_G.StateSignal = Signal.New()
+--[[_G.StateSignal = Signal.new()
 
 _G.StateSignal:Connect(function(Data)
 	local State, StateData = Data.ChosenState, Data.ChosenStateData
