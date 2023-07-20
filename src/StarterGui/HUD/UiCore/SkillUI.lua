@@ -29,34 +29,34 @@ local SkillUi = script.Parent.Parent.SkillUI
 
 
 local SkillUI = {
-	["ChangeSlots"] = function(UiData)	
-		local SelectedCharacter = UiData.Character		
-		local ZSlot,XSlot,CSlot,VSlot = SkillUi.FirstAbilitySlot, SkillUi.SecondAbilitySlot, SkillUi.ThirdAbilitySlot, SkillUi.FourthAbilitySlot 
+	["ChangeSlots"] = function(UiData)
+		local SelectedCharacter = UiData.Character
+		local ZSlot,XSlot,CSlot,VSlot = SkillUi.FirstAbilitySlot, SkillUi.SecondAbilitySlot, SkillUi.ThirdAbilitySlot, SkillUi.FourthAbilitySlot
 
 		local CharacterModule = require(ReplicatedStorage.Modules.Metadata.AbilityData.AbilityData[SelectedCharacter][SelectedCharacter.."Mode"])
 
 		if UiData.HasMode then
-			ZSlot.Skill.Text = CharacterModule["FirstAbility"].Name or ""
+			ZSlot.Skill.Text = if CharacterModule["FirstAbility"] then CharacterModule["FirstAbility"].Name else ""
 
-			XSlot.Skill.Text = CharacterModule["SecondAbility"].Name or ""
+			XSlot.Skill.Text = if CharacterModule["SecondAbility"] then CharacterModule["SecondAbility"].Name else ""
 
-			CSlot.Skill.Text = CharacterModule["ThirdAbility"].Name  or ""
+			CSlot.Skill.Text = if CharacterModule["ThirdAbility"] then CharacterModule["ThirdAbility"].Name else ""
 
-			VSlot.Skill.Text = CharacterModule["FourthAbility"].Name or ""
+			VSlot.Skill.Text = if CharacterModule["FourthAbility"] then CharacterModule["FourthAbility"].Name else ""
 		else
 			local CharacterModule = require(ReplicatedStorage.Modules.Metadata.AbilityData.AbilityData[SelectedCharacter])
-			
+
 			local Animate = Character:WaitForChild("Animate")
 			--http://www.roblox.com/asset/?id=180435571
 
-			ZSlot.Skill.Text = CharacterModule["FirstAbility"].Name or ""
+			ZSlot.Skill.Text = if CharacterModule["FirstAbility"] then CharacterModule["FirstAbility"].Name else ""
 
-			XSlot.Skill.Text = CharacterModule["SecondAbility"].Name or ""
+			XSlot.Skill.Text = if CharacterModule["SecondAbility"] then CharacterModule["SecondAbility"].Name else ""
 
-			CSlot.Skill.Text = CharacterModule["ThirdAbility"].Name  or ""
+			CSlot.Skill.Text = if CharacterModule["ThirdAbility"] then CharacterModule["ThirdAbility"].Name else ""
 
-			VSlot.Skill.Text = CharacterModule["FourthAbility"].Name or ""
-			
+			VSlot.Skill.Text = if CharacterModule["FourthAbility"] then CharacterModule["FourthAbility"].Name else ""
+
 		--[[repeat RunService.RenderStepped:Wait() until _G.Data.Character
 			if _G.Data.Character == "Sanji" then
 				Animate.idle.Animation1.AnimationId = "rbxassetid://6932966037"
