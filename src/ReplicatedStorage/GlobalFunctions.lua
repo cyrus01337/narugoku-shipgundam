@@ -103,10 +103,13 @@ function GlobalFunctions.GetMouseRay(Player,Distance)
 		ViewPointMouse = CurrentCamera:ViewportPointToRay(0.5,0.5)
 	end
 
-	local RaycastResult = Ray.new(ViewPointMouse.Origin,ViewPointMouse.Direction * Distance)
-	local Part,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult,{Character,workspace.World.Visuals})
+	local raycastParams = RaycastParams.new()
+	raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+	raycastParams.FilterDescendantsInstances = { Character, workspace.World.Visuals }
 
-	return Position,Part,ViewPointMouse
+	local raycastResult = workspace:Raycast(ViewPointMouse.Origin, ViewPointMouse.Direction * Distance, raycastParams)
+
+	return raycastResult.Position, raycastResult.Instance, ViewPointMouse
 end
 
 function GlobalFunctions.GetNearPlayers(Character,Radius)

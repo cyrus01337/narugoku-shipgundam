@@ -105,15 +105,22 @@ local function CreateRock(Result)
 end
 
 function GetMousePos(X,Y,Z,Boolean)
-	local RayMag1 = workspace.CurrentCamera:ScreenPointToRay(X, Y)
-	local NewRay = Ray.new(RayMag1.Origin, RayMag1.Direction * ((Z and Z) or 200))
-	local Target,Position,Surface = workspace:FindPartOnRayWithIgnoreList(NewRay, {Character,workspace.World.Visuals})
+	local RayMag1 = workspace.CurrentCamera:ScreenPointToRay(X, Y) 
+
+	local RayParam = RaycastParams.new()
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+
+	local RaycastResult = workspace:Raycast(RayMag1.Origin, RayMag1.Direction * ((Z and Z) or 200))
+	local Target, Position, Surface = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
+
 	if Boolean then
 		return Position,Target,Surface
 	else
 		return Position
 	end
 end
+
 
 local Mouse = Player:GetMouse()
 

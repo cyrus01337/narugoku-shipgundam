@@ -95,8 +95,12 @@ local function RaycastTarget(Radius,Character)
 	
 	local Root = Character:FindFirstChild("HumanoidRootPart")
 
-	local RaycastResult = Ray.new(Root.CFrame.p, (MouseHit.Position - Root.CFrame.Position).Unit * Radius)
-	local Target,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals}, false, false)
+	local RayParam = RaycastParams.new()
+	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+
+	local RaycastResult = workspace:Raycast(Root.Position, (MouseHit.Position - Root.Position).Unit * Radius, RayParam)
+	local Target, Position = RaycastResult.Instance, RaycastResult.Position 
 
 	if Target and Target:FindFirstAncestorWhichIsA("Model"):FindFirstChild("Humanoid") then
 		local Victim = Target:FindFirstAncestorWhichIsA("Model")
@@ -318,11 +322,11 @@ local KilluaMode = {
 			local MouseHit = MouseRemote:InvokeClient(Player)
 
 			local SecondRaycast = Ray.new(Root.Position,(-Root.CFrame.upVector * 50) + (Root.CFrame.lookVector * 50))
-			local Target,Position = workspace:FindPartOnRayWithIgnoreList(SecondRaycast, {Character, workspace.World.Visuals}, false, false)
+			local Target,Position = workspace:FindPartnRayWithIgnoreList(SecondRaycast, {Character, workspace.World.Visuals}, false, false)
 			if Target and Target:FindFirstAncestorWhichIsA("Model"):FindFirstChild("Humanoid") then
 				local VHum = Target:FindFirstAncestorWhichIsA("Model"):FindFirstChild("Humanoid")
 				if VHum.Parent ~= Character then
-					Target,Position = workspace:FindPartOnRayWithIgnoreList(SecondRaycast, {Character, workspace.World.Visuals, VHum.Parent}, false, false)
+					Target,Position = workspace:FindartOnRayWithIgoreList(SecondRaycast, {Character, workspace.World.Visuals, VHum.Parent}, false, false)
 				end
 			end	
 

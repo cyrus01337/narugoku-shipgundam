@@ -7,6 +7,7 @@ local PhysicsService = game:GetService("PhysicsService")
 
 local Debris = game:GetService("Debris")
 local TweenService = game:GetService("TweenService")
+local Workspace = game:GetService("Workspace")
 
 --|| Imports ||--
 local SoundManager = require(ReplicatedStorage.Modules.Shared.SoundManager)
@@ -151,7 +152,15 @@ end
 return function(Area, RaycastBelow, Random1, Random2, Debounce, Duration, Size, Character,Transparency,Type)
 	local PositionCalc = workspace.World.Enviornment.TestPart.Position.Y + 0.125
 	local CFrameIndex = CFrame.new(Area.p)
-	local Target, Position, Surface = workspace:FindPartOnRayWithInclude(Ray.new(CFrameIndex.p, CFrameIndex.upVector * -RaycastBelow), {workspace.World.Map,  workspace.World.Enviornment})
+
+	local RayParams = RaycastParams.new()
+	RayParams.FilterType = Enum.RaycastFilterType.Include
+	RayParams.FilterDescendantsInstances = { workspace.World.Map, workspace.World.Enviornment }
+
+	local RaycastResult = workspace:Raycast(CFrameIndex.Position, CFrameIndex.UpVector * -RaycastBelow, RayParams)
+
+	local Target, Position, Surface = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
+
 	if Target and (Target.Name ~= "iceFloor" or Debounce) and (PositionCalc < Position.Y or Position.Y < workspace.World.Enviornment.TestPart2.Position.Y) then
 		local Ice = nil
 		Ice = CreateFloorFunc(Random1, Random2, Position, Surface, nil, Duration, Size, Character, Transparency,Type)
@@ -165,7 +174,15 @@ return function(Area, RaycastBelow, Random1, Random2, Debounce, Duration, Size, 
 	if Position.Y <= PositionCalc and workspace.World.Enviornment.TestPart2.Position.Y < Position.Y then
 		local CFrameCalculation = CFrame.new(Position.X, PositionCalc + 5, Position.Z)
 		RaycastBelow = 6
-		local Target, Position, Surface = workspace:FindPartOnRayWithInclude(Ray.new(CFrameCalculation.p, CFrameCalculation.upVector * -RaycastBelow), { workspace.World.Map, workspace.World.Enviornment })
+
+		local RayParams = RaycastParams.new()
+		RayParams.FilterType = Enum.RaycastFilterType.Include
+		RayParams.FilterDescendantsInstances = { workspace.World.Map, workspace.World.Enviornment }
+
+		local RaycastResult = workspace:Raycast(CFrameCalculation.Position, CFrameCalculation.UpVector * -RaycastBelow, RayParams)
+
+		local Target, Position, Surface = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
+
 		if Target == nil then
 			CreateFloorFunc(Random1, Random2, nil, nil, CFrame.new(Position.X, PositionCalc, Surface.Z), Duration, Size, Character, Transparency, Type)
 		end

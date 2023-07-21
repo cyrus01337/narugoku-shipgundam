@@ -7,6 +7,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Debris = game:GetService("Debris")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local Workspace = game:GetService("Workspace")
 
 --|| Directories ||--
 local Server = ServerScriptService.Server
@@ -26,11 +27,13 @@ local DamageManager = require(Managers.DamageManager)
 local module = {}
 
 local function RaycastFunction(StartPosition, EndPosition, Distance, Object)
-	local Raycast = Ray.new(StartPosition, CFrame.new(StartPosition, EndPosition).LookVector * Distance)
-	local Target, Position, Surface = workspace:FindPartOnRayWithIgnoreList(Raycast, {
-		workspace.World.Visuals,
-		Object
-	})
+	local RayParam = RaycastParams.new()
+	RayParam.FilterDescendantsInstances = { workspace.World.Visuals, Object }
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+
+	local RayCast = workspace:Raycast(StartPosition, CFrame.new(StartPosition, EndPosition).LookVector * Distance, RayParam)
+	local Target, Position, Surface = RayCast.Instance, RayCast.Position, RayCast.Surface
+
 	return Target, Position, Surface
 end
 

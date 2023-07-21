@@ -1654,9 +1654,14 @@ local HieiVFX = {
 		if GlobalFunctions.CheckDistance(Player, 45) then
 			GlobalFunctions.FreshShake(100,30,1,.2,0)
 		end	
-			
-		local RaycastResult = Ray.new(Root.Position, Vector3.new(0,-1000,500))
-		local Target,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals}, false, false)
+		
+		local RayParam = RaycastParams.new()
+		RayParam.FilterType = Enum.RaycastFilterType.Exclude
+		RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+
+		local RaycastResult = workspace:Raycast(Root.Position, Vector3.new(0, -1000, 500), RayParam)
+		local Target, Position = RaycastResult.Instance, RaycastResult.Position
+
 		if Target then
 			for Index = 1,math.random(6,10) do
 				local x,y,z = math.cos(math.rad(math.random(1,6) * 60)),math.cos(math.rad(math.random(1,6 ) * 60)),math.sin(math.rad(math.random(1,6) * 60))

@@ -8,6 +8,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Debris = game:GetService("Debris")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local Workspace = game:GetService("Workspace")
 
 --|| Directories ||--
 local Server = ServerScriptService.Server
@@ -67,9 +68,12 @@ local function RaycastTarget(Radius,Character)
 	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))	
 
 	local Root = Character:FindFirstChild("HumanoidRootPart")
+	local RayParam = RaycastParams.new()
+	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
 
-	local RaycastResult = Ray.new(Root.CFrame.p, (MouseHit.Position - Root.CFrame.Position).Unit * Radius)
-	local Target,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals}, false, false)
+	local RaycastResult = workspace:Raycast(Root.Position, (MouseHit.Position - Root.Position).Unit * Radius, RayParam)
+	local Target, Position = RaycastResult.Instance, RaycastResult.Position 
 
 	if Target and Target:FindFirstAncestorWhichIsA("Model"):FindFirstChild("Humanoid") then
 		local Victim = Target:FindFirstAncestorWhichIsA("Model")
@@ -122,7 +126,14 @@ end
 local function FloorFreeze(Area, RaycastBelow, Random1, Random2, Debounce, Duration, Size, Character, Transparency, CharacterName, KeyData, Hitlist)
 	Hitlist = {}
 	local CFrameIndex = CFrame.new(Area.p)
-	local Target, Position, Surface = workspace:FindPartOnRayWithInclude(Ray.new(CFrameIndex.p, CFrameIndex.upVector * -RaycastBelow), {workspace.World.Map,  workspace.World.Enviornment})
+
+	local RayParam = RaycastParams.new()
+	RayParam.FilterType = Enum.RaycastFilterType.Include
+	RayParam.FilterDescendantsInstances = { workspace.World.Map, workspace.World.Enviornment }
+
+	local RaycastResult = workspace:Raycast(CFrameIndex.Position, CFrameIndex.UpVector * -RaycastBelow, RayParam)
+	local Target, Position, Surface = RaycastResult.Target, RaycastResult.Position, RaycastResult.Normal
+
 	if Target and (Target.Name ~= "iceFloorHitbox" or Debounce) and (PositionCalc < Position.Y or Position.Y < workspace.World.Enviornment.TestPart2.Position.Y) then
 		local Ice = nil
 		Ice = CreateFloorFunc(Random1, Random2, Position, Surface, nil, Duration,Size,Character,Transparency,Hitlist)
@@ -161,7 +172,14 @@ local function FloorFreeze(Area, RaycastBelow, Random1, Random2, Debounce, Durat
 	if Position.Y <= PositionCalc and workspace.World.Enviornment.TestPart2.Position.Y < Position.Y then
 		local CFrameCalculation = CFrame.new(Position.X, PositionCalc + 5, Position.Z)
 		RaycastBelow = 6
-		local Target, Position, Surface = workspace:FindPartOnRayWithInclude(Ray.new(CFrameCalculation.p, CFrameCalculation.upVector * -RaycastBelow), { workspace.World.Map, workspace.World.Enviornment })
+
+		local RayParam = RaycastParams.new()
+		RayParam.FilterDescendantsInstances = { workspace.World.Map, workspace.World.Enviornment }
+		RayParam.FilterType = Enum.RaycastFilterType.Include
+
+		local RaycastResult = workspace:Raycast(CFrameCalculation.Position, CFrameCalculation.UpVector * -RaycastBelow, RayParam)
+		local Target, Position, Surface = RaycastResult.Target, RaycastResult.Position, RaycastResult.Normal
+
 		if Target == nil then
 			CreateFloorFunc(Random1, Random2, nil, nil, CFrame.new(Position.X, PositionCalc, Position.Z), Duration, Size, Character, Transparency)
 		end

@@ -67,8 +67,14 @@ function HitboxModule.RaycastModule(Player,ExtraData,SkillName,KeyName)
 			local StartRay = (Instances.CFrame * CFrame.new(-HalfSize,0,0)).Position;
 			local EndRay = (Instances.CFrame * CFrame.new(HalfSize,0,0)).Position;
 
-			local ray = Ray.new(StartPoint,(EndPoint - StartPoint).Unit * ExtraData.Size or 4)
-			local Part, Position = workspace:FindPartOnRayWithIgnoreList(ray, {Character, workspace.World.Visuals})
+			local RayParam = RaycastParams.new()
+			RayParam.FilterType = Enum.RaycastFilterType.Exclude
+			RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+
+			local RaycastResult = workspace:Raycast(StartPoint, (EndPoint - StartPoint).Unit * ExtraData.Size or 4, RayParam)
+
+			local Part, Position = RaycastResult.Instance, RaycastResult.Position
+
 			if Part then
 				if Part:IsA("BasePart") and Part.Parent and Part.Parent:FindFirstChild("Humanoid") and Part.Parent:FindFirstChild("Humanoid").Health > 0 then
 					local EnemyPlayer = Players:GetPlayerFromCharacter(Part.Parent)

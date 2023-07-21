@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
+local Workspace = game:GetService("Workspace")
 
 local Tween1 = TweenInfo.new(.2,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0)
 
@@ -28,7 +29,14 @@ return function(Data)
 		local YAndZ = Max * math.random(50, 120) / 100
 		local RandomizedForCalc = 5 + Max * 2
 		local RaycastToSet = CFrame.new(PositionCalc.Position) * CFrame.new(0, RandomizedForCalc, 0)
-		local Target, Position, Surface = workspace:FindPartOnRayWithInclude(Ray.new(RaycastToSet.p, RaycastToSet.upVector * (-RandomizedForCalc * 2)), { workspace.World.Map,})
+
+		local RayParams = RaycastParams.new()
+		RayParams.FilterType = Enum.RaycastFilterType.Include
+		RayParams.FilterDescendantsInstances = { workspace.World.Map }
+
+		local RaycastResult = workspace:Raycast(RaycastToSet.Position, RaycastToSet.UpVector * (-RandomizedForCalc * 2), RayParams)
+
+		local Target, Position, Surface = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Instance
 		
 		local InstancedPart = script.Part:Clone()
 		InstancedPart.CanCollide = false
