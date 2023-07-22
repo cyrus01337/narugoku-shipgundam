@@ -20,5 +20,4 @@ jobs:
         token: ${{ SECRETS.GITHUB_TOKEN }}
 
     - run: rojo build -o dist.rbxl
-    - run: rbxcloud experience publish -f dist.rbxl -p ${{ SECRETS.PROD_PLACE_ID }}
-    -u ${{ SECRETS.PROD_UNIVERSE_ID}} -t published -a ${{ SECRETS.API_KEY }}
+    - run: rbxcloud experience publish -f dist.rbxl -p ${{ SECRETS.PROD_PLACE_ID }} -u ${{ SECRETS.PROD_UNIVERSE_ID}} -t published -a ${{ SECRETS.API_KEY }}
