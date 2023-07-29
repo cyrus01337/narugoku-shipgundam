@@ -1,0 +1,4 @@
+[submodule "src/ReplicatedStorage/Modules/Shared/Utils"]
+	path = src/ReplicatedStorage/Modules/Shared/Utils
+	url = https://github.com/cyrus01337/utils.git
+	branch = luau
