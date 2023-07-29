@@ -8,7 +8,6 @@ local RunService = game:GetService("RunService")
 
 local Debris = game:GetService("Debris")
 local TweenService = game:GetService("TweenService")
-local Workspace = game:GetService("Workspace")
 
 --|| Directories ||--
 local Modules = ReplicatedStorage.Modules

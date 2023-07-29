@@ -7,7 +7,6 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
-local Workspace = game:GetService("Workspace")
 
 --|| Directories ||--
 local Server = ServerScriptService.Server
@@ -133,7 +132,7 @@ local Hiei = {
 			RayData.FilterType = Enum.RaycastFilterType.Exclude
 			RayData.IgnoreWater = true
 
-			local ray = game.Workspace:Raycast(StartPosition, EndPosition, RayData)
+			local ray = workspace:Raycast(StartPosition, EndPosition, RayData)
 
 			if ray then
 				local partHit, pos, normVector = ray.Instance or nil, ray.Position or nil, ray.Normal or nil

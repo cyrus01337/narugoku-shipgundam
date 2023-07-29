@@ -7,7 +7,6 @@ local PhysicsService = game:GetService("PhysicsService")
 
 local Debris = game:GetService("Debris")
 local TweenService = game:GetService("TweenService")
-local Workspace = game:GetService("Workspace")
 
 --|| Imports ||--
 local SoundManager = require(ReplicatedStorage.Modules.Shared.SoundManager)
