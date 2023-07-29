@@ -10,14 +10,15 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+      name: Checkout code
 
-    - name: Install Foreman
-      uses: actions/setup-foreman@v1
+    - uses: Roblox/setup-foreman@v2.1
+      name: Install Foreman
       with:
         version: "^1.1.0"
         token: ${{ SECRETS.GITHUB_TOKEN }}
 
-    - run: rojo build -o dist.rbxl
-    - run: rbxcloud experience publish -f dist.rbxl -p ${{ SECRETS.DEV_PLACE_ID }} -u ${{ SECRETS.DEV_UNIVERSE_ID}} -t published -a ${{ SECRETS.API_KEY }}
+    - name: Publish
+      shell: bash
+      run: rojo build -o dist.rbxlx && rbxcloud experience publish -f dist.rbxlx -t published -p ${{ SECRETS.DEV_PLACE_ID }} -u ${{ SECRETS.DEV_UNIVERSE_ID}} -a ${{ SECRETS.API_KEY }}
