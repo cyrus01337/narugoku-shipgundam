@@ -23,6 +23,4 @@ jobs:
 
     - name: Publish
       shell: bash
-      run: rojo build -o dist.rbxl
-
-    - run: rbxcloud experience publish -f dist.rbxl -t published -p ${{ SECRETS.DEV_PLACE_ID }} -u ${{ SECRETS.DEV_UNIVERSE_ID}} -a ${{ SECRETS.API_KEY }}
+      run: rojo build -o dist.rbxl && rbxcloud experience publish -f dist.rbxl -t published -p ${{ SECRETS.DEV_PLACE_ID }} -u ${{ SECRETS.DEV_UNIVERSE_ID}} -a ${{ SECRETS.API_KEY }}
