@@ -148,11 +148,11 @@ return function(Data)
 		end
 	end))
 
-	local RayParams = RaycastParams.new()
-	RayParams.FilterType = Enum.RaycastFilterType.Exclude
-	RayParams.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+	local RayParam = RaycastParams.new()
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
 
-	local RaycastResult = workspace:Raycast(VRoot.Position, Vector3.yAxis * -1000, RayParams)
+	local RaycastResult = workspace:Raycast(VRoot.Position, Vector3.yAxis * -1000, RayParam) or {}
 	local Part, Position = RaycastResult.Instance, RaycastResult.Position
 
 	if Part then

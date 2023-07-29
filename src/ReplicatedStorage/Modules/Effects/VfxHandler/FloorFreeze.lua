@@ -153,11 +153,16 @@ return function(Area, RaycastBelow, Random1, Random2, Debounce, Duration, Size, 
 	local PositionCalc = workspace.World.Enviornment.TestPart.Position.Y + 0.125
 	local CFrameIndex = CFrame.new(Area.p)
 
-	local RayParams = RaycastParams.new()
-	RayParams.FilterType = Enum.RaycastFilterType.Include
-	RayParams.FilterDescendantsInstances = { workspace.World.Map, workspace.World.Enviornment }
+	local RayParam = RaycastParams.new()
+	RayParam.FilterType = Enum.RaycastFilterType.Include
+	RayParam.FilterDescendantsInstances = { workspace.World.Map, workspace.World.Enviornment }
 
-	local RaycastResult = workspace:Raycast(CFrameIndex.Position, CFrameIndex.UpVector * -RaycastBelow, RayParams)
+	local Origin = CFrameIndex.Position
+	local Direction = CFrameIndex.UpVector * -RaycastBelow
+
+	local RaycastResult = workspace:Raycast(Origin, Direction, RayParam) or {
+		Position = Origin + Direction
+	}
 
 	local Target, Position, Surface = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
 
@@ -175,11 +180,16 @@ return function(Area, RaycastBelow, Random1, Random2, Debounce, Duration, Size, 
 		local CFrameCalculation = CFrame.new(Position.X, PositionCalc + 5, Position.Z)
 		RaycastBelow = 6
 
-		local RayParams = RaycastParams.new()
-		RayParams.FilterType = Enum.RaycastFilterType.Include
-		RayParams.FilterDescendantsInstances = { workspace.World.Map, workspace.World.Enviornment }
+		local RayParam = RaycastParams.new()
+		RayParam.FilterType = Enum.RaycastFilterType.Include
+		RayParam.FilterDescendantsInstances = { workspace.World.Map, workspace.World.Enviornment }
 
-		local RaycastResult = workspace:Raycast(CFrameCalculation.Position, CFrameCalculation.UpVector * -RaycastBelow, RayParams)
+		local Origin = CFrameCalculation.Position
+		local Direction = CFrameCalculation.UpVector * -RaycastBelow
+
+		local RaycastResult = workspace:Raycast(Origin, Direction, RayParam) or {
+			Position = Origin + Direction
+		}
 
 		local Target, Position, Surface = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
 

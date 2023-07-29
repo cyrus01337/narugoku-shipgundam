@@ -72,7 +72,7 @@ local function RaycastTarget(Radius,Character)
 	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
 	RayParam.FilterType = Enum.RaycastFilterType.Exclude
 
-	local RaycastResult = workspace:Raycast(Root.Position, (MouseHit.Position - Root.Position).Unit * Radius, RayParam)
+	local RaycastResult = workspace:Raycast(Root.Position, (MouseHit.Position - Root.Position).Unit * Radius, RayParam) or {}
 	local Target, Position = RaycastResult.Instance, RaycastResult.Position 
 
 	if Target and Target:FindFirstAncestorWhichIsA("Model"):FindFirstChild("Humanoid") then
@@ -131,7 +131,13 @@ local function FloorFreeze(Area, RaycastBelow, Random1, Random2, Debounce, Durat
 	RayParam.FilterType = Enum.RaycastFilterType.Include
 	RayParam.FilterDescendantsInstances = { workspace.World.Map, workspace.World.Enviornment }
 
-	local RaycastResult = workspace:Raycast(CFrameIndex.Position, CFrameIndex.UpVector * -RaycastBelow, RayParam)
+	local Origin = CFrameIndex.Position
+	local Direction = CFrameIndex.UpVector * -RaycastBelow
+
+	local RaycastResult = workspace:Raycast(Origin, Direction, RayParam) or {
+		Position = Origin + Direction
+	}
+
 	local Target, Position, Surface = RaycastResult.Target, RaycastResult.Position, RaycastResult.Normal
 
 	if Target and (Target.Name ~= "iceFloorHitbox" or Debounce) and (PositionCalc < Position.Y or Position.Y < workspace.World.Enviornment.TestPart2.Position.Y) then
@@ -177,7 +183,7 @@ local function FloorFreeze(Area, RaycastBelow, Random1, Random2, Debounce, Durat
 		RayParam.FilterDescendantsInstances = { workspace.World.Map, workspace.World.Enviornment }
 		RayParam.FilterType = Enum.RaycastFilterType.Include
 
-		local RaycastResult = workspace:Raycast(CFrameCalculation.Position, CFrameCalculation.UpVector * -RaycastBelow, RayParam)
+		local RaycastResult = workspace:Raycast(CFrameCalculation.Position, CFrameCalculation.UpVector * -RaycastBelow, RayParam) or {}
 		local Target, Position, Surface = RaycastResult.Target, RaycastResult.Position, RaycastResult.Normal
 
 		if Target == nil then

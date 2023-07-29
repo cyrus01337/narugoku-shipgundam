@@ -31,8 +31,8 @@ local function RaycastFunction(StartPosition, EndPosition, Distance, Object)
 	RayParam.FilterDescendantsInstances = { workspace.World.Visuals, Object }
 	RayParam.FilterType = Enum.RaycastFilterType.Exclude
 
-	local RayCast = workspace:Raycast(StartPosition, CFrame.new(StartPosition, EndPosition).LookVector * Distance, RayParam)
-	local Target, Position, Surface = RayCast.Instance, RayCast.Position, RayCast.Surface
+	local RayCast = workspace:Raycast(StartPosition, CFrame.new(StartPosition, EndPosition).LookVector * Distance, RayParam) or {}
+	local Target, Position, Surface = RayCast.Instance, RayCast.Position, RayCast.Normal
 
 	return Target, Position, Surface
 end

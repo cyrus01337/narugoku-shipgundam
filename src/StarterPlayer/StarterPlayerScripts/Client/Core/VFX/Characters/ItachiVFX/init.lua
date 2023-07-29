@@ -114,7 +114,9 @@ function DirtEffect(Pos,Character,pos2)
 	RayParam.FilterType = Enum.RaycastFilterType.Exclude
 	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals, workspace.World.Live }
 
-	local RaycastResult = workspace:Raycast(Pos, Vector3.new(0, -5, 0), RayParam)
+	local RaycastResult = workspace:Raycast(Pos, Vector3.new(0, -5, 0), RayParam) or {
+		Position = Pos + Vector3.new(0, -5, 0)
+	}
 
 	local Target, Position = RaycastResult.Instance, RaycastResult.Position
 

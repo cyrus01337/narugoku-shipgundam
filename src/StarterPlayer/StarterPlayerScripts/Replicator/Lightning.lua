@@ -32,7 +32,7 @@ return function(a0, a1)
 	RayParam.FilterType = Enum.RaycastFilterType.Exclude
 	RayParam.FilterDescendantsInstances = { char, workspace.Debris }
 
-	local RaycastResult = workspace:Raycast(char.HumanoidRootPart.Position, Vector3.yAxis * -5, RayParam)
+	local RaycastResult = workspace:Raycast(char.HumanoidRootPart.Position, Vector3.yAxis * -5, RayParam) or {}
 	local hit, vec2Pos, surfaceNormal = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
 
 	if hit then

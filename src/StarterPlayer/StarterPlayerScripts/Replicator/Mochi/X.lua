@@ -66,7 +66,7 @@ local function mochiExplosion(OriginPosition, OriginInstance)
 		RayParam.FilterType = Enum.RaycastFilterType.Exclude
 		RayParam.FilterDescendantsInstances = { mochiPart, debrisFolder }
 
-		local RaycastResult = workspace:Raycast(origin, direction, RayParam)
+		local RaycastResult = workspace:Raycast(origin, direction, RayParam) or {}
 
 		local hit, vec2Pos, surfaceNormal = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
 

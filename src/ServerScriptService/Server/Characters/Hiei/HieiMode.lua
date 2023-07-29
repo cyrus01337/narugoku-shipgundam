@@ -101,7 +101,7 @@ local function RaycastTarget(Radius,Character)
 	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
 	RayParam.FilterType = Enum.RaycastFilterType.Exclude
 
-	local RaycastResult = workspace:Raycast(Root.Position, (MouseHit.Position - Root.Position).Unit * Radius, RayParam)
+	local RaycastResult = workspace:Raycast(Root.Position, (MouseHit.Position - Root.Position).Unit * Radius, RayParam) or {}
 	local Target, Position = RaycastResult.Instance, RaycastResult.Position 
 
 	if Target and Target:FindFirstAncestorWhichIsA("Model"):FindFirstChild("Humanoid") then

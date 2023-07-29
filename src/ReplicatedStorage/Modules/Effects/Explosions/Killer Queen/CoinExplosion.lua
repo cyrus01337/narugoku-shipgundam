@@ -70,11 +70,11 @@ return function(Data)
 
 	local Calculation = Part.CFrame - Part.CFrame.Position
 
-	local RayParams = RaycastParams.new()
-	RayParams.FilterType = Enum.RaycastFilterType.Exclude
-	RayParams.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+	local RayParam = RaycastParams.new()
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
 
-	local RaycastResult = workspace:Raycast(Part.PivotOffset, Vector3.yAxis * -1000, raycastParams)
+	local RaycastResult = workspace:Raycast(Part.PivotOffset.Position, Vector3.yAxis * -1000, raycastParams)
 	local PartFount = RaycastResult.Part
 	local Position = RaycastResult.Position
 

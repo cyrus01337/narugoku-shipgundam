@@ -223,7 +223,7 @@ local IchigoVFX = {
 			RayParam.FilterType = Enum.RaycastFilterType.Exclude
 			RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals, workspace.World.Live }
 
-			local RaycastResult = workspace:Raycast(Root.Position, Vector3.new(0, -1000, 500), RayParam)
+			local RaycastResult = workspace:Raycast(Root.Position, Vector3.new(0, -1000, 500), RayParam) or {}
 
 			local Target, Position = RaycastResult.Instance, RaycastResult.Position
 

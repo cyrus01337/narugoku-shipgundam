@@ -115,7 +115,9 @@ function DirtEffect(Pos,Character,pos2)
 	RayParam.FilterType = Enum.RaycastFilterType.Exclude
 	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals, workspace.World.Live }
 
-	local RaycastResult = workspace:Raycast(Pos, Vector3.new(0, -5, 0), RayParam)
+	local RaycastResult = workspace:Raycast(Pos, Vector3.new(0, -5, 0), RayParam) or {
+		Position = Pos + Vector3.new(0, -5, 0)
+	}
 
 	local Target, Position = RaycastResult.Instance, RaycastResult.Position
 
@@ -267,7 +269,7 @@ local SasukeVFX = {
 
 		local PositionCalculation,PositionCalculation2 = End.Position,End.upVector * -200
 
-		local RaycastResult = workspace:Raycast(PositionCalculation,PositionCalculation2,raycastparams)
+		local RaycastResult = workspace:Raycast(PositionCalculation,PositionCalculation2,raycastparams) or {}
 		if RaycastResult and RaycastResult.Instance and (RaycastResult.Position - PositionCalculation).Magnitude < 30 then
 			local LeftDust = ReplicatedStorage.Assets.Effects.Meshes.JutsuDust:Clone()
 			LeftDust.Size = Vector3.new(LeftDust.Size.X,LeftDust.Size.Y,7)

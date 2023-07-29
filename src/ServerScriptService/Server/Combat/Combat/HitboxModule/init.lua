@@ -69,7 +69,7 @@ function HitboxModule.RaycastModule(Player,ExtraData,SkillName,KeyName)
 			RayParam.FilterType = Enum.RaycastFilterType.Exclude
 			RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
 
-			local RaycastResult = workspace:Raycast(StartPoint, (EndPoint - StartPoint).Unit * ExtraData.Size or 4, RayParam)
+			local RaycastResult = workspace:Raycast(StartPoint, (EndPoint - StartPoint).Unit * ExtraData.Size or 4, RayParam) or {}
 
 			local Part, Position = RaycastResult.Instance, RaycastResult.Position
 

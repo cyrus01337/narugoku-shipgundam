@@ -46,7 +46,7 @@ local function mochiImpactBall(OriginPosition, originalSize)
 	RayParam.FilterType = Enum.RaycastFilterType.Exclude
 	RayParam.FilterDescendantsInstances = { debrisFolder }
 
-	local RaycastResult = workspace:Raycast(targetCFrame.Position, Vector3.new(0, -targetSize.Y * 0.65, 0), RayParam)
+	local RaycastResult = workspace:Raycast(targetCFrame.Position, Vector3.new(0, -targetSize.Y * 0.65, 0), RayParam) or {}
 	local hit, vec2Pos, surfaceNormal = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
 	
 	if hit then
@@ -104,7 +104,7 @@ local function mochiExplosion(OriginPosition, OriginInstance)
 		RayParam.FilterType = Enum.RaycastFilterType.Exclude
 		RayParam.FilterDescendantsInstances = { mochiPart, debrisFolder }
 
-		local RaycastResult = workspace:Raycast(rayCheck.Position, Vector3.yAxis * 50, RayParam)
+		local RaycastResult = workspace:Raycast(rayCheck.Position, Vector3.yAxis * 50, RayParam) or {}
 
 		local Rhit, Rvec2Pos, RsurfaceNormal = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
 
@@ -125,7 +125,7 @@ local function mochiExplosion(OriginPosition, OriginInstance)
 		RayParam.FilterType = Enum.RaycastFilterType.Exclude
 		RayParam.FilterDescendantsInstances = { mochiPart, debrisFolder }
 
-		local RaycastResult = workspace:Raycast(origin, direction, RayParam)
+		local RaycastResult = workspace:Raycast(origin, direction, RayParam) or {}
 
 		local hit, vec2Pos, surfaceNormal = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
 

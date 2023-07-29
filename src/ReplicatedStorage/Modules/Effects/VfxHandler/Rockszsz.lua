@@ -30,13 +30,13 @@ return function(Data)
 		local RandomizedForCalc = 5 + Max * 2
 		local RaycastToSet = CFrame.new(PositionCalc.Position) * CFrame.new(0, RandomizedForCalc, 0)
 
-		local RayParams = RaycastParams.new()
-		RayParams.FilterType = Enum.RaycastFilterType.Include
-		RayParams.FilterDescendantsInstances = { workspace.World.Map }
+		local RayParam = RaycastParams.new()
+		RayParam.FilterType = Enum.RaycastFilterType.Include
+		RayParam.FilterDescendantsInstances = { workspace.World.Map }
 
-		local RaycastResult = workspace:Raycast(RaycastToSet.Position, RaycastToSet.UpVector * (-RandomizedForCalc * 2), RayParams)
+		local RaycastResult = workspace:Raycast(RaycastToSet.Position, RaycastToSet.UpVector * (-RandomizedForCalc * 2), RayParam) or {}
 
-		local Target, Position, Surface = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Instance
+		local Target, Position, Surface = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
 		
 		local InstancedPart = script.Part:Clone()
 		InstancedPart.CanCollide = false
