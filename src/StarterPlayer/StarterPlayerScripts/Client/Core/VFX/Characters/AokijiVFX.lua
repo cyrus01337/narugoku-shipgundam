@@ -65,7 +65,7 @@ function GetMousePos(X,Y,Z,Boolean)
 	RayParam.FilterType = Enum.RaycastFilterType.Exclude
 	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
 
-	local RaycastResult = workspace:Raycast(RayMag1.Origin, RayMag1.Direction * ((Z and Z) or 200))
+	local RaycastResult = workspace:Raycast(RayMag1.Origin, RayMag1.Direction * (Z or 200))
 	local Target, Position, Surface = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
 
 	if Boolean then
