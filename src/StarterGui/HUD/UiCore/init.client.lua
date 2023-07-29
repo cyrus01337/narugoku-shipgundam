@@ -32,7 +32,7 @@ local CachedModules = {}
 local connections = {}
 _G.SpaceAerial = true
 _G.CameraLock = false
-_G.DataSignal = Signal.new()
+_G.DataSignal = Signal.New()
 _G.FPS = 60
 
 for _, child in script:GetDescendants() do
@@ -113,13 +113,10 @@ end)
 
 playerHumanoid:GetPropertyChangedSignal("Health"):Connect(function()
 	local healthFrame = hud.CharacterInfo.HealthFrame
+	local tweenSizeArgs = {UDim2.new(playerHumanoid.Health / playerHumanoid.MaxHealth, 0, 1, 0), Enum.EasingDirection.InOut, Enum.EasingStyle.Linear}
 
-	local size = UDim2.new(playerHumanoid.Health / playerHumanoid.MaxHealth, 0, 1, 0)
-	local easingDirection = Enum.EasingDirection.Out
-	local easingStyle = Enum.EasingStyle.Linear
-
-	healthFrame.HealthBckg.HealthBar:TweenSize(size, easingDirection, easingStyle, 0.25, true)
-	healthFrame.HealthBckg.HealthBarRed:TweenSize(size, easingDirection, easingStyle, 0.35, true)
+	healthFrame.HealthBckg.HealthBar:TweenSize(table.unpack(tweenSizeArgs), .25, true)
+	healthFrame.HealthBckg.HealthBarRed:TweenSize(table.unpack(tweenSizeArgs), .35, true)
 end)
 
 -- local Clocker = nil
@@ -143,7 +140,7 @@ RunService.Heartbeat:Connect(function()
 	FpsText.UIGradient.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), (Color3.new(255, 0, 0):Lerp(Color3.fromRGB(0, 255, 0), FpsText.Text / 50)));
 end)
 --]]
---[[_G.StateSignal = Signal.new()
+--[[_G.StateSignal = Signal.New()
 
 _G.StateSignal:Connect(function(Data)
 	local State, StateData = Data.ChosenState, Data.ChosenStateData

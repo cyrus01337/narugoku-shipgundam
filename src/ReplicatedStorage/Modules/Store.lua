@@ -5,5 +5,5 @@ local Signal = require(ReplicatedStorage.Modules.Utility.Signal)
 
 return {
 	Frames = nil,
-	PopulatedFrames = Signal.new(),
+	PopulatedFrames = Signal.New(),
 }

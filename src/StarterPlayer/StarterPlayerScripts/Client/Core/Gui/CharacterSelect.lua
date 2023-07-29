@@ -1,4 +1,3 @@
---!strict
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local StarterGui = game:GetService("StarterGui")
@@ -6,9 +5,6 @@ local StarterGui = game:GetService("StarterGui")
 local CharacterInfo = require(ReplicatedStorage.Modules.Metadata.CharacterData.CharacterInfo)
 local GuiEffects = require(StarterGui.GuiEffects)
 local Store = require(ReplicatedStorage.Modules.Store)
-
-local TYPEWRITE_INTERVAL = 1 / 30
-local TYPEWRITE_AUDIO = script:WaitForChild("ChatClick") :: Sound
 
 local selectedCharacter: string?;
 local player = Players.LocalPlayer
@@ -21,24 +17,20 @@ local clickConnections = {}
 local otherConnections = {}
 local frames = {}
 
-local typewriteThread = nil
 
+local function typewrite(text: string, ...: TextLabel | TextBox)
+    local textElements = {...}
 
-local function typewrite(interval: number, text: string, textElement: TextLabel)
-	textElement.MaxVisibleGraphemes = 0
-	textElement.Text = text
+    for i = 1, #text do
+        local partialText = string.sub(text, 1, i)
 
-	local index = 1
+        for _, element in textElements do
+            element.Text = partialText
+        end
 
-	for _ in utf8.graphemes(textElement.ContentText) do
-		textElement.MaxVisibleGraphemes = index
-
-		index += 1
-
-		TYPEWRITE_AUDIO:Play()
-
-		task.wait(interval)
-	end
+        script.ChatClick:Play()
+        task.wait(1/30)
+    end
 end
 
 
@@ -49,11 +41,7 @@ local function displayCharacter(charactersData, frame)
 	displayFrame.Select.Text = if frame.Locked.ImageTransparency == 1 then "Select" else "Purchase"
 	displayFrame.Select.BackgroundColor3 = if frame.Locked.ImageTransparency == 1 then Color3.fromRGB(37, 255, 80) else Color3.fromRGB(255, 11, 64)
 
-	if typewriteThread then
-		task.cancel(typewriteThread)
-	end
-	
-	typewriteThread = task.spawn(typewrite, TYPEWRITE_INTERVAL, charactersData.Description, displayFrame.Description)
+	task.spawn(typewrite, charactersData.Description, displayFrame.Description)
 
 	selectedCharacter = charactersData.Name
 end
