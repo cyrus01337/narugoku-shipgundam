@@ -19,6 +19,21 @@ jobs:
         version: "^1.1.0"
         token: ${{ SECRETS.GITHUB_TOKEN }}
 
+    - uses: actions-rs/toolchain@v1
+      name: Install Rust
+      with:
+        profile: minimal
+        components: lune
+
+    # - name: Install Lune
+    #   run: cargo install lune --locked
+
     - name: Publish
       shell: bash
-      run: rojo build -o dist.rbxlx && rbxcloud experience publish -f dist.rbxlx -t published -p ${{ SECRETS.DEV_PLACE_ID }} -u ${{ SECRETS.DEV_UNIVERSE_ID}} -a ${{ SECRETS.API_KEY }}
+      # run: |
+      #   lune scripts/download-latest-release.lua
+      #   rojo build -o with-changes.rbxlx
+      #   lune scripts/merge-place-changes.lua
+      #   rbxcloud experience publish -f with-changes.rbxlx -t published -p ${{ SECRETS.DEV_PLACE_ID }} -u ${{ SECRETS.DEV_UNIVERSE_ID}} -a ${{ SECRETS.API_KEY }}
+      run: |
+        which lune
