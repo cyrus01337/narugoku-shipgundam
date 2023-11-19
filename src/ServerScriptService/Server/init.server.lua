@@ -256,8 +256,8 @@ end)
 task.spawn(function()
     local BlockDummy = workspace.World.Live.BlockDummy
     local ParryDummy = workspace.World.Live.ParryDummy
-
-    local BlockHum, ParryHum = BlockDummy:FindFirstChild("Humanoid"), ParryDummy:FindFirstChild("Humanoid")
+    local BlockHum = BlockDummy:FindFirstChild("Humanoid")
+    local ParryHum = ParryDummy:FindFirstChild("Humanoid")
 
     BlockHum:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Combat.Block.BlockIdle):Play()
     ParryHum:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Combat.Block.BlockIdle):Play()
