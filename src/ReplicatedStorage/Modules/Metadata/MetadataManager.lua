@@ -15,10 +15,10 @@ local Utility = require(Utility.Utility)
 
 local CachedModules = {}
 
-for _,Module in pairs(script.Parent:GetDescendants()) do
-	if Module:IsA("ModuleScript") and Module.Name ~= script.Name then
-		CachedModules[Module.Name] = require(Module)
-	end
+for _, Module in pairs(script.Parent:GetDescendants()) do
+    if Module:IsA("ModuleScript") and Module.Name ~= script.Name then
+        CachedModules[Module.Name] = require(Module)
+    end
 end
 
 --||Remotes||--
@@ -32,18 +32,14 @@ local CameraRemote = ReplicatedStorage.Remotes.CameraRemote
 local MetadataManager = {}
 
 function MetadataManager.Init(Player)
-	
---	print("start")
-	
-	for _,Module in pairs(CachedModules) do
-		
-		if Module.CreateProfile then
-			Module.CreateProfile(Player)
-		end
-		
-	end
---	print("finished here")
-end
+    --	print("start")
 
+    for _, Module in pairs(CachedModules) do
+        if Module.CreateProfile then
+            Module.CreateProfile(Player)
+        end
+    end
+    --	print("finished here")
+end
 
 return MetadataManager

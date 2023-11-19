@@ -43,7 +43,6 @@ local SpeedManager = require(Shared.StateManager.Speed)
 
 local SoundManager = require(Shared.SoundManager)
 
-
 local RaycastManager = require(Shared.RaycastManager)
 local TaskScheduler = require(Utility.TaskScheduler)
 
@@ -59,112 +58,126 @@ local CameraRemote = ReplicatedStorage.Remotes.CameraRemote
 local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 local MouseRemote = ReplicatedStorage.Remotes.GetMouse
 
-local function GetNearestFromMouse(Character, Range)	
-	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
+local function GetNearestFromMouse(Character, Range)
+    local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
 
-	for _, Entity in ipairs(workspace.World.Live:GetChildren()) do
-		if Entity:IsA("Model") and GlobalFunctions.IsAlive(Entity) and Entity ~= Character then
-			local EntityPrimary = Entity:FindFirstChild("HumanoidRootPart")
-			local Distance = (MouseHit.Position - EntityPrimary.Position).Magnitude
+    for _, Entity in ipairs(workspace.World.Live:GetChildren()) do
+        if Entity:IsA("Model") and GlobalFunctions.IsAlive(Entity) and Entity ~= Character then
+            local EntityPrimary = Entity:FindFirstChild("HumanoidRootPart")
+            local Distance = (MouseHit.Position - EntityPrimary.Position).Magnitude
 
-			if Distance <= Range then 
-				return Entity or nil
-			end
-		end
-	end
+            if Distance <= Range then
+                return Entity or nil
+            end
+        end
+    end
 end
 
 local HakiDodge = 0
 
 local Meliodas = {
-	["FirstAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-		
-		local Data = ProfileService:GetPlayerProfile(Player)
-	
-		
-		local Victim = GetNearestFromMouse(Character,8) ---GetMouseTarget(ExtraData.MouseTarget, Character) or GetNearPlayers(Character,35)
-		if not Victim then return end
+    ["FirstAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		local Data = Players:GetPlayerFromCharacter(Character) and ProfileService:GetPlayerProfile(Player)			
+        local Data = ProfileService:GetPlayerProfile(Player)
 
-		if Data.Character == "Kiritsugu" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end 	
+        local Victim = GetNearestFromMouse(Character, 8) ---GetMouseTarget(ExtraData.MouseTarget, Character) or GetNearPlayers(Character,35)
+        if not Victim then
+            return
+        end
 
-		
-	end,
+        local Data = Players:GetPlayerFromCharacter(Character) and ProfileService:GetPlayerProfile(Player)
 
-	["SecondAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local HumanoidRootPart,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+        if Data.Character == "Kiritsugu" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
+    end,
 
-		local Data = ProfileService:GetPlayerProfile(Player)
+    ["SecondAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local HumanoidRootPart, Humanoid =
+            Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		if Data.Character == "Kiritsugu" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end 	
-		
-	end,
+        local Data = ProfileService:GetPlayerProfile(Player)
 
-	["ThirdAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local HumanoidRootPart,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+        if Data.Character == "Kiritsugu" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
+    end,
 
-		local Data = ProfileService:GetPlayerProfile(Player)
+    ["ThirdAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local HumanoidRootPart, Humanoid =
+            Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		if Data.Character == "Kiritsugu" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end 	
-	end,
+        local Data = ProfileService:GetPlayerProfile(Player)
 
-	["FourthAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
+        if Data.Character == "Kiritsugu" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
+    end,
 
-		local Data = ProfileService:GetPlayerProfile(Player)
+    ["FourthAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		if Data.Character == "Kiritsugu" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end 	
-		
-		
-		StateManager:ChangeState(Character, "IFrame", 10, {IFrameType = "ObservationHaki"})
-		
-		
-	end;
-	
-	
-	["ObservationHaki"] = function(Data)
-		-- do ur magic here wunbo chan
-		local Character = Data.Character
-		local Victim = Data.Victim
+        local Data = ProfileService:GetPlayerProfile(Player)
 
-		local Player = Players:FindFirstChild(Character.Name)
-		--[[Server Effects here/ Camera shake to client]]--
+        if Data.Character == "Kiritsugu" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
 
-		local direction = "Back"; 
-		HakiDodge += 1
-		if HakiDodge == 1 then
-			direction = "Right"
-		elseif HakiDodge == 2 then
-			direction = "Left"
-		else
-			HakiDodge = 0
-		end	
-		AnimationRemote:FireClient(Player,"Observation"..direction,"Play", {AdjustSpeed = 1})
+        StateManager:ChangeState(Character, "IFrame", 10, { IFrameType = "ObservationHaki" })
+    end,
 
-		NetworkStream.FireClientDistance(Character,"ClientRemote",50,{Character = Character, Module = "KiritsuguVFX", Function = "DoubleAccel"})
-	end,
-	
+    ["ObservationHaki"] = function(Data)
+        -- do ur magic here wunbo chan
+        local Character = Data.Character
+        local Victim = Data.Victim
+
+        local Player = Players:FindFirstChild(Character.Name)
+        --[[Server Effects here/ Camera shake to client]]
+        --
+
+        local direction = "Back"
+        HakiDodge += 1
+        if HakiDodge == 1 then
+            direction = "Right"
+        elseif HakiDodge == 2 then
+            direction = "Left"
+        else
+            HakiDodge = 0
+        end
+        AnimationRemote:FireClient(Player, "Observation" .. direction, "Play", { AdjustSpeed = 1 })
+
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            50,
+            { Character = Character, Module = "KiritsuguVFX", Function = "DoubleAccel" }
+        )
+    end,
 }
-
-
 
 return Meliodas

@@ -1,6 +1,6 @@
- return {
-	Hit = {
-		Object  = false;
-		Hit  = false;
-	}
+return {
+    Hit = {
+        Object = false,
+        Hit = false,
+    },
 }

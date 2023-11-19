@@ -32,21 +32,20 @@ local Effects = ReplicatedStorage.Assets.Effects.Meshes
 local Particles = ReplicatedStorage.Assets.Effects.Particles
 
 local raycastParams = RaycastParams.new()
-raycastParams.FilterDescendantsInstances = {workspace.World.Visuals}
+raycastParams.FilterDescendantsInstances = { workspace.World.Visuals }
 raycastParams.FilterType = Enum.RaycastFilterType.Exclude
 
-return function(Character,ExtraData,MoveData,DashCopy)
-	local Player = Players:GetPlayerFromCharacter(Character)
+return function(Character, ExtraData, MoveData, DashCopy)
+    local Player = Players:GetPlayerFromCharacter(Character)
 
-	local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-	local MoveDirection = Humanoid.MoveDirection
+    local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
+    local MoveDirection = Humanoid.MoveDirection
 
-	local DirectionKey = ExtraData.DirectionKey
+    local DirectionKey = ExtraData.DirectionKey
 
-	local DashingForce = DashCopy.DashingForce
+    local DashingForce = DashCopy.DashingForce
 
-	if not DashCopy.CanDash then return end
-
-	
-	
-end	
+    if not DashCopy.CanDash then
+        return
+    end
+end

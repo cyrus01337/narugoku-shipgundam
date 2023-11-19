@@ -1,49 +1,49 @@
 return {
-	["FirstAbility"] = {
-		Name = "Light Rush",
+    ["FirstAbility"] = {
+        Name = "Light Rush",
 
-		StartTime = 0,
-		Cooldown = 1,
+        StartTime = 0,
+        Cooldown = 1,
 
-		Guardbreak = false,
-		Bool = false,
-		Copyable = true,
+        Guardbreak = false,
+        Bool = false,
+        Copyable = true,
 
-		Damage = 5,
-	},
+        Damage = 5,
+    },
 
-	["SecondAbility"] = {
-		Name = "Rising Light",
+    ["SecondAbility"] = {
+        Name = "Rising Light",
 
-		StartTime = 0,
-		Cooldown = 1,
-		
-		Guardbreak = false,
-		Bool = false,
+        StartTime = 0,
+        Cooldown = 1,
 
-		Damage = 5,
-	},
-	
-	["ThirdAbility"] = {
-		Name = "Light Stars",
+        Guardbreak = false,
+        Bool = false,
 
-		StartTime = 0,
-		Cooldown = 20,
+        Damage = 5,
+    },
 
-		Damage = 25,
-		Copyable = false,
-	},
-	
-	["FourthAbility"] = {
-		Name = "Blooming Flame Undulation",
+    ["ThirdAbility"] = {
+        Name = "Light Stars",
 
-		StartTime = 0,
-		Cooldown = 1,
-		StunTime = 1.25,
+        StartTime = 0,
+        Cooldown = 20,
 
-		Guardbreak = true,
-		Bool = false,
+        Damage = 25,
+        Copyable = false,
+    },
 
-		Damage = 5,
-	}
+    ["FourthAbility"] = {
+        Name = "Blooming Flame Undulation",
+
+        StartTime = 0,
+        Cooldown = 1,
+        StunTime = 1.25,
+
+        Guardbreak = true,
+        Bool = false,
+
+        Damage = 5,
+    },
 }

@@ -1,51 +1,51 @@
 return {
-	["FirstAbility"] = {
-		Name = "Barrage",
+    ["FirstAbility"] = {
+        Name = "Barrage",
 
-		StartTime = 0,
-		Cooldown = 1,
+        StartTime = 0,
+        Cooldown = 1,
 
-		Guardbreak = false,
-		BlockDeduction = .25,
+        Guardbreak = false,
+        BlockDeduction = 0.25,
 
-		Damage = 1.15,
-		StunTime = .775,	
-	},
+        Damage = 1.15,
+        StunTime = 0.775,
+    },
 
-	["SecondAbility"] = {
-		Name = "Star Finger",
+    ["SecondAbility"] = {
+        Name = "Star Finger",
 
-		Damage = 15,
-		StunTime = 2,
-		EndLag = 1,
+        Damage = 15,
+        StunTime = 2,
+        EndLag = 1,
 
-		Guardbreak = true,
+        Guardbreak = true,
 
-		StartTime = 0,
-		Cooldown = 1,
-	},
+        StartTime = 0,
+        Cooldown = 1,
+    },
 
-	["ThirdAbility"] = {
-		Name = "Ora Smash",
+    ["ThirdAbility"] = {
+        Name = "Ora Smash",
 
-		Damage = 12,
-		StunTime = 1,
+        Damage = 12,
+        StunTime = 1,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		StartTime = 0,
-		Cooldown = 1,
-	},
+        StartTime = 0,
+        Cooldown = 1,
+    },
 
-	["FourthAbility"] = {
-		Name = "Beatdown",	
+    ["FourthAbility"] = {
+        Name = "Beatdown",
 
-		Damage = 30,
-		StunTime = 1,
+        Damage = 30,
+        StunTime = 1,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		StartTime = 0,
-		Cooldown = 1,
-	},
+        StartTime = 0,
+        Cooldown = 1,
+    },
 }

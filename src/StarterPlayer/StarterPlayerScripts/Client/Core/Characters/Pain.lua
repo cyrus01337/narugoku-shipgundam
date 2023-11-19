@@ -14,7 +14,6 @@ local Utility = Modules.Utility
 
 --||Imports||--
 
-
 --||Remotes||--
 local ClientRemote = ReplicatedStorage.Remotes.ClientRemote
 local ServerRemote = ReplicatedStorage.Remotes.ServerRemote
@@ -31,25 +30,20 @@ local Humanoid = Character:WaitForChild("Humanoid")
 local Mouse = Player:GetMouse()
 
 local Pain = {
-	["FirstAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{ MouseHit = Mouse.Hit, UnitRay = Mouse.UnitRay})
-	end,
-	["SecondAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{ MouseHit = Mouse.Hit, UnitRay = Mouse.UnitRay})		
-	end,
+    ["FirstAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, { MouseHit = Mouse.Hit, UnitRay = Mouse.UnitRay })
+    end,
+    ["SecondAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, { MouseHit = Mouse.Hit, UnitRay = Mouse.UnitRay })
+    end,
 
-	["ThirdAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{ MouseHit = Mouse.Hit, UnitRay = Mouse.UnitRay})		
-	end,
+    ["ThirdAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, { MouseHit = Mouse.Hit, UnitRay = Mouse.UnitRay })
+    end,
 
-	["FourthAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})		
-	end,
+    ["FourthAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
 }
 
-
-
-
-
-return  Pain
-
+return Pain

@@ -1,41 +1,37 @@
 return {
-	["FirstAbility"] = {
-		Name = "Hellfire",
+    ["FirstAbility"] = {
+        Name = "Hellfire",
 
-		StartTime = os.clock(),
-		Cooldown = 5,
-		
-		Guardbreak = false,
-		
-		Damage = 5,
+        StartTime = os.clock(),
+        Cooldown = 5,
 
-	},
+        Guardbreak = false,
 
-	["SecondAbility"] = {
-		Name = "Almighty Pull",
+        Damage = 5,
+    },
 
-		StartTime = os.clock(),
-		Cooldown = 5,
-		
-		Damage = 5,
+    ["SecondAbility"] = {
+        Name = "Almighty Pull",
 
-	},
-	["ThirdAbility"] = {
-		Name = "Almighty Suck",
+        StartTime = os.clock(),
+        Cooldown = 5,
 
-		StartTime = os.clock(),
-		Cooldown = 5,
-		
-		Damage = 5,
+        Damage = 5,
+    },
+    ["ThirdAbility"] = {
+        Name = "Almighty Suck",
 
-	},
-	["FourthAbility"] = {
-		Name = "Soulsnatch",
-		
-		StartTime = os.clock(),
-		Cooldown = 5,
-				
-		Damage = 5,
+        StartTime = os.clock(),
+        Cooldown = 5,
 
-	}
+        Damage = 5,
+    },
+    ["FourthAbility"] = {
+        Name = "Soulsnatch",
+
+        StartTime = os.clock(),
+        Cooldown = 5,
+
+        Damage = 5,
+    },
 }

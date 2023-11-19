@@ -9,7 +9,6 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local RunService = game:GetService("RunService")
 
-
 --||Imports||--
 local ProfileService = require(script.ProfileService)
 
@@ -25,86 +24,71 @@ local LoadedPlayers = {}
 
 local ProfileWrapper = {}
 
-local MainSessionData = ProfileService.GetProfileStore("PlayerDatav3",
-	DefaultData
-)
+local MainSessionData = ProfileService.GetProfileStore("PlayerDatav3", DefaultData)
 
 --||Functions||--
 local function OnPlayerAdded(Player)
-	local PlayerProfile = MainSessionData:LoadProfileAsync("Player_"..Player.UserId,
-		"ForceLoad"
-	)
+    local PlayerProfile = MainSessionData:LoadProfileAsync("Player_" .. Player.UserId, "ForceLoad")
 
-	if PlayerProfile ~= nil then
-		PlayerProfile:Reconcile()
+    if PlayerProfile ~= nil then
+        PlayerProfile:Reconcile()
 
-		PlayerProfile:ListenToRelease(function()
-			SessionProfiles[Player] = nil
+        PlayerProfile:ListenToRelease(function()
+            SessionProfiles[Player] = nil
 
-			Player:Kick()
-		end)
+            Player:Kick()
+        end)
 
-		if Player:IsDescendantOf(Players) == true then
-			SessionProfiles[Player] = PlayerProfile
-			LoadedPlayers[Player] = true
-		else
-			PlayerProfile:Release()
-		end
-
-	else
-		Player:Kick("Overload of requests.")
-	end
-
+        if Player:IsDescendantOf(Players) == true then
+            SessionProfiles[Player] = PlayerProfile
+            LoadedPlayers[Player] = true
+        else
+            PlayerProfile:Release()
+        end
+    else
+        Player:Kick("Overload of requests.")
+    end
 end
 
-
-
 function ProfileWrapper:GetPlayerProfile(Player)
-	if SessionProfiles[Player] then
-	
-		return SessionProfiles[Player].Data
-	end
-	
-	
-	
-	
-	return nil
+    if SessionProfiles[Player] then
+        return SessionProfiles[Player].Data
+    end
+
+    return nil
 end
 
 function ProfileWrapper:IsLoaded(Player)
-	if LoadedPlayers[Player] == true then
-		return true
-	end
-	
-	return false
+    if LoadedPlayers[Player] == true then
+        return true
+    end
+
+    return false
 end
 
 function ProfileWrapper:Replicate(Player)
-	local PlayerProfile = ProfileWrapper:GetPlayerProfile(Player)
+    local PlayerProfile = ProfileWrapper:GetPlayerProfile(Player)
     --print(PlayerProfile)
-	if PlayerProfile then
-		ReplicateRemote:FireClient(Player, PlayerProfile)
-	end
+    if PlayerProfile then
+        ReplicateRemote:FireClient(Player, PlayerProfile)
+    end
 end
-
 
 --||Initalize||--
 for _, Player in ipairs(Players:GetPlayers()) do
-	OnPlayerAdded(Player)
+    OnPlayerAdded(Player)
 end
-
 
 Players.PlayerAdded:Connect(OnPlayerAdded)
 
 Players.PlayerRemoving:Connect(function(Player)
-	local CurrentProfile = SessionProfiles[Player]
+    local CurrentProfile = SessionProfiles[Player]
 
-	if CurrentProfile ~= nil then
-		LoadedPlayers[Player] = nil
+    if CurrentProfile ~= nil then
+        LoadedPlayers[Player] = nil
 
-		CurrentProfile:Release()
-	end
+        CurrentProfile:Release()
+    end
 end)
-
 
 return ProfileWrapper

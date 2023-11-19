@@ -11,9 +11,9 @@ local Variations = script.Parent
 local ClientVariation = require(Variations.Client)
 
 return function(Table, SoundName, SoundProperties, RemoteData)
-	local Player = SoundProperties.Parent ~= nil and Players:GetPlayerFromCharacter(SoundProperties.Parent.Parent)
-	if Player and MarketPlaceService:UserOwnsGamePassAsync(Player.UserId, 19385554) then
-		local Sound = ClientVariation(Table,SoundName,SoundProperties,RemoteData)
-		return Sound
-	end
+    local Player = SoundProperties.Parent ~= nil and Players:GetPlayerFromCharacter(SoundProperties.Parent.Parent)
+    if Player and MarketPlaceService:UserOwnsGamePassAsync(Player.UserId, 19385554) then
+        local Sound = ClientVariation(Table, SoundName, SoundProperties, RemoteData)
+        return Sound
+    end
 end

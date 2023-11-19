@@ -14,7 +14,6 @@ local Utility = Modules.Utility
 
 --||Imports||--
 
-
 --||Remotes||--
 local ClientRemote = ReplicatedStorage.Remotes.ClientRemote
 local ServerRemote = ReplicatedStorage.Remotes.ServerRemote
@@ -30,24 +29,23 @@ local Humanoid = Character:WaitForChild("Humanoid")
 
 local Mouse = Player:GetMouse()
 
-local Star_Platinum = {	
-	
-	["FirstAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})
-	end,
-	
-	["SecondAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})
-	end,
-	
-	["ThirdAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})
-	end,
-	
-	["FourthAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})
-	end,
+local Star_Platinum = {
+
+    ["FirstAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
+
+    ["SecondAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
+
+    ["ThirdAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
+
+    ["FourthAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
 }
 
 return Star_Platinum
-

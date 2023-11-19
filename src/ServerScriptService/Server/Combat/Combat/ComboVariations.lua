@@ -65,201 +65,268 @@ local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 local AnimationRemote = RemoteFolder.AnimationRemote
 
 local raycastParams = RaycastParams.new()
-raycastParams.FilterDescendantsInstances = {workspace.World.Map}
+raycastParams.FilterDescendantsInstances = { workspace.World.Map }
 raycastParams.FilterType = Enum.RaycastFilterType.Include
 
 local Variations = {
-	["LLRRL"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Humanoid,Root = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
-		
-		local PlayerCombo = AbilityData.ReturnData(Player,"PlayerCombos","GlobalInformation")
-		
-		PlayerCombo.KeysLogged = 0
-		PlayerCombo.ComboVariation = ""
+    ["LLRRL"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Humanoid, Root = Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
 
-		PlayerCombo.Hits = 0
-		
-		StateManager:ChangeState(Character,"Guardbroken",3.35)
-		StateManager:ChangeState(Character,"IFrame",.35)
-		
-		AnimationRemote:FireClient(Player,"BarrageFinisher","Play")
-		
-		wait(.3)
-		NetworkStream.FireClientDistance(Character,"ClientRemote",150,{Character = Character, Module = "CombatVFX", Function = "StartBarrage"})			
+        local PlayerCombo = AbilityData.ReturnData(Player, "PlayerCombos", "GlobalInformation")
 
-		for Index = 1,8 do
-			-- SoundManager:AddSound("BarrageSwing", {Parent = Root, Volume = 3, PlaybackSpeed = 1.4}, "Client")
+        PlayerCombo.KeysLogged = 0
+        PlayerCombo.ComboVariation = ""
 
-			local HitObject = HitboxModule.RaycastModule(Player, {Size = 10, KeysLogged = nil, Type = "Combat"}, KeyData.SerializedKey, CharacterName)
-			if HitObject.Hit then
-				local Victim = HitObject.Object.Parent
-				local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+        PlayerCombo.Hits = 0
 
-				-- SoundManager:AddSound("Punched1",{Parent = Character:FindFirstChild("HumanoidRootPart"),Volume = 5},"Client")
+        StateManager:ChangeState(Character, "Guardbroken", 3.35)
+        StateManager:ChangeState(Character, "IFrame", 0.35)
 
-				CameraRemote:FireClient(Player,"CameraShake",{ FirstText = 1, SecondText = 5})
-				DamageManager.DeductDamage(Character,Victim,KeyData.SerializedKey,CharacterName,{Type = "Combat", KeysLogged = ExtraData.KeysLogged, Damage = .15})
-			end
-			wait(.135)
-		end
-	   coroutine.wrap(function()
-			wait(.22)
-			
-			local HitObject = HitboxModule.RaycastModule(Player, {Size = 10, KeysLogged = math.random(1,3), Type = "Combat"}, KeyData.SerializedKey, CharacterName)
-			if HitObject.Hit then
-				local Victim = HitObject.Object.Parent
-				local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+        AnimationRemote:FireClient(Player, "BarrageFinisher", "Play")
 
-				-- SoundManager:AddSound("Punched1",{Parent = Character:FindFirstChild("HumanoidRootPart"),Volume = 5},"Client")
-				-- SoundManager:AddSound("CombatKnockback", {Parent = Character.HumanoidRootPart, Volume = 3.75}, "Client")
+        wait(0.3)
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            150,
+            { Character = Character, Module = "CombatVFX", Function = "StartBarrage" }
+        )
 
-				local BodyVelocity = Instance.new("BodyVelocity")
-				BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4);
-				BodyVelocity.Velocity = CFrame.new(Root.Position,Root.Position + (Root.CFrame.lookVector * 10) + (Root.CFrame.upVector * -10) ).lookVector * 90
-				BodyVelocity.Parent = VRoot
-				Debris:AddItem(BodyVelocity,.25)
+        for Index = 1, 8 do
+            -- SoundManager:AddSound("BarrageSwing", {Parent = Root, Volume = 3, PlaybackSpeed = 1.4}, "Client")
 
-				FreshRagdoll.DurationRagdoll(Victim,2)
-			end
-			NetworkStream.FireClientDistance(Character,"ClientRemote",150,{Character = Character, Module = "CombatVFX", Function = "LastBarrageHit"})			
-		end)()
-	end,
-	
-	["LLLLR"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Humanoid,Root = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
-		
-		StateManager:ChangeState(Character,"Guardbroken",1.35)
-		StateManager:ChangeState(Character,"IFrame",.35)
-		
-		local Data = ProfileService:GetPlayerProfile(Player)
-		local Type = CharacterInfo[Data.Character]["AnimationType"]
-		
-		local HasCombat = CharacterInfo[Data.Character]["HasCombat"]
-		local SoundType = HasCombat and "Combat" or "Sword"
-		
-		-- SoundManager:AddSound(SoundType.."Swing", {Parent = Root}, "Client")
-		
-		local AnimationFinisher = Type == "Spear" and "SpearFinisher" or Type == "Sword" and "SwordFinisher" or Type == "Combat" and "FistFinisher" or "SanjiFinisher"
-		AnimationRemote:FireClient(Player,AnimationFinisher,"Play")
-				
-		wait(.255)
-		local HitResult,HitObject = HitboxModule.MagnitudeModule(Character, {Range = 6, KeysLogged = 2}, KeyData.SerializedKey, CharacterName, nil, "fap")
-		if HitResult then
-			local Victim = HitObject.Parent
-			local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
-			
-			CameraRemote:FireClient(Player, "CameraShake", {FirstText = 8, SecondText = 10})
-			--CameraRemote:FireClient(Player,"CreateBlur",{Size = 12, Length = .25})
-			
-			local BodyVelocity = Instance.new("BodyVelocity")
-			BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4);
-			BodyVelocity.Velocity = CFrame.new(Root.Position,Root.Position + (Root.CFrame.lookVector * 10) + (Root.CFrame.upVector * -10) ).lookVector * 80
-			BodyVelocity.Parent = VRoot
-			Debris:AddItem(BodyVelocity,.25)
+            local HitObject = HitboxModule.RaycastModule(
+                Player,
+                { Size = 10, KeysLogged = nil, Type = "Combat" },
+                KeyData.SerializedKey,
+                CharacterName
+            )
+            if HitObject.Hit then
+                local Victim = HitObject.Object.Parent
+                local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
 
-			FreshRagdoll.DurationRagdoll(Victim,1.5)
-			NetworkStream.FireClientDistance(Character,"ClientRemote",150,{Character = Character, Victim = Victim, Module = "CombatVFX", Function = "LLLLR"})
-		end
-	end,
-	
-	["LRRL"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Humanoid,HumanoidRootPart = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
+                -- SoundManager:AddSound("Punched1",{Parent = Character:FindFirstChild("HumanoidRootPart"),Volume = 5},"Client")
 
-		local Hits = Character:FindFirstChild("Hits")
+                CameraRemote:FireClient(Player, "CameraShake", { FirstText = 1, SecondText = 5 })
+                DamageManager.DeductDamage(
+                    Character,
+                    Victim,
+                    KeyData.SerializedKey,
+                    CharacterName,
+                    { Type = "Combat", KeysLogged = ExtraData.KeysLogged, Damage = 0.15 }
+                )
+            end
+            wait(0.135)
+        end
+        coroutine.wrap(function()
+            wait(0.22)
 
-		local PlayerCombo = AbilityData.ReturnData(Player,"PlayerCombos","GlobalInformation")
+            local HitObject = HitboxModule.RaycastModule(
+                Player,
+                { Size = 10, KeysLogged = math.random(1, 3), Type = "Combat" },
+                KeyData.SerializedKey,
+                CharacterName
+            )
+            if HitObject.Hit then
+                local Victim = HitObject.Object.Parent
+                local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
 
-		local Stands = Character
+                -- SoundManager:AddSound("Punched1",{Parent = Character:FindFirstChild("HumanoidRootPart"),Volume = 5},"Client")
+                -- SoundManager:AddSound("CombatKnockback", {Parent = Character.HumanoidRootPart, Volume = 3.75}, "Client")
 
-		local HasStand = Stands:FindFirstChild(Character.Name.." - Stand")
+                local BodyVelocity = Instance.new("BodyVelocity")
+                BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+                BodyVelocity.Velocity = CFrame.new(
+                    Root.Position,
+                    Root.Position + (Root.CFrame.lookVector * 10) + (Root.CFrame.upVector * -10)
+                ).lookVector * 90
+                BodyVelocity.Parent = VRoot
+                Debris:AddItem(BodyVelocity, 0.25)
 
-		local AerialAnims = ReplicatedStorage.Assets.Animations.Shared.Combat.Aerial
+                FreshRagdoll.DurationRagdoll(Victim, 2)
+            end
+            NetworkStream.FireClientDistance(
+                Character,
+                "ClientRemote",
+                150,
+                { Character = Character, Module = "CombatVFX", Function = "LastBarrageHit" }
+            )
+        end)()
+    end,
 
-		local Number = -4
+    ["LLLLR"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Humanoid, Root = Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
 
-		local Data = ProfileService:GetPlayerProfile(Player)
-		local AnimationIndex = CharacterInfo[Data.Character]["AerialAnimation"] or "AerialStartUp"	
+        StateManager:ChangeState(Character, "Guardbroken", 1.35)
+        StateManager:ChangeState(Character, "IFrame", 0.35)
 
-		if Hits.Value >= 1 and Humanoid.JumpPower <= 0 and Humanoid:GetState() ~= Enum.HumanoidStateType.Freefall and Humanoid:GetState() ~= Enum.HumanoidStateType.Jumping then
-			SpeedManager.changeSpeed(Character,11,3.25,4e4,nil,false)
-			local _ = (HasStand and HasStand.Humanoid:LoadAnimation(AerialAnims["AerialStartUp"]):Play()) or (HasStand == nil and AnimationRemote:FireClient(Player, AnimationIndex, "Play", {FadeTime = .1, Weight = 1}))
-			local _ = (HasStand and Number and -6.35) or (HasStand == nil and Number and -4)
+        local Data = ProfileService:GetPlayerProfile(Player)
+        local Type = CharacterInfo[Data.Character]["AnimationType"]
 
-			-- SoundManager:AddSound("CombatSwing", {Parent = HumanoidRootPart, Volume = .25}, "Client")
-			StateManager:ChangeState(Character, "Attacking", .275)
+        local HasCombat = CharacterInfo[Data.Character]["HasCombat"]
+        local SoundType = HasCombat and "Combat" or "Sword"
 
-			local CFrameTarget = HumanoidRootPart.CFrame * CFrame.new(0,12,0)
-			local Calculation1,Calculation2 = HumanoidRootPart.Position , HumanoidRootPart.CFrame.upVector * 200
-			local RaycastResults = workspace:Raycast(Calculation1,Calculation2,raycastParams)
-			local Subtraction = HumanoidRootPart.CFrame - HumanoidRootPart.Position
+        -- SoundManager:AddSound(SoundType.."Swing", {Parent = Root}, "Client")
 
-			local BodyPosition = Instance.new("BodyPosition")
-			BodyPosition.MaxForce = Vector3.new(9e9,9e9,9e9)
-			BodyPosition.Position = HumanoidRootPart.Position
-			BodyPosition.P = 2e4
+        local AnimationFinisher = Type == "Spear" and "SpearFinisher"
+            or Type == "Sword" and "SwordFinisher"
+            or Type == "Combat" and "FistFinisher"
+            or "SanjiFinisher"
+        AnimationRemote:FireClient(Player, AnimationFinisher, "Play")
 
-			if RaycastResults and RaycastResults.Position and RaycastResults.Position and (RaycastResults.Position - Calculation1).Magnitude < 20 then
-				CFrameTarget = CFrame.new(RaycastResults.Position) * Subtraction
-			end
+        wait(0.255)
+        local HitResult, HitObject = HitboxModule.MagnitudeModule(
+            Character,
+            { Range = 6, KeysLogged = 2 },
+            KeyData.SerializedKey,
+            CharacterName,
+            nil,
+            "fap"
+        )
+        if HitResult then
+            local Victim = HitObject.Parent
+            local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
 
-			coroutine.wrap(function()
-				local HitResult,HitObject = HitboxModule.MagnitudeModule(Character, {Range = 5, KeysLogged = PlayerCombo.KeysLogged}, KeyData.SerializedKey, CharacterName,"duR")
-				if HitResult then
-					PlayerCombo.KeysLogged = 0
-					PlayerCombo.ComboVariation = ""
-					
-					PlayerCombo.Hits = 0
-					
-				--	GUIRemote:FireClient(Player, "ComboIndicator", {
-					--	Character = Player.Character,
+            CameraRemote:FireClient(Player, "CameraShake", { FirstText = 8, SecondText = 10 })
+            --CameraRemote:FireClient(Player,"CreateBlur",{Size = 12, Length = .25})
 
-					--	Function = "RemoveIndicator",
-					--	Variation = PlayerCombo.ComboVariation
-					--})
-									
-					local Victim = HitObject.Parent
-					local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+            local BodyVelocity = Instance.new("BodyVelocity")
+            BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+            BodyVelocity.Velocity = CFrame.new(
+                Root.Position,
+                Root.Position + (Root.CFrame.lookVector * 10) + (Root.CFrame.upVector * -10)
+            ).lookVector * 80
+            BodyVelocity.Parent = VRoot
+            Debris:AddItem(BodyVelocity, 0.25)
 
-					CameraRemote:FireClient(Player, "CameraShake", {FirstText = 12, SecondText = 8})
-				--	NetworkStream.FireClientDistance(Character,"ClientRemote",150,{Character = Character, KeysLogged = PlayerCombo.KeysLogged, Victim = Victim, Module = "CombatVFX", Function = "Light"})
-					
+            FreshRagdoll.DurationRagdoll(Victim, 1.5)
+            NetworkStream.FireClientDistance(
+                Character,
+                "ClientRemote",
+                150,
+                { Character = Character, Victim = Victim, Module = "CombatVFX", Function = "LLLLR" }
+            )
+        end
+    end,
 
-					StateManager:ChangeState(Character,"Stunned",.55)
-					StateManager:ChangeState(Character,"InAir",2.25)
+    ["LRRL"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Humanoid, HumanoidRootPart =
+            Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
 
-					StateManager:ChangeState(Victim,"InAir",2.25)
-					StateManager:ChangeState(Victim,"Stunned",.85)
-					
-					--StateManager:ChangeState(Character,"IFrame",.35)
-					--StateManager:ChangeState(Character,"Guardbroken",.5)
-					--StateManager:ChangeState(Character,"InAir",2.25)
+        local Hits = Character:FindFirstChild("Hits")
 
-					--StateManager:ChangeState(Victim,"InAir",2.25)
-					--StateManager:ChangeState(Victim,"Stunned",1.85)
-					--StateManager:ChangeState(Character,"Victim",1.85)
+        local PlayerCombo = AbilityData.ReturnData(Player, "PlayerCombos", "GlobalInformation")
 
-					Aerial(Player,{
-						Type = "Start",
-						Victim = Victim,
-						Position = CFrameTarget * CFrame.new(0,0,-5.75).p,
-						Duration = 2.25,
-					})
+        local Stands = Character
 
-					VfxHandler.FaceVictim({Character = Character, Victim = Victim})
+        local HasStand = Stands:FindFirstChild(Character.Name .. " - Stand")
 
-					BodyPosition.Parent = HumanoidRootPart
-					BodyPosition.Position = CFrameTarget.p
-					Debris:AddItem(BodyPosition,2.25)
-				else
-					BodyPosition:Destroy()
-				end
-			end)()
-		end
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-	end,
+        local AerialAnims = ReplicatedStorage.Assets.Animations.Shared.Combat.Aerial
+
+        local Number = -4
+
+        local Data = ProfileService:GetPlayerProfile(Player)
+        local AnimationIndex = CharacterInfo[Data.Character]["AerialAnimation"] or "AerialStartUp"
+
+        if
+            Hits.Value >= 1
+            and Humanoid.JumpPower <= 0
+            and Humanoid:GetState() ~= Enum.HumanoidStateType.Freefall
+            and Humanoid:GetState() ~= Enum.HumanoidStateType.Jumping
+        then
+            SpeedManager.changeSpeed(Character, 11, 3.25, 4e4, nil, false)
+            local _ = (HasStand and HasStand.Humanoid:LoadAnimation(AerialAnims["AerialStartUp"]):Play())
+                or (
+                    HasStand == nil
+                    and AnimationRemote:FireClient(Player, AnimationIndex, "Play", { FadeTime = 0.1, Weight = 1 })
+                )
+            local _ = (HasStand and Number and -6.35) or (HasStand == nil and Number and -4)
+
+            -- SoundManager:AddSound("CombatSwing", {Parent = HumanoidRootPart, Volume = .25}, "Client")
+            StateManager:ChangeState(Character, "Attacking", 0.275)
+
+            local CFrameTarget = HumanoidRootPart.CFrame * CFrame.new(0, 12, 0)
+            local Calculation1, Calculation2 = HumanoidRootPart.Position, HumanoidRootPart.CFrame.upVector * 200
+            local RaycastResults = workspace:Raycast(Calculation1, Calculation2, raycastParams)
+            local Subtraction = HumanoidRootPart.CFrame - HumanoidRootPart.Position
+
+            local BodyPosition = Instance.new("BodyPosition")
+            BodyPosition.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+            BodyPosition.Position = HumanoidRootPart.Position
+            BodyPosition.P = 2e4
+
+            if
+                RaycastResults
+                and RaycastResults.Position
+                and RaycastResults.Position
+                and (RaycastResults.Position - Calculation1).Magnitude < 20
+            then
+                CFrameTarget = CFrame.new(RaycastResults.Position) * Subtraction
+            end
+
+            coroutine.wrap(function()
+                local HitResult, HitObject = HitboxModule.MagnitudeModule(
+                    Character,
+                    { Range = 5, KeysLogged = PlayerCombo.KeysLogged },
+                    KeyData.SerializedKey,
+                    CharacterName,
+                    "duR"
+                )
+                if HitResult then
+                    PlayerCombo.KeysLogged = 0
+                    PlayerCombo.ComboVariation = ""
+
+                    PlayerCombo.Hits = 0
+
+                    --	GUIRemote:FireClient(Player, "ComboIndicator", {
+                    --	Character = Player.Character,
+
+                    --	Function = "RemoveIndicator",
+                    --	Variation = PlayerCombo.ComboVariation
+                    --})
+
+                    local Victim = HitObject.Parent
+                    local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+
+                    CameraRemote:FireClient(Player, "CameraShake", { FirstText = 12, SecondText = 8 })
+                    --	NetworkStream.FireClientDistance(Character,"ClientRemote",150,{Character = Character, KeysLogged = PlayerCombo.KeysLogged, Victim = Victim, Module = "CombatVFX", Function = "Light"})
+
+                    StateManager:ChangeState(Character, "Stunned", 0.55)
+                    StateManager:ChangeState(Character, "InAir", 2.25)
+
+                    StateManager:ChangeState(Victim, "InAir", 2.25)
+                    StateManager:ChangeState(Victim, "Stunned", 0.85)
+
+                    --StateManager:ChangeState(Character,"IFrame",.35)
+                    --StateManager:ChangeState(Character,"Guardbroken",.5)
+                    --StateManager:ChangeState(Character,"InAir",2.25)
+
+                    --StateManager:ChangeState(Victim,"InAir",2.25)
+                    --StateManager:ChangeState(Victim,"Stunned",1.85)
+                    --StateManager:ChangeState(Character,"Victim",1.85)
+
+                    Aerial(Player, {
+                        Type = "Start",
+                        Victim = Victim,
+                        Position = CFrameTarget * CFrame.new(0, 0, -5.75).p,
+                        Duration = 2.25,
+                    })
+
+                    VfxHandler.FaceVictim({ Character = Character, Victim = Victim })
+
+                    BodyPosition.Parent = HumanoidRootPart
+                    BodyPosition.Position = CFrameTarget.p
+                    Debris:AddItem(BodyPosition, 2.25)
+                else
+                    BodyPosition:Destroy()
+                end
+            end)()
+        end
+        DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+    end,
 }
 
 return Variations

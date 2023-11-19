@@ -1,47 +1,47 @@
 return {
-	["FirstAbility"] = {
-		Name = "Demonic Pound",
+    ["FirstAbility"] = {
+        Name = "Demonic Pound",
 
-		StartTime = 0,
-		Cooldown = 1,
+        StartTime = 0,
+        Cooldown = 1,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		Damage = 1.15,
-		StunTime = .775,	
-	},
+        Damage = 1.15,
+        StunTime = 0.775,
+    },
 
-	["SecondAbility"] = {
-		Name = "-",
+    ["SecondAbility"] = {
+        Name = "-",
 
-		Damage = 15,
+        Damage = 15,
 
-		Guardbreak = true,
+        Guardbreak = true,
 
-		StartTime = 0,
-		Cooldown = 1,
-	},
+        StartTime = 0,
+        Cooldown = 1,
+    },
 
-	["ThirdAbility"] = {
-		Name = "-",
+    ["ThirdAbility"] = {
+        Name = "-",
 
-		Damage = 12,
+        Damage = 12,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		StartTime = 0,
-		Cooldown = 1,
-	},
+        StartTime = 0,
+        Cooldown = 1,
+    },
 
-	["FourthAbility"] = {
-		Name = "-",	
+    ["FourthAbility"] = {
+        Name = "-",
 
-		Damage = 30,
-		StunTime = 1,
+        Damage = 30,
+        StunTime = 1,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		StartTime = 0,
-		Cooldown = 1,
-	},
+        StartTime = 0,
+        Cooldown = 1,
+    },
 }

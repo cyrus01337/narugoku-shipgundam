@@ -61,269 +61,372 @@ local CameraRemote = ReplicatedStorage.Remotes.CameraRemote
 local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 local MouseRemote = ReplicatedStorage.Remotes.GetMouse
 
-local function GetNearPlayers(Character,Radius)
-	local ChosenVictim;
-	local Live = workspace.World.Live
+local function GetNearPlayers(Character, Radius)
+    local ChosenVictim
+    local Live = workspace.World.Live
 
-	local HumanoidRootPart = Character.PrimaryPart
+    local HumanoidRootPart = Character.PrimaryPart
 
-	for _,Victim in ipairs(Live:GetChildren()) do
-		if Victim:FindFirstChild("Humanoid") and Victim.Humanoid.Health > 0 then
-			local EnemyRootPart = Victim:FindFirstChild("PrimaryPart") or Victim:FindFirstChild("HumanoidRootPart");
+    for _, Victim in ipairs(Live:GetChildren()) do
+        if Victim:FindFirstChild("Humanoid") and Victim.Humanoid.Health > 0 then
+            local EnemyRootPart = Victim:FindFirstChild("PrimaryPart") or Victim:FindFirstChild("HumanoidRootPart")
 
-			if (EnemyRootPart.Position - HumanoidRootPart.Position).Magnitude <= Radius then
-				if Victim ~= Character then
-					ChosenVictim = Victim 
-				end
-			end
-		end
-	end
+            if (EnemyRootPart.Position - HumanoidRootPart.Position).Magnitude <= Radius then
+                if Victim ~= Character then
+                    ChosenVictim = Victim
+                end
+            end
+        end
+    end
 
-	return ChosenVictim
+    return ChosenVictim
 end
 
-local function GetMouseTarget(Target,Character,Radius)
-	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
+local function GetMouseTarget(Target, Character, Radius)
+    local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
 
-	local Root = Character:FindFirstChild("HumanoidRootPart")
-	if (Root.Position - MouseHit.Position).Magnitude > Radius then return end	
+    local Root = Character:FindFirstChild("HumanoidRootPart")
+    if (Root.Position - MouseHit.Position).Magnitude > Radius then
+        return
+    end
 
-	if Target and Target.Parent:FindFirstChild("Humanoid") and Target:IsA("BasePart") and not Target:IsDescendantOf(Character) and GlobalFunctions.IsAlive(Target.Parent) then
-		return Target.Parent or nil
-	end
+    if
+        Target
+        and Target.Parent:FindFirstChild("Humanoid")
+        and Target:IsA("BasePart")
+        and not Target:IsDescendantOf(Character)
+        and GlobalFunctions.IsAlive(Target.Parent)
+    then
+        return Target.Parent or nil
+    end
 end
 
-local function GetNearestFromMouse(Character, Range)	
-	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
+local function GetNearestFromMouse(Character, Range)
+    local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
 
-	for _, Entity in ipairs(workspace.World.Live:GetChildren()) do
-		if Entity:IsA("Model") and GlobalFunctions.IsAlive(Entity) and Entity ~= Character then
-			local EntityPrimary = Entity:FindFirstChild("HumanoidRootPart")
-			local Distance = (MouseHit.Position - EntityPrimary.Position).Magnitude
+    for _, Entity in ipairs(workspace.World.Live:GetChildren()) do
+        if Entity:IsA("Model") and GlobalFunctions.IsAlive(Entity) and Entity ~= Character then
+            local EntityPrimary = Entity:FindFirstChild("HumanoidRootPart")
+            local Distance = (MouseHit.Position - EntityPrimary.Position).Magnitude
 
-			if Distance <= Range then 
-				return Entity or nil
-			end
-		end
-	end
+            if Distance <= Range then
+                return Entity or nil
+            end
+        end
+    end
 end
 
 local Luffy = {
 
-	["FirstAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-		
-		local Victim = GetNearestFromMouse(Character,20) ---GetMouseTarget(ExtraData.MouseTarget, Character) or GetNearPlayers(Character,35)
-		if not Victim then return end
-		
-		local Mouse = MouseRemote:InvokeClient(Player)
-		if (Root.Position - Mouse.Position).Magnitude > 45 then return end
-		
-		local Data = ProfileService:GetPlayerProfile(Player)	
-		if Data.Character == "Luffy" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end
+    ["FirstAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		local VRoot,VHum = Victim:FindFirstChild("HumanoidRootPart"),Victim:FindFirstChild("Humanoid")
+        local Victim = GetNearestFromMouse(Character, 20) ---GetMouseTarget(ExtraData.MouseTarget, Character) or GetNearPlayers(Character,35)
+        if not Victim then
+            return
+        end
 
-		SpeedManager.changeSpeed(Character,0,.925,2.5) --function(Character,Speed,Duration,Priority)
-		StateManager:ChangeState(Character,"Guardbroken",.85)
+        local Mouse = MouseRemote:InvokeClient(Player)
+        if (Root.Position - Mouse.Position).Magnitude > 45 then
+            return
+        end
 
-		GlobalFunctions.NewInstance("StringValue",{Parent = Character, Name = "Aiming", Value = Victim.Name},.75)
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Luffy" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
 
-		AnimationRemote:FireClient(Player, "GomuPistole", "Play")
+        local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
 
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Distance = 100, Module = "LuffyVFX", Function = "Pistole"})
-		Hum.AutoRotate = false
+        SpeedManager.changeSpeed(Character, 0, 0.925, 2.5) --function(Character,Speed,Duration,Priority)
+        StateManager:ChangeState(Character, "Guardbroken", 0.85)
 
-		wait(.75)
+        GlobalFunctions.NewInstance("StringValue", { Parent = Character, Name = "Aiming", Value = Victim.Name }, 0.75)
 
-		TaskScheduler:AddTask(.35,function()
-			Hum.AutoRotate = true
-		end)
+        AnimationRemote:FireClient(Player, "GomuPistole", "Play")
 
-		if StateManager:Peek(Character,"Stunned") then
-			AnimationRemote:FireClient(Player, "GomuPistole", "Stop")
-			return 
-		end
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            200,
+            { Character = Character, Distance = 100, Module = "LuffyVFX", Function = "Pistole" }
+        )
+        Hum.AutoRotate = false
 
-		local BodyVelocity = Instance.new("BodyVelocity")
-		BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4);
-		BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 30
-		BodyVelocity.Parent = VRoot
-		Debris:AddItem(BodyVelocity,.25)
+        wait(0.75)
 
-		SpeedManager.changeSpeed(Character,5,1,3.5) --function(Character,Speed,Duration,Priority)
-		StateManager:ChangeState(Character,"Stunned",1)
+        TaskScheduler:AddTask(0.35, function()
+            Hum.AutoRotate = true
+        end)
 
-		DamageManager.DeductDamage(Character,Victim,KeyData.SerializedKey,CharacterName,{Type = "Combat", KeysLogged = 1})
+        if StateManager:Peek(Character, "Stunned") then
+            AnimationRemote:FireClient(Player, "GomuPistole", "Stop")
+            return
+        end
 
-		CameraRemote:FireClient(Player, "CameraShake", {FirstText = 9, SecondText = 6})		
-	end,
+        local BodyVelocity = Instance.new("BodyVelocity")
+        BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+        BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 30
+        BodyVelocity.Parent = VRoot
+        Debris:AddItem(BodyVelocity, 0.25)
 
-	["SecondAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+        SpeedManager.changeSpeed(Character, 5, 1, 3.5) --function(Character,Speed,Duration,Priority)
+        StateManager:ChangeState(Character, "Stunned", 1)
 
-		GlobalFunctions.NewInstance("BoolValue",{Name = "Aiming",Parent = Character},.85)
-		
-		local Data = ProfileService:GetPlayerProfile(Player)
-		if Data.Character == "Luffy" then 
-		    CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName) 
-		end		
-	
-		--[[ Fire Animation ]]--
-		StateManager:ChangeState(Character,"Guardbroken",.85)
-		AnimationRemote:FireClient(Player, "GomuAxe", "Play")
+        DamageManager.DeductDamage(
+            Character,
+            Victim,
+            KeyData.SerializedKey,
+            CharacterName,
+            { Type = "Combat", KeysLogged = 1 }
+        )
 
-		--[[ Fire Cero Client ]]--
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Distance = 100, Module = "LuffyVFX", Function = "Axe"})
-		Humanoid.AutoRotate = false
+        CameraRemote:FireClient(Player, "CameraShake", { FirstText = 9, SecondText = 6 })
+    end,
 
-		wait(.75)
-		Humanoid.AutoRotate = true
-		local ValidEntities = RaycastManager:GetEntitiesFromPoint(Root.Position, workspace.World.Live:GetChildren(), {[Character] = true}, 18)
-		for Index = 1, #ValidEntities do
-			local Entity = ValidEntities[Index]
+    ["SecondAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-			local BodyVelocity = Instance.new("BodyVelocity")
-			BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4);
-			BodyVelocity.Velocity = CFrame.new(Root.Position,Root.Position + (Root.CFrame.lookVector * 10) + (Root.CFrame.upVector * -10) ).lookVector * 80
-			BodyVelocity.Parent = Entity.HumanoidRootPart
-			Debris:AddItem(BodyVelocity,.25)
+        GlobalFunctions.NewInstance("BoolValue", { Name = "Aiming", Parent = Character }, 0.85)
 
-			Ragdoll.DurationRagdoll(Entity,1)
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Luffy" then
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+        end
 
-			DamageManager.DeductDamage(Character,Entity,KeyData.SerializedKey, CharacterName, {Type = "Combat"})
-		end
-		SpeedManager.changeSpeed(Character,4,1.5,3.5) --function(Character,Speed,Duration,Priority)
-		StateManager:ChangeState(Character,"Stunned",1.5)
+        --[[ Fire Animation ]]
+        --
+        StateManager:ChangeState(Character, "Guardbroken", 0.85)
+        AnimationRemote:FireClient(Player, "GomuAxe", "Play")
 
-		-- SoundManager:AddSound("BOOM!",{Parent = Root, Volume = 3}, "Client")
+        --[[ Fire Cero Client ]]
+        --
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            200,
+            { Character = Character, Distance = 100, Module = "LuffyVFX", Function = "Axe" }
+        )
+        Humanoid.AutoRotate = false
 
-		CameraRemote:FireClient(Player, "CameraShake", {FirstText = 6, SecondText = 12})
-	end,
+        wait(0.75)
+        Humanoid.AutoRotate = true
+        local ValidEntities = RaycastManager:GetEntitiesFromPoint(
+            Root.Position,
+            workspace.World.Live:GetChildren(),
+            { [Character] = true },
+            18
+        )
+        for Index = 1, #ValidEntities do
+            local Entity = ValidEntities[Index]
 
-	["ThirdAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local HumanoidRootPart,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
-		local Mouse = MouseRemote:InvokeClient(Player)
-		
-		local Data = ProfileService:GetPlayerProfile(Player)	
-		if Data.Character == "Luffy" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end
-		
-		StateManager:ChangeState(Character,"Guardbroken",1.75)
-		GlobalFunctions.NewInstance("BoolValue",{Name = "Aiming",Parent = Character},.85)
-		
-		--[[ Fire Animation ]]--
-		AnimationRemote:FireClient(Player, "GomuBazooka", "Play")
+            local BodyVelocity = Instance.new("BodyVelocity")
+            BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+            BodyVelocity.Velocity = CFrame.new(
+                Root.Position,
+                Root.Position + (Root.CFrame.lookVector * 10) + (Root.CFrame.upVector * -10)
+            ).lookVector * 80
+            BodyVelocity.Parent = Entity.HumanoidRootPart
+            Debris:AddItem(BodyVelocity, 0.25)
 
-		--[[ Fire Cero Client ]]--
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Distance = 100, Module = "LuffyVFX", Function = "Bazooka"})
+            Ragdoll.DurationRagdoll(Entity, 1)
 
-		wait(.75)
-		local StartPoint = HumanoidRootPart.CFrame
+            DamageManager.DeductDamage(Character, Entity, KeyData.SerializedKey, CharacterName, { Type = "Combat" })
+        end
+        SpeedManager.changeSpeed(Character, 4, 1.5, 3.5) --function(Character,Speed,Duration,Priority)
+        StateManager:ChangeState(Character, "Stunned", 1.5)
 
-		local Size = Assets.Models.Misc.Volleyballs.volleyball2.Size
+        -- SoundManager:AddSound("BOOM!",{Parent = Root, Volume = 3}, "Client")
 
-		local Points = RaycastManager:GetSquarePoints(StartPoint, Size.X * 2, Size.X * 2)
+        CameraRemote:FireClient(Player, "CameraShake", { FirstText = 6, SecondText = 12 })
+    end,
 
-		local MouseHit = MouseRemote:InvokeClient(Player)
+    ["ThirdAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local HumanoidRootPart, Humanoid =
+            Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		local Direction = (MouseHit.Position - StartPoint.Position).Unit
-		RaycastManager:CastProjectileHitbox({
-			Points = Points,
-			Direction =  Direction,
-			Velocity = 200,
-			Lifetime = .85,
-			Iterations = 50,
-			Visualize = false,
-			Function = function(RaycastResult)
-				local ValidEntities = RaycastManager:GetEntitiesFromPoint(RaycastResult.Position, workspace.World.Live:GetChildren(), {[Character] = true}, 5)
-				for Index = 1, #ValidEntities do
-					local Entity = ValidEntities[Index]
-					if not StateManager:Peek(Entity,"Blocking") then
-						local BodyVelocity = Instance.new("BodyVelocity")
-						BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4);
-						BodyVelocity.Velocity = CFrame.new(HumanoidRootPart.Position,HumanoidRootPart.Position + (HumanoidRootPart.CFrame.lookVector * 10) + (HumanoidRootPart.CFrame.upVector * -10) ).lookVector * 100
-						BodyVelocity.Parent = Entity.HumanoidRootPart
-						Debris:AddItem(BodyVelocity,.25)
+        local Mouse = MouseRemote:InvokeClient(Player)
 
-						Ragdoll.DurationRagdoll(Entity,1)
-					end	
-					DamageManager.DeductDamage(Character,Entity,KeyData.SerializedKey,CharacterName, {Type = "Combat"})
-				end
-			end,
-			Ignore = {Character, workspace.World.Visuals}
-		})
-		CameraRemote:FireClient(Player, "CameraShake", {FirstText = 5, SecondText = 8})
-	end,
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Luffy" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
 
-	["FourthAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
-		local Data = ProfileService:GetPlayerProfile(Player)
-		if Data.Character == "Luffy" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end
+        StateManager:ChangeState(Character, "Guardbroken", 1.75)
+        GlobalFunctions.NewInstance("BoolValue", { Name = "Aiming", Parent = Character }, 0.85)
 
-		--[[ Set States ]]--
-		StateManager:ChangeState(Character,"Guardbroken",2.5)
-		SpeedManager.changeSpeed(Character,4,2.5,3.5) --function(Character,Speed,Duration,Priority)
+        --[[ Fire Animation ]]
+        --
+        AnimationRemote:FireClient(Player, "GomuBazooka", "Play")
 
-		--GlobalFunctions.NewInstance("BoolValue",{Name = "Aiming",Parent = Character},3)
+        --[[ Fire Cero Client ]]
+        --
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            200,
+            { Character = Character, Distance = 100, Module = "LuffyVFX", Function = "Bazooka" }
+        )
 
-		--[[ Fire Clients ]]--
-		AnimationRemote:FireClient(Player,"GomuGatling","Play")
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Distance = 100, Module = "LuffyVFX", Function = "Gatling"})
+        wait(0.75)
+        local StartPoint = HumanoidRootPart.CFrame
 
-		local PlayerCombo = AbilityData.ReturnData(Player,"PlayerCombos","GlobalInformation")
+        local Size = Assets.Models.Misc.Volleyballs.volleyball2.Size
 
-		local TimeEvaluation = os.clock() - PlayerCombo.LastPressed <= .8 and true or false
+        local Points = RaycastManager:GetSquarePoints(StartPoint, Size.X * 2, Size.X * 2)
 
-		for _ = 1,15 do
-			wait(.125)
-			local NumberEvaluation = (PlayerCombo.KeysLogged < 5 and TimeEvaluation and PlayerCombo.KeysLogged + 1) or (PlayerCombo.KeysLogged > 5 and 1) or (not PlayerCombo.TimeEvaluation and 1)
+        local MouseHit = MouseRemote:InvokeClient(Player)
 
-			PlayerCombo.Hits += 1
-			PlayerCombo.KeysLogged = NumberEvaluation
+        local Direction = (MouseHit.Position - StartPoint.Position).Unit
+        RaycastManager:CastProjectileHitbox({
+            Points = Points,
+            Direction = Direction,
+            Velocity = 200,
+            Lifetime = 0.85,
+            Iterations = 50,
+            Visualize = false,
+            Function = function(RaycastResult)
+                local ValidEntities = RaycastManager:GetEntitiesFromPoint(
+                    RaycastResult.Position,
+                    workspace.World.Live:GetChildren(),
+                    { [Character] = true },
+                    5
+                )
+                for Index = 1, #ValidEntities do
+                    local Entity = ValidEntities[Index]
+                    if not StateManager:Peek(Entity, "Blocking") then
+                        local BodyVelocity = Instance.new("BodyVelocity")
+                        BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+                        BodyVelocity.Velocity = CFrame.new(
+                            HumanoidRootPart.Position,
+                            HumanoidRootPart.Position
+                                + (HumanoidRootPart.CFrame.lookVector * 10)
+                                + (HumanoidRootPart.CFrame.upVector * -10)
+                        ).lookVector * 100
+                        BodyVelocity.Parent = Entity.HumanoidRootPart
+                        Debris:AddItem(BodyVelocity, 0.25)
 
-			local HitObject = HitboxModule.RaycastModule(Player, {Visualize = false, DmgType = "Snake", Size = 20, KeysLogged = PlayerCombo.KeysLogged, Type = "Sword"}, KeyData.SerializedKey, CharacterName)
-			if HitObject.Hit then
-				local Victim = HitObject.Object.Parent
-				local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+                        Ragdoll.DurationRagdoll(Entity, 1)
+                    end
+                    DamageManager.DeductDamage(
+                        Character,
+                        Entity,
+                        KeyData.SerializedKey,
+                        CharacterName,
+                        { Type = "Combat" }
+                    )
+                end
+            end,
+            Ignore = { Character, workspace.World.Visuals },
+        })
+        CameraRemote:FireClient(Player, "CameraShake", { FirstText = 5, SecondText = 8 })
+    end,
 
-				CameraRemote:FireClient(Player,"CameraShake",{ FirstText = 1, SecondText = 5})
-				NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Victim = Victim, Module = "LuffyVFX", Function = "GatlingHitVFX"})
+    ["FourthAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-				local BodyVelocity = Instance.new("BodyVelocity")
-				BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4);
-				BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 5
-				BodyVelocity.Parent = Root
-				Debris:AddItem(BodyVelocity,.25)
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Luffy" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
 
-				local BodyVelocity = Instance.new("BodyVelocity")
-				BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4);
-				BodyVelocity.Name = "SnakeAwakenKnockback"
-				BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 6
-				BodyVelocity.Parent = VRoot
-				Debris:AddItem(BodyVelocity,.25)
+        --[[ Set States ]]
+        --
+        StateManager:ChangeState(Character, "Guardbroken", 2.5)
+        SpeedManager.changeSpeed(Character, 4, 2.5, 3.5) --function(Character,Speed,Duration,Priority)
 
-				DamageManager.DeductDamage(Character,Victim,KeyData.SerializedKey,CharacterName,{Type = ExtraData.Type, KeysLogged = ExtraData.KeysLogged})
-			end
-			SpeedManager.changeSpeed(Character,3,.225,3.5) --function(Character,Speed,Duration,Priority)
-			StateManager:ChangeState(Character,"Stunned",.225)
-		end
-	end
+        --GlobalFunctions.NewInstance("BoolValue",{Name = "Aiming",Parent = Character},3)
+
+        --[[ Fire Clients ]]
+        --
+        AnimationRemote:FireClient(Player, "GomuGatling", "Play")
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            200,
+            { Character = Character, Distance = 100, Module = "LuffyVFX", Function = "Gatling" }
+        )
+
+        local PlayerCombo = AbilityData.ReturnData(Player, "PlayerCombos", "GlobalInformation")
+
+        local TimeEvaluation = os.clock() - PlayerCombo.LastPressed <= 0.8 and true or false
+
+        for _ = 1, 15 do
+            wait(0.125)
+            local NumberEvaluation = (PlayerCombo.KeysLogged < 5 and TimeEvaluation and PlayerCombo.KeysLogged + 1)
+                or (PlayerCombo.KeysLogged > 5 and 1)
+                or (not PlayerCombo.TimeEvaluation and 1)
+
+            PlayerCombo.Hits += 1
+            PlayerCombo.KeysLogged = NumberEvaluation
+
+            local HitObject = HitboxModule.RaycastModule(
+                Player,
+                { Visualize = false, DmgType = "Snake", Size = 20, KeysLogged = PlayerCombo.KeysLogged, Type = "Sword" },
+                KeyData.SerializedKey,
+                CharacterName
+            )
+            if HitObject.Hit then
+                local Victim = HitObject.Object.Parent
+                local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+
+                CameraRemote:FireClient(Player, "CameraShake", { FirstText = 1, SecondText = 5 })
+                NetworkStream.FireClientDistance(
+                    Character,
+                    "ClientRemote",
+                    200,
+                    { Character = Character, Victim = Victim, Module = "LuffyVFX", Function = "GatlingHitVFX" }
+                )
+
+                local BodyVelocity = Instance.new("BodyVelocity")
+                BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+                BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 5
+                BodyVelocity.Parent = Root
+                Debris:AddItem(BodyVelocity, 0.25)
+
+                local BodyVelocity = Instance.new("BodyVelocity")
+                BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+                BodyVelocity.Name = "SnakeAwakenKnockback"
+                BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 6
+                BodyVelocity.Parent = VRoot
+                Debris:AddItem(BodyVelocity, 0.25)
+
+                DamageManager.DeductDamage(
+                    Character,
+                    Victim,
+                    KeyData.SerializedKey,
+                    CharacterName,
+                    { Type = ExtraData.Type, KeysLogged = ExtraData.KeysLogged }
+                )
+            end
+            SpeedManager.changeSpeed(Character, 3, 0.225, 3.5) --function(Character,Speed,Duration,Priority)
+            StateManager:ChangeState(Character, "Stunned", 0.225)
+        end
+    end,
 }
 
 return Luffy

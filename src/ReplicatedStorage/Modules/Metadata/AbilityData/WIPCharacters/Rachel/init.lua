@@ -1,44 +1,43 @@
 return {
-	["FirstAbility"] = {
-		Name = "-",
+    ["FirstAbility"] = {
+        Name = "-",
 
-		StartTime = 0,
-		Cooldown = 1,
+        StartTime = 0,
+        Cooldown = 1,
 
-		Damage = 0,
-		Copyable = false,
-	},
+        Damage = 0,
+        Copyable = false,
+    },
 
-	["SecondAbility"] = {
-		Name = "-",
+    ["SecondAbility"] = {
+        Name = "-",
 
-		StartTime = 0,
-		Cooldown = 1,
+        StartTime = 0,
+        Cooldown = 1,
 
-		Damage =  0,
-		Copyable = false,
-	},
-	["ThirdAbility"] = {
-		Name = "-",
+        Damage = 0,
+        Copyable = false,
+    },
+    ["ThirdAbility"] = {
+        Name = "-",
 
-		StartTime = 0,
-		Cooldown = 1,
-	
+        StartTime = 0,
+        Cooldown = 1,
 
-		Damage = 0,
-		Copyable = false,
-		
-		Guardbreak = true,
-	},
-	["FourthAbility"] = {
-		Name = "Shove",
+        Damage = 0,
+        Copyable = false,
 
-		StartTime = 0,
-		Cooldown = 1,
-		
-		Guardbreak = true,
-		
-		Damage = 20,
-		Copyable = false,
-	}
+        Guardbreak = true,
+    },
+    ["FourthAbility"] = {
+        Name = "Shove",
+
+        StartTime = 0,
+        Cooldown = 1,
+
+        Guardbreak = true,
+
+        Damage = 20,
+        Copyable = false,
+    },
 }

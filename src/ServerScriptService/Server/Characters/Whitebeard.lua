@@ -43,7 +43,6 @@ local SpeedManager = require(Shared.StateManager.Speed)
 
 local SoundManager = require(Shared.SoundManager)
 
-
 local RaycastManager = require(Shared.RaycastManager)
 local TaskScheduler = require(Utility.TaskScheduler)
 
@@ -59,98 +58,147 @@ local CameraRemote = ReplicatedStorage.Remotes.CameraRemote
 local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 local MouseRemote = ReplicatedStorage.Remotes.GetMouse
 
-
-
 local Whitebeard = {
-	["FirstAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-		
-		--[[ Fire Animation ]]--
-		AnimationRemote:FireClient(Player, "GuraPunch", "Play")
+    ["FirstAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		--[[ Fire Cero Client ]]--
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Distance = 100, Module = "WhitebeardVFX", Function = "QuakePunch"})
-		wait(0.35)
-		CameraRemote:FireClient(Player, "CameraShake", {FirstText = 3, SecondText = 15})
+        --[[ Fire Animation ]]
+        --
+        AnimationRemote:FireClient(Player, "GuraPunch", "Play")
 
-		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})	
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-		
-	end,
+        --[[ Fire Cero Client ]]
+        --
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            200,
+            { Character = Character, Distance = 100, Module = "WhitebeardVFX", Function = "QuakePunch" }
+        )
+        wait(0.35)
+        CameraRemote:FireClient(Player, "CameraShake", { FirstText = 3, SecondText = 15 })
 
-	["SecondAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
+        CameraRemote:FireClient(
+            Player,
+            "ChangeUICooldown",
+            { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+        )
+        DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+    end,
 
-		local PlayerCombo = AbilityData.ReturnData(Player,"PlayerCombos","GlobalInformation")
+    ["SecondAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		local Target = ExtraData.Target
+        local PlayerCombo = AbilityData.ReturnData(Player, "PlayerCombos", "GlobalInformation")
 
-		if PlayerCombo.KeysLogged >= 3 then
-			local HitResult,HitObject = HitboxModule.MagnitudeModule(Character, {SecondType = "Choke", Range = 5, KeysLogged = PlayerCombo.KeysLogged, Type = "Combat"}, KeyData.SerializedKey, CharacterName)
-			if HitResult then
-				StateManager:ChangeState(Character,"Attacking",3.5)
-				local Victim = HitObject.Parent
-				local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+        local Target = ExtraData.Target
 
-				StateManager:ChangeState(Victim,"Stunned",5)
+        if PlayerCombo.KeysLogged >= 3 then
+            local HitResult, HitObject = HitboxModule.MagnitudeModule(
+                Character,
+                { SecondType = "Choke", Range = 5, KeysLogged = PlayerCombo.KeysLogged, Type = "Combat" },
+                KeyData.SerializedKey,
+                CharacterName
+            )
+            if HitResult then
+                StateManager:ChangeState(Character, "Attacking", 3.5)
+                local Victim = HitObject.Parent
+                local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
 
-				local Animator = VHum:FindFirstChildOfClass("Animator")
-				AnimationRemote:FireClient(Player,"GuraGrab", "Play")
+                StateManager:ChangeState(Victim, "Stunned", 5)
 
-				local Weld = Instance.new("Weld")
-				Weld.Part0 = Character["Left Arm"]
-				Weld.Part1 = Victim["Head"]
-				Weld.Parent = Victim["Head"]
+                local Animator = VHum:FindFirstChildOfClass("Animator")
+                AnimationRemote:FireClient(Player, "GuraGrab", "Play")
 
-				Debris:AddItem(Weld,3.5)
+                local Weld = Instance.new("Weld")
+                Weld.Part0 = Character["Left Arm"]
+                Weld.Part1 = Victim["Head"]
+                Weld.Parent = Victim["Head"]
 
-				--[[ Lighting Screen Effects ]]--
-				
-				Hum.AutoRotate = false
-				Root.Anchored = true
-				coroutine.resume(coroutine.create(function()
-					wait(2.15)
-					for i = 1,2 do
-						NetworkStream.FireClientDistance(Character,"ClientRemote",5,{Character = Character, Distance = 100, Victim = Victim, Module = "NatsuVFX", Function = "NatsuScreen"})
-						wait(0.75)
-					end
-					--wait(1.35)
-					Hum.AutoRotate = true
-					Root.Anchored = false
-				end))
+                Debris:AddItem(Weld, 3.5)
 
-				if Animator then
-					local Animation = Animator:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Characters.Whitebeard.GuraGrabVictim)
-					Animation:Play()
-				end
+                --[[ Lighting Screen Effects ]]
+                --
 
-				NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Distance = 200, Victim = Victim, Module = "WhitebeardVFX", Function = "HelmetSplitter"})
+                Hum.AutoRotate = false
+                Root.Anchored = true
+                coroutine.resume(coroutine.create(function()
+                    wait(2.15)
+                    for i = 1, 2 do
+                        NetworkStream.FireClientDistance(
+                            Character,
+                            "ClientRemote",
+                            5,
+                            {
+                                Character = Character,
+                                Distance = 100,
+                                Victim = Victim,
+                                Module = "NatsuVFX",
+                                Function = "NatsuScreen",
+                            }
+                        )
+                        wait(0.75)
+                    end
+                    --wait(1.35)
+                    Hum.AutoRotate = true
+                    Root.Anchored = false
+                end))
 
-				CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-				DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName) 				
-			end
-		end		
-	end,
+                if Animator then
+                    local Animation = Animator:LoadAnimation(
+                        ReplicatedStorage.Assets.Animations.Shared.Characters.Whitebeard.GuraGrabVictim
+                    )
+                    Animation:Play()
+                end
 
-	["ThirdAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local HumanoidRootPart,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+                NetworkStream.FireClientDistance(
+                    Character,
+                    "ClientRemote",
+                    200,
+                    {
+                        Character = Character,
+                        Distance = 200,
+                        Victim = Victim,
+                        Module = "WhitebeardVFX",
+                        Function = "HelmetSplitter",
+                    }
+                )
 
-		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName) 	
-	end,
+                CameraRemote:FireClient(
+                    Player,
+                    "ChangeUICooldown",
+                    { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+                )
+                DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            end
+        end
+    end,
 
-	["FourthAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+    ["ThirdAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local HumanoidRootPart, Humanoid =
+            Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-	end;
+        CameraRemote:FireClient(
+            Player,
+            "ChangeUICooldown",
+            { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+        )
+        DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+    end,
+
+    ["FourthAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
+
+        CameraRemote:FireClient(
+            Player,
+            "ChangeUICooldown",
+            { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+        )
+        DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+    end,
 }
-
-
 
 return Whitebeard

@@ -1,4 +1,4 @@
- --||Services||--
+--||Services||--
 local Players = game:GetService("Players")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -17,7 +17,6 @@ local Utility = Modules.Utility
 
 --|| Imports ||--
 
-
 local DebounceManager = require(State.DebounceManager)
 
 local NetworkStream = require(Utility.NetworkStream)
@@ -29,18 +28,13 @@ local ServerRemote = ReplicatedStorage.Remotes.ServerRemote
 local AnimationRemote = ReplicatedStorage.Remotes.AnimationRemote
 local CameraRemote = ReplicatedStorage.Remotes.CameraRemote
 
-
 local Arthur = {
-	["FirstAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		print("FIRST SKILL")
-		local Character = Player.Character
-		
-	
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-	end,
-	
+    ["FirstAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        print("FIRST SKILL")
+        local Character = Player.Character
+
+        DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+    end,
 }
-
-
 
 return Arthur

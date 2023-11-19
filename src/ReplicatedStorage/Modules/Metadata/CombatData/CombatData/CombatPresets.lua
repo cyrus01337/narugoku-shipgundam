@@ -1,88 +1,87 @@
 return {
-	["Aerial"] = {
-		Name = "Aerial",
+    ["Aerial"] = {
+        Name = "Aerial",
 
-		Damage = 3,
-		StunTime = 2.5,
-		Stamina = 5,
+        Damage = 3,
+        StunTime = 2.5,
+        Stamina = 5,
 
-		StartTime = os.clock(),
-		Cooldown = .75
-	},
+        StartTime = os.clock(),
+        Cooldown = 0.75,
+    },
 
-	["Swing"] = {
-		Name = "Swing",
+    ["Swing"] = {
+        Name = "Swing",
 
-		Damage = 3,
-		StunTime = .55,
-		Stamina = 3,
+        Damage = 3,
+        StunTime = 0.55,
+        Stamina = 3,
 
-		StartTime = os.clock(),
-		Cooldown = .285,
-	},
-	
-	["Swing2"] = {
-		Name = "Swing2",
+        StartTime = os.clock(),
+        Cooldown = 0.285,
+    },
 
-		Damage = 3,
-		StunTime = .55,
-		Stamina = 3,
+    ["Swing2"] = {
+        Name = "Swing2",
 
-		StartTime = os.clock(),
-		Cooldown = .285,
-	},
+        Damage = 3,
+        StunTime = 0.55,
+        Stamina = 3,
 
-	["Block"] = {
-		Name = "Block",
+        StartTime = os.clock(),
+        Cooldown = 0.285,
+    },
 
-		Guardbroken = false,
-		CanParry = true,
+    ["Block"] = {
+        Name = "Block",
 
-		StartTime = os.clock(),
-		Cooldown = 1,
-	},
+        Guardbroken = false,
+        CanParry = true,
 
-	["Run"] = {
-		Name = "Run",
+        StartTime = os.clock(),
+        Cooldown = 1,
+    },
 
-		StartTime = os.clock(),
-		Cooldown = 0,
-	},
+    ["Run"] = {
+        Name = "Run",
 
-	["Mode"] = {
-		Name = "Mode",
+        StartTime = os.clock(),
+        Cooldown = 0,
+    },
 
-		StartTime = os.clock(),
-		Cooldown = 1.75,
-	},
+    ["Mode"] = {
+        Name = "Mode",
 
+        StartTime = os.clock(),
+        Cooldown = 1.75,
+    },
 
-	["Dash"] = {
-		Name = "Dash",
+    ["Dash"] = {
+        Name = "Dash",
 
-		StartTime = os.clock(),
-		Cooldown = 1.75,
-		BlockInterference = .125,
+        StartTime = os.clock(),
+        Cooldown = 1.75,
+        BlockInterference = 0.125,
 
-		DashType = "Normal",
+        DashType = "Normal",
 
-		CanDash = true,
+        CanDash = true,
 
-		DashingForce = 60, -- change this according to player's speed (if running, higher = more dramatic dash, etc...)
+        DashingForce = 60, -- change this according to player's speed (if running, higher = more dramatic dash, etc...)
 
-		Keys = {
-			["W"] = {
-				Direction = {["X"] = 0,["Z"] = -20}
-			},
-			["A"] = {
-				Direction = {["X"] = -20,["Z"] = 0}
-			},
-			["S"] = {
-				Direction = {["X"] = 0,["Z"] = 20}
-			},
-			["D"] = {
-				Direction = {["X"] = 20,["Z"] = 0}
-			},
-		}
-	}
+        Keys = {
+            ["W"] = {
+                Direction = { ["X"] = 0, ["Z"] = -20 },
+            },
+            ["A"] = {
+                Direction = { ["X"] = -20, ["Z"] = 0 },
+            },
+            ["S"] = {
+                Direction = { ["X"] = 0, ["Z"] = 20 },
+            },
+            ["D"] = {
+                Direction = { ["X"] = 20, ["Z"] = 0 },
+            },
+        },
+    },
 }

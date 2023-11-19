@@ -1,45 +1,45 @@
 return {
-	["FirstAbility"] = {
-		Name = "Fireball Jutsu",
+    ["FirstAbility"] = {
+        Name = "Fireball Jutsu",
 
-		StartTime = 0,
-		Cooldown = 15,
-		
-		Copyable = false,
-		Bool = false,
+        StartTime = 0,
+        Cooldown = 15,
 
-		Damage = 12,
-	},
+        Copyable = false,
+        Bool = false,
 
-	["SecondAbility"] = {
-		Name = "Chidori",
-		
-		StartTime = 0,
-		Cooldown = 25,
-		Copyable = false,
-		Bool = false,
+        Damage = 12,
+    },
 
-		Guardbreak = true,
-		Damage = 18,
-	},
-	
-	["ThirdAbility"] = {
-		Name = "Sharingan",
+    ["SecondAbility"] = {
+        Name = "Chidori",
 
-		StartTime = os.clock(),
-		Cooldown = 5,
-		
-		Bool = false,		
-	},
-	
-	["FourthAbility"] = {
-		Name = "Shuriken",
+        StartTime = 0,
+        Cooldown = 25,
+        Copyable = false,
+        Bool = false,
 
-		Bool = false,
+        Guardbreak = true,
+        Damage = 18,
+    },
 
-		StartTime = os.clock(),
-		Cooldown = 0,
+    ["ThirdAbility"] = {
+        Name = "Sharingan",
 
-		Damage = 5,
-	}
+        StartTime = os.clock(),
+        Cooldown = 5,
+
+        Bool = false,
+    },
+
+    ["FourthAbility"] = {
+        Name = "Shuriken",
+
+        Bool = false,
+
+        StartTime = os.clock(),
+        Cooldown = 0,
+
+        Damage = 5,
+    },
 }

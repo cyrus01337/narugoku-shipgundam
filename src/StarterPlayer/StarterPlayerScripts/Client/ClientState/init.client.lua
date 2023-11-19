@@ -29,7 +29,7 @@ local Mouse = Player:GetMouse()
 _G.StateSignal = Signal.new()
 
 _G.StateSignal:Connect(function(Data)
-	local State, StateData = Data.ChosenState, Data.ChosenStateData
-	
-	local _ = StateDictionary[Data.ChosenState] and StateDictionary[Data.ChosenState](StateData) or warn"no dict vers"
+    local State, StateData = Data.ChosenState, Data.ChosenStateData
+
+    local _ = StateDictionary[Data.ChosenState] and StateDictionary[Data.ChosenState](StateData) or warn("no dict vers")
 end)

@@ -61,154 +61,218 @@ local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 local MouseRemote = ReplicatedStorage.Remotes.GetMouse
 
 local Sanji = {
-	["FirstAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-		
-		StateManager:ChangeState(Character,"IFrame",.35, {IFrameType = ""})
-		StateManager:ChangeState(Character,"Stunned",4e4)
-		AnimationRemote:FireClient(Player,"PartyTable","Play")
-		
-		wait(.35)
-		NetworkStream.FireClientDistance(Character,"ClientRemote",150,{Character = Character, Module = "SanjiVFX", Function = "PartyTable"})
-		
-		local Data = ProfileService:GetPlayerProfile(Player)
-		if Data.Character == "Sanji" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end
-		
-		for Index = 1,15 do
-			-- SoundManager:AddSound("BarrageSwing", {Parent = Root, Volume = 3, PlaybackSpeed = 1.4}, "Client")
-			local HitResult,HitObject = HitboxModule.MagnitudeModule(Character, {Delay = 0, Range = 5, KeysLogged = math.random(1,3), Type = "Combat"}, KeyData.SerializedKey, CharacterName)
-			if HitResult then
-				local Victim = HitObject.Parent
+    ["FirstAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-				local VRoot,VHum = Victim:FindFirstChild("HumanoidRootPart"),Victim:FindFirstChild("Humanoid")
-				CameraRemote:FireClient(Player,"CameraShake",{ FirstText = 1, SecondText = 5})
+        StateManager:ChangeState(Character, "IFrame", 0.35, { IFrameType = "" })
+        StateManager:ChangeState(Character, "Stunned", 4e4)
+        AnimationRemote:FireClient(Player, "PartyTable", "Play")
 
-				-- SoundManager:AddSound("Punched1",{Parent = Character:FindFirstChild("HumanoidRootPart"),Volume = 5},"Client")
+        wait(0.35)
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            150,
+            { Character = Character, Module = "SanjiVFX", Function = "PartyTable" }
+        )
 
-				local BodyVelocity = Instance.new("BodyVelocity")
-				BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4);
-				BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 8
-				BodyVelocity.Parent = Root
-				Debris:AddItem(BodyVelocity,.25)					
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Sanji" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
 
-				local Look = CFrame.new(VRoot.Position,Root.Position).lookVector
+        for Index = 1, 15 do
+            -- SoundManager:AddSound("BarrageSwing", {Parent = Root, Volume = 3, PlaybackSpeed = 1.4}, "Client")
+            local HitResult, HitObject = HitboxModule.MagnitudeModule(
+                Character,
+                { Delay = 0, Range = 5, KeysLogged = math.random(1, 3), Type = "Combat" },
+                KeyData.SerializedKey,
+                CharacterName
+            )
+            if HitResult then
+                local Victim = HitObject.Parent
 
-				local BodyVelocity = Instance.new("BodyVelocity")
-				BodyVelocity.MaxForce = Vector3.new(4e4,0,4e4)
-				BodyVelocity.Velocity = Look * -10
-				BodyVelocity.Parent = VRoot
-				Debris:AddItem(BodyVelocity,.2)					
-			end
-			wait(.125)
-		end
-		StateManager:ChangeState(Character,"Stunned",.35)
-		SpeedManager.changeSpeed(Character,0,1,3) --function(Character,Speed,Duration,Priority)
-	end,
+                local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+                CameraRemote:FireClient(Player, "CameraShake", { FirstText = 1, SecondText = 5 })
 
-	["SecondAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local HumanoidRootPart,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
-		local Data = ProfileService:GetPlayerProfile(Player)
-		if Data.Character == "Sanji" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end 
+                -- SoundManager:AddSound("Punched1",{Parent = Character:FindFirstChild("HumanoidRootPart"),Volume = 5},"Client")
 
-		AnimationRemote:FireClient(Player,"AntiManner","Play")
+                local BodyVelocity = Instance.new("BodyVelocity")
+                BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+                BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 8
+                BodyVelocity.Parent = Root
+                Debris:AddItem(BodyVelocity, 0.25)
 
-		-- SoundManager:AddSound("CombatSwing",{Parent = HumanoidRootPart, Volume = 5}, "Client")
-		StateManager:ChangeState(Character,"Attacking",.5)
+                local Look = CFrame.new(VRoot.Position, Root.Position).lookVector
 
-		wait(.25)
-		local HitResult,HitObject = HitboxModule.MagnitudeModule(Character,{Range = 5, Type = "Combat"}, KeyData.SerializedKey, CharacterName)
-		if HitResult then
-			local Victim = HitObject.Parent
-			local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+                local BodyVelocity = Instance.new("BodyVelocity")
+                BodyVelocity.MaxForce = Vector3.new(4e4, 0, 4e4)
+                BodyVelocity.Velocity = Look * -10
+                BodyVelocity.Parent = VRoot
+                Debris:AddItem(BodyVelocity, 0.2)
+            end
+            wait(0.125)
+        end
+        StateManager:ChangeState(Character, "Stunned", 0.35)
+        SpeedManager.changeSpeed(Character, 0, 1, 3) --function(Character,Speed,Duration,Priority)
+    end,
 
-			local BodyVelocity = Instance.new("BodyVelocity")
-			BodyVelocity.Velocity = Vector3.new(0,50,0)
-			BodyVelocity.MaxForce = Vector3.new(100000,100000,100000)
-			BodyVelocity.Parent = VRoot
+    ["SecondAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local HumanoidRootPart, Humanoid =
+            Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-			Debris:AddItem(BodyVelocity,.3)	
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Sanji" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
 
-			StateManager:ChangeState(Character,"Stunned",.5)
-			NetworkStream.FireClientDistance(Character,"ClientRemote",150,{Character = Character, Module = "SanjiVFX", Function = "Anti_Manner_Kick_Course"})
-		end			
-	end,
+        AnimationRemote:FireClient(Player, "AntiManner", "Play")
 
-	["ThirdAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local HumanoidRootPart,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
-		local Data = ProfileService:GetPlayerProfile(Player)
-		if Data.Character == "Sanji" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end 
+        -- SoundManager:AddSound("CombatSwing",{Parent = HumanoidRootPart, Volume = 5}, "Client")
+        StateManager:ChangeState(Character, "Attacking", 0.5)
 
-		AnimationRemote:FireClient(Player,"Spectre","Play",{Looped = true})
-		NetworkStream.FireClientDistance(Character,"ClientRemote",150,{Character = Character, Module = "SanjiVFX", Function = "Spectre"})
+        wait(0.25)
+        local HitResult, HitObject = HitboxModule.MagnitudeModule(
+            Character,
+            { Range = 5, Type = "Combat" },
+            KeyData.SerializedKey,
+            CharacterName
+        )
+        if HitResult then
+            local Victim = HitObject.Parent
+            local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
 
-		StateManager:ChangeState(Character,"Stunned",4e4)
-		SpeedManager.changeSpeed(Character,4,1.5,3) --function(Character,Speed,Duration,Priority)
+            local BodyVelocity = Instance.new("BodyVelocity")
+            BodyVelocity.Velocity = Vector3.new(0, 50, 0)
+            BodyVelocity.MaxForce = Vector3.new(100000, 100000, 100000)
+            BodyVelocity.Parent = VRoot
 
-		local PlayerCombo = AbilityData.ReturnData(Player,"PlayerCombos","GlobalInformation")
+            Debris:AddItem(BodyVelocity, 0.3)
 
-		for Index = 1,15 do
-			-- SoundManager:AddSound("BarrageSwing", {Parent = Humanoid, Volume = 3, PlaybackSpeed = 1.4}, "Client")
+            StateManager:ChangeState(Character, "Stunned", 0.5)
+            NetworkStream.FireClientDistance(
+                Character,
+                "ClientRemote",
+                150,
+                { Character = Character, Module = "SanjiVFX", Function = "Anti_Manner_Kick_Course" }
+            )
+        end
+    end,
 
-			local HitObject = HitboxModule.RaycastModule(Player, {Visualize = false, Size = 10, KeysLogged = PlayerCombo.KeysLogged, Type = "Combat"}, KeyData.SerializedKey, CharacterName)
-			if HitObject.Hit then
-				local Victim = HitObject.Object.Parent
-				local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
-				
-				-- SoundManager:AddSound("Punched1",{Parent = Character:FindFirstChild("HumanoidRootPart"),Volume = 5},"Client")
+    ["ThirdAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local HumanoidRootPart, Humanoid =
+            Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-				CameraRemote:FireClient(Player,"CameraShake",{ FirstText = 1, SecondText = 5})
-				DamageManager.DeductDamage(Character,Victim,KeyData.SerializedKey,CharacterName,{Type = "Combat", KeysLogged = ExtraData.KeysLogged})
-			end
-			wait(.1)
-		end
-		StateManager:ChangeState(Character,"Stunned",1)
-		AnimationRemote:FireClient(Player,"Spectre","Stop")
-	end,
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Sanji" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
 
-	["FourthAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
-		local Data = ProfileService:GetPlayerProfile(Player)
-		if Data.Character == "Sanji" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end 
-		
-		StateManager:ChangeState(Character,"Attacking",.5)
-		-- SoundManager:AddSound("CombatSwing",{Parent = Root, Volume = 5}, "Client")
+        AnimationRemote:FireClient(Player, "Spectre", "Play", { Looped = true })
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            150,
+            { Character = Character, Module = "SanjiVFX", Function = "Spectre" }
+        )
 
-		AnimationRemote:FireClient(Player,"Coiler","Play")
-		wait(.25)
+        StateManager:ChangeState(Character, "Stunned", 4e4)
+        SpeedManager.changeSpeed(Character, 4, 1.5, 3) --function(Character,Speed,Duration,Priority)
 
-		local HitResult,HitObject = HitboxModule.MagnitudeModule(Character,{Range = 8, Type = "Combat", SecondType = "SlamDown"}, KeyData.SerializedKey, CharacterName)
-		if HitResult then
-			local Victim = HitObject.Parent
-			local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+        local PlayerCombo = AbilityData.ReturnData(Player, "PlayerCombos", "GlobalInformation")
 
-			ClientRemote:FireAllClients{Character = Character, Module = "SanjiVFX"; Function = "Coiler"; Victim = Victim}
-			
-			local Anim = VHum:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Misc.SlamDown)
-			Anim:Play(.1,1)		
-			
-			wait(1)			
-			Anim:Stop()
-		end
-	end,
+        for Index = 1, 15 do
+            -- SoundManager:AddSound("BarrageSwing", {Parent = Humanoid, Volume = 3, PlaybackSpeed = 1.4}, "Client")
+
+            local HitObject = HitboxModule.RaycastModule(
+                Player,
+                { Visualize = false, Size = 10, KeysLogged = PlayerCombo.KeysLogged, Type = "Combat" },
+                KeyData.SerializedKey,
+                CharacterName
+            )
+            if HitObject.Hit then
+                local Victim = HitObject.Object.Parent
+                local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+
+                -- SoundManager:AddSound("Punched1",{Parent = Character:FindFirstChild("HumanoidRootPart"),Volume = 5},"Client")
+
+                CameraRemote:FireClient(Player, "CameraShake", { FirstText = 1, SecondText = 5 })
+                DamageManager.DeductDamage(
+                    Character,
+                    Victim,
+                    KeyData.SerializedKey,
+                    CharacterName,
+                    { Type = "Combat", KeysLogged = ExtraData.KeysLogged }
+                )
+            end
+            wait(0.1)
+        end
+        StateManager:ChangeState(Character, "Stunned", 1)
+        AnimationRemote:FireClient(Player, "Spectre", "Stop")
+    end,
+
+    ["FourthAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
+
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Sanji" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
+
+        StateManager:ChangeState(Character, "Attacking", 0.5)
+        -- SoundManager:AddSound("CombatSwing",{Parent = Root, Volume = 5}, "Client")
+
+        AnimationRemote:FireClient(Player, "Coiler", "Play")
+        wait(0.25)
+
+        local HitResult, HitObject = HitboxModule.MagnitudeModule(
+            Character,
+            { Range = 8, Type = "Combat", SecondType = "SlamDown" },
+            KeyData.SerializedKey,
+            CharacterName
+        )
+        if HitResult then
+            local Victim = HitObject.Parent
+            local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+
+            ClientRemote:FireAllClients({
+                Character = Character,
+                Module = "SanjiVFX",
+                Function = "Coiler",
+                Victim = Victim,
+            })
+
+            local Anim = VHum:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Misc.SlamDown)
+            Anim:Play(0.1, 1)
+
+            wait(1)
+            Anim:Stop()
+        end
+    end,
 }
 
 return Sanji

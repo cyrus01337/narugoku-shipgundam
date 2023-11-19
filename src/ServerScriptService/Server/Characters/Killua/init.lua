@@ -60,283 +60,384 @@ local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 local Trash = {}
 
 local function RemoveTrash(Trash)
-	for Index = 1,#Trash do
-		local Item = Trash[Index]
-		if Item and Item.Parent then
-			Item:Destroy()
-		end
-	end
+    for Index = 1, #Trash do
+        local Item = Trash[Index]
+        if Item and Item.Parent then
+            Item:Destroy()
+        end
+    end
 end
 
 local Killua = {
 
-	["FirstAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		
-		local Data = ProfileService:GetPlayerProfile(Player)	
-		if Data.Character == "Killua" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end
-		
-		local Root,Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-		local LeftArm,RightArm = Character["Left Arm"], Character["Right Arm"]
+    ["FirstAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
 
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Module = "KilluaVFX", Function = "Snake Awakens"})
-		StateManager:ChangeState(Character,"Guardbroken",3)
-		SpeedManager.changeSpeed(Character,4,2.85,2) --function(Character,Speed,Duration,Priority)
-		AnimationRemote:FireClient(Player,"SnakeAwakensOld","Play", {Looped = true})	
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Killua" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
 
-		CameraRemote:FireClient(Player, "AddGradient",{ Type = "Add", Length = .75})
+        local Root, Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
+        local LeftArm, RightArm = Character["Left Arm"], Character["Right Arm"]
 
-		local PlayerCombo = AbilityData.ReturnData(Player,"PlayerCombos","GlobalInformation")
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            200,
+            { Character = Character, Module = "KilluaVFX", Function = "Snake Awakens" }
+        )
+        StateManager:ChangeState(Character, "Guardbroken", 3)
+        SpeedManager.changeSpeed(Character, 4, 2.85, 2) --function(Character,Speed,Duration,Priority)
+        AnimationRemote:FireClient(Player, "SnakeAwakensOld", "Play", { Looped = true })
 
-		local TimeEvaluation = os.clock() - PlayerCombo.LastPressed <= .8 and true or false
+        CameraRemote:FireClient(Player, "AddGradient", { Type = "Add", Length = 0.75 })
 
-		VfxHandler.RemoveBodyMover(Character)
-		Hum.AutoRotate = true
+        local PlayerCombo = AbilityData.ReturnData(Player, "PlayerCombos", "GlobalInformation")
 
-		coroutine.wrap(function()
-			for Index = 0,2,.05 do
-				for _,v in ipairs(Character:GetChildren()) do
-					if string.find(v.Name,"Arm") then
-						v.Transparency = Index
-					end
-				end
-				RunService.Heartbeat:Wait()
-			end
-		end)()
+        local TimeEvaluation = os.clock() - PlayerCombo.LastPressed <= 0.8 and true or false
 
-		for _ = 1,20 do
-			wait(.125)
-			local NumberEvaluation = (PlayerCombo.KeysLogged < 5 and TimeEvaluation and PlayerCombo.KeysLogged + 1) or (PlayerCombo.KeysLogged > 5 and 1) or (not PlayerCombo.TimeEvaluation and 1)
+        VfxHandler.RemoveBodyMover(Character)
+        Hum.AutoRotate = true
 
-			PlayerCombo.Hits += 1
-			PlayerCombo.KeysLogged = NumberEvaluation
+        coroutine.wrap(function()
+            for Index = 0, 2, 0.05 do
+                for _, v in ipairs(Character:GetChildren()) do
+                    if string.find(v.Name, "Arm") then
+                        v.Transparency = Index
+                    end
+                end
+                RunService.Heartbeat:Wait()
+            end
+        end)()
 
-			local HitObject = HitboxModule.RaycastModule(Player, {Visualize = false, DmgType = "Snake", Size = 10, KeysLogged = PlayerCombo.KeysLogged, Type = "Sword"}, KeyData.SerializedKey, CharacterName)
-			if HitObject.Hit then
-				local Victim = HitObject.Object.Parent
-				local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
-				
-				if not StateManager:Peek(Character,"InAir") then
-					VfxHandler.RemoveBodyMover(Victim)
-					VfxHandler.RemoveBodyMover(Character)
-				end
+        for _ = 1, 20 do
+            wait(0.125)
+            local NumberEvaluation = (PlayerCombo.KeysLogged < 5 and TimeEvaluation and PlayerCombo.KeysLogged + 1)
+                or (PlayerCombo.KeysLogged > 5 and 1)
+                or (not PlayerCombo.TimeEvaluation and 1)
 
-				CameraRemote:FireClient(Player,"CameraShake",{ FirstText = 1, SecondText = 5})
-				NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Victim = Victim, Module = "KilluaVFX", Function = "Snake Awakens HitVFX"})
+            PlayerCombo.Hits += 1
+            PlayerCombo.KeysLogged = NumberEvaluation
 
-				local BodyVelocity = Instance.new("BodyVelocity")
-				BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4);
-				BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 10
-				BodyVelocity.Parent = Root
-				Debris:AddItem(BodyVelocity,.25)
+            local HitObject = HitboxModule.RaycastModule(
+                Player,
+                { Visualize = false, DmgType = "Snake", Size = 10, KeysLogged = PlayerCombo.KeysLogged, Type = "Sword" },
+                KeyData.SerializedKey,
+                CharacterName
+            )
+            if HitObject.Hit then
+                local Victim = HitObject.Object.Parent
+                local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
 
-				local BodyVelocity = Instance.new("BodyVelocity")
-				BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4);
-				BodyVelocity.Name = "SnakeAwakenKnockback"
-				BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 12
-				BodyVelocity.Parent = VRoot
-				Debris:AddItem(BodyVelocity,.25)
+                if not StateManager:Peek(Character, "InAir") then
+                    VfxHandler.RemoveBodyMover(Victim)
+                    VfxHandler.RemoveBodyMover(Character)
+                end
 
-				DamageManager.DeductDamage(Character,Victim,KeyData.SerializedKey,CharacterName,{Type = ExtraData.Type, KeysLogged = ExtraData.KeysLogged})
-			end
-		end
-		StateManager:ChangeState(Character,"Guardbroken",.35)
-		SpeedManager.changeSpeed(Character,14,1.75,3.5) --function(Character,Speed,Duration,Priority)
+                CameraRemote:FireClient(Player, "CameraShake", { FirstText = 1, SecondText = 5 })
+                NetworkStream.FireClientDistance(
+                    Character,
+                    "ClientRemote",
+                    200,
+                    { Character = Character, Victim = Victim, Module = "KilluaVFX", Function = "Snake Awakens HitVFX" }
+                )
 
-		Hum.AutoRotate = true
-		LeftArm.Transparency = 0
-		RightArm.Transparency = 0
+                local BodyVelocity = Instance.new("BodyVelocity")
+                BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+                BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 10
+                BodyVelocity.Parent = Root
+                Debris:AddItem(BodyVelocity, 0.25)
 
-		CameraRemote:FireClient(Player, "AddGradient",{ Type = "Remove", Length = .75})
-		AnimationRemote:FireClient(Player,"SnakeAwakensOld","Stop")
-	end,
+                local BodyVelocity = Instance.new("BodyVelocity")
+                BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+                BodyVelocity.Name = "SnakeAwakenKnockback"
+                BodyVelocity.Velocity = (VRoot.CFrame.p - Root.CFrame.p).Unit * 12
+                BodyVelocity.Parent = VRoot
+                Debris:AddItem(BodyVelocity, 0.25)
 
-	["SecondAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
+                DamageManager.DeductDamage(
+                    Character,
+                    Victim,
+                    KeyData.SerializedKey,
+                    CharacterName,
+                    { Type = ExtraData.Type, KeysLogged = ExtraData.KeysLogged }
+                )
+            end
+        end
+        StateManager:ChangeState(Character, "Guardbroken", 0.35)
+        SpeedManager.changeSpeed(Character, 14, 1.75, 3.5) --function(Character,Speed,Duration,Priority)
 
-		local Data = ProfileService:GetPlayerProfile(Player)	
-		if Data.Character == "Killua" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end
+        Hum.AutoRotate = true
+        LeftArm.Transparency = 0
+        RightArm.Transparency = 0
 
-		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+        CameraRemote:FireClient(Player, "AddGradient", { Type = "Remove", Length = 0.75 })
+        AnimationRemote:FireClient(Player, "SnakeAwakensOld", "Stop")
+    end,
 
-		AnimationRemote:FireClient(Player, "LightningPalm", "Play", {AdjustSpeed = .125})
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Module = "KilluaVFX", Function = "LightningPalmStart"})
+    ["SecondAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
 
-		StateManager:ChangeState(Character,"Guardbroken",1.5)
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Killua" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
 
-		SpeedManager.changeSpeed(Character,4,2,1.5) --function(Character,Speed,Duration,Priority)
+        local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Module = "KilluaVFX", Function = "LightningDash", ContactPointCFrame = Root.CFrame})
+        AnimationRemote:FireClient(Player, "LightningPalm", "Play", { AdjustSpeed = 0.125 })
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            200,
+            { Character = Character, Module = "KilluaVFX", Function = "LightningPalmStart" }
+        )
 
-		wait(.315)
-		if StateManager:Peek(Character,"Stunned") then
-			AnimationRemote:FireClient(Player, "LightningPalm", "Stop")
-			return 
-		end
+        StateManager:ChangeState(Character, "Guardbroken", 1.5)
 
-		local TargetPosition = ReplicatedStorage.Assets.Models.Misc.BP:Clone()
-		TargetPosition.CFrame = Root.CFrame * CFrame.new(0,0,-25)
-		TargetPosition.Parent = workspace.World.Visuals
+        SpeedManager.changeSpeed(Character, 4, 2, 1.5) --function(Character,Speed,Duration,Priority)
 
-		local BodyPosition = Instance.new("BodyPosition")
-		BodyPosition.Position = TargetPosition.Position
-		BodyPosition.MaxForce = Vector3.new(250,250,250) * 125
-		BodyPosition.D = 500
-		BodyPosition.Parent = Root
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            200,
+            { Character = Character, Module = "KilluaVFX", Function = "LightningDash", ContactPointCFrame = Root.CFrame }
+        )
 
-		Debris:AddItem(TargetPosition,.05)
-		Debris:AddItem(BodyPosition,.35)
+        wait(0.315)
+        if StateManager:Peek(Character, "Stunned") then
+            AnimationRemote:FireClient(Player, "LightningPalm", "Stop")
+            return
+        end
 
-		AnimationRemote:FireClient(Player, "LightningPalm", "Play", {AdjustSpeed = 5})
+        local TargetPosition = ReplicatedStorage.Assets.Models.Misc.BP:Clone()
+        TargetPosition.CFrame = Root.CFrame * CFrame.new(0, 0, -25)
+        TargetPosition.Parent = workspace.World.Visuals
 
-		wait(.3)
-		CameraRemote:FireClient(Player, "CameraShake", {FirstText = 8, SecondText = 10})
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Module = "KilluaVFX", Function = "LightningPalmAOE"})
+        local BodyPosition = Instance.new("BodyPosition")
+        BodyPosition.Position = TargetPosition.Position
+        BodyPosition.MaxForce = Vector3.new(250, 250, 250) * 125
+        BodyPosition.D = 500
+        BodyPosition.Parent = Root
 
-		HitboxModule.MagnitudeModule(Character, {Range = 18, KeysLogged = 1, Type = "Combat"}, KeyData.SerializedKey, CharacterName)
-	end,
+        Debris:AddItem(TargetPosition, 0.05)
+        Debris:AddItem(BodyPosition, 0.35)
 
-	["ThirdAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
-		local Data = ProfileService:GetPlayerProfile(Player)
-		if Data.Character == "Killua" then
-		    CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-		end
-		
-		local Mouse = MouseRemote:InvokeClient(Player)
+        AnimationRemote:FireClient(Player, "LightningPalm", "Play", { AdjustSpeed = 5 })
 
-		StateManager:ChangeState(Character,"Attacking",.75)
+        wait(0.3)
+        CameraRemote:FireClient(Player, "CameraShake", { FirstText = 8, SecondText = 10 })
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            200,
+            { Character = Character, Module = "KilluaVFX", Function = "LightningPalmAOE" }
+        )
 
-		AnimationRemote:FireClient(Player, "Thunderbolt", "Play", "AdjustSpeed", 15) 
-		Root.CFrame = CFrame.new(Root.Position, Root.Position + Vector3.new(Mouse.lookVector.X, Mouse.lookVector.Y, Mouse.lookVector.Z))
+        HitboxModule.MagnitudeModule(
+            Character,
+            { Range = 18, KeysLogged = 1, Type = "Combat" },
+            KeyData.SerializedKey,
+            CharacterName
+        )
+    end,
 
-		local Beam = ReplicatedStorage.Assets.Effects.Meshes.goddsdpeedball:Clone()
-		Beam.Name = Character.Name.. " - ThunderBeam"
-		Beam.Size = Vector3.new(5,2,5)	
+    ["ThirdAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		Beam.Transparency = 1
-		Beam.Material = "Neon"	
-		Beam.CFrame = Root.CFrame * CFrame.new(0,5,-30)		
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Killua" then
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+        end
 
-		Beam.Parent = workspace.World.Visuals
-		Debris:AddItem(Beam, 1)
+        local Mouse = MouseRemote:InvokeClient(Player)
 
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{
-			Character = Character,
-			Module = "KilluaVFX", 
-			Function = "ThunderPalmRelease",
-		})
+        StateManager:ChangeState(Character, "Attacking", 0.75)
 
-		CameraRemote:FireClient(Player,"CameraShake",{FirstText = 4, SecondText = 6, ThirdText = 0, FourthText = 2})
-		CameraRemote:FireClient(Player,"TweenObject",{LifeTime = .1, EasingStyle = Enum.EasingStyle.Linear, EasingDirection = Enum.EasingDirection.Out, Return = true, Properties = {FieldOfView = 120}})
+        AnimationRemote:FireClient(Player, "Thunderbolt", "Play", "AdjustSpeed", 15)
+        Root.CFrame = CFrame.new(
+            Root.Position,
+            Root.Position + Vector3.new(Mouse.lookVector.X, Mouse.lookVector.Y, Mouse.lookVector.Z)
+        )
 
-		local HitResult,ValidEntities = HitboxModule.GetTouchingParts(Player,{ExistTime = 2, Type = "Combat", KeysLogged = 1, Size = Vector3.new(8.999, 4.517, 38.284), Transparency = 1, PositionCFrame = Root.CFrame * CFrame.new(0,0,-15)},KeyData.SerializedKey,CharacterName)
-		if HitResult then
-			for Index = 1, #ValidEntities do
-				local Victim = ValidEntities[Index]
+        local Beam = ReplicatedStorage.Assets.Effects.Meshes.goddsdpeedball:Clone()
+        Beam.Name = Character.Name .. " - ThunderBeam"
+        Beam.Size = Vector3.new(5, 2, 5)
 
-				local VHumanoid = Victim:FindFirstChild("Humanoid")
-				local VRoot = Victim:FindFirstChild("HumanoidRootPart")	
+        Beam.Transparency = 1
+        Beam.Material = "Neon"
+        Beam.CFrame = Root.CFrame * CFrame.new(0, 5, -30)
 
-				VfxHandler.LightningProc({Character = Character, Victim = Victim, Speed = .5, StunTime = .15, Duration  = 5})
-			end
-		else
-			SpeedManager.changeSpeed(Character,6,1.75,4) --function(Character,Speed,Duration,Priority)
-			StateManager:ChangeState(Character,"Stunned",1.75)
-		end
-	end,
+        Beam.Parent = workspace.World.Visuals
+        Debris:AddItem(Beam, 1)
 
-	["FourthAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-			
-		StateManager:ChangeState(Character,"IFrame",.35)
-		StateManager:ChangeState(Character,"Attacking",6)
-		
-		VfxHandler.RemoveBodyMover(Character)
+        NetworkStream.FireClientDistance(Character, "ClientRemote", 200, {
+            Character = Character,
+            Module = "KilluaVFX",
+            Function = "ThunderPalmRelease",
+        })
 
-		local Skateboard = ReplicatedStorage.Assets.Models.Misc.KilluaSkateboard:Clone()
-		Skateboard.Parent = workspace.World.Visuals
+        CameraRemote:FireClient(Player, "CameraShake", { FirstText = 4, SecondText = 6, ThirdText = 0, FourthText = 2 })
+        CameraRemote:FireClient(
+            Player,
+            "TweenObject",
+            {
+                LifeTime = 0.1,
+                EasingStyle = Enum.EasingStyle.Linear,
+                EasingDirection = Enum.EasingDirection.Out,
+                Return = true,
+                Properties = { FieldOfView = 120 },
+            }
+        )
 
-		AnimationRemote:FireClient(Player,"Skateboard", "Play", {Looped = true})
+        local HitResult, ValidEntities = HitboxModule.GetTouchingParts(
+            Player,
+            {
+                ExistTime = 2,
+                Type = "Combat",
+                KeysLogged = 1,
+                Size = Vector3.new(8.999, 4.517, 38.284),
+                Transparency = 1,
+                PositionCFrame = Root.CFrame * CFrame.new(0, 0, -15),
+            },
+            KeyData.SerializedKey,
+            CharacterName
+        )
+        if HitResult then
+            for Index = 1, #ValidEntities do
+                local Victim = ValidEntities[Index]
 
-		local Weld = Instance.new("Weld")
-		Weld.Part0 = Root
-		Weld.Part1 = Skateboard
-		Weld.C1 = CFrame.new(0,3,0)
-		Weld.Parent = Root
+                local VHumanoid = Victim:FindFirstChild("Humanoid")
+                local VRoot = Victim:FindFirstChild("HumanoidRootPart")
 
-		CameraRemote:FireClient(Player,"TweenObject",{
-			LifeTime = .225,
-			EasingStyle = Enum.EasingStyle.Linear,
-			EasingDirection = Enum.EasingDirection.Out,
-			Return = false,
-			Properties = {FieldOfView = 100}
-		})
+                VfxHandler.LightningProc({
+                    Character = Character,
+                    Victim = Victim,
+                    Speed = 0.5,
+                    StunTime = 0.15,
+                    Duration = 5,
+                })
+            end
+        else
+            SpeedManager.changeSpeed(Character, 6, 1.75, 4) --function(Character,Speed,Duration,Priority)
+            StateManager:ChangeState(Character, "Stunned", 1.75)
+        end
+    end,
 
-		NetworkStream.FireClientDistance(Character,"ClientRemote",500,{Character = Character, Module = "KilluaVFX", Function = "Skateboard", Skateboard = Skateboard})
+    ["FourthAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		local BodyGyro = Instance.new("BodyGyro")
-		BodyGyro.MaxTorque = Vector3.new(12, 15555, 12)
-		BodyGyro.P = 10000
-		BodyGyro.Parent = Root
-		Trash[#Trash + 1] = BodyGyro
+        StateManager:ChangeState(Character, "IFrame", 0.35)
+        StateManager:ChangeState(Character, "Attacking", 6)
 
-		Debris:AddItem(BodyGyro,6)
+        VfxHandler.RemoveBodyMover(Character)
 
-		local BodyVelocity = Instance.new("BodyVelocity")
-		BodyVelocity.Name = "SkateBoard"
-		BodyVelocity.MaxForce = Vector3.new(2e4,0,2e4)
-		BodyVelocity.Parent = Root
-		Trash[#Trash + 1] = BodyVelocity
+        local Skateboard = ReplicatedStorage.Assets.Models.Misc.KilluaSkateboard:Clone()
+        Skateboard.Parent = workspace.World.Visuals
 
-		Debris:AddItem(BodyVelocity,6)
+        AnimationRemote:FireClient(Player, "Skateboard", "Play", { Looped = true })
 
-		while BodyVelocity and RunService.Stepped:Wait() do
-			local SkillData = StateManager:ReturnData(Character,"LastSkill")
-		
-			pcall(function()
-				local MouseHit = MouseRemote:InvokeClient(Player)
+        local Weld = Instance.new("Weld")
+        Weld.Part0 = Root
+        Weld.Part1 = Skateboard
+        Weld.C1 = CFrame.new(0, 3, 0)
+        Weld.Parent = Root
 
-				BodyGyro.CFrame = CFrame.lookAt(Root.CFrame.Position, MouseHit.Position + Vector3.new(0,2,0))
-				BodyVelocity.Velocity = MouseHit.LookVector * 50
-			end)
-			if Root:FindFirstChild("SkateBoard") == nil or SkillData.Skill == "Swing" or StateManager:Peek(Character,"Stunned") then break end
-		end
-		StateManager:ChangeState(Character,"Attacking",.1)
-		RemoveTrash(Trash)
+        CameraRemote:FireClient(Player, "TweenObject", {
+            LifeTime = 0.225,
+            EasingStyle = Enum.EasingStyle.Linear,
+            EasingDirection = Enum.EasingDirection.Out,
+            Return = false,
+            Properties = { FieldOfView = 100 },
+        })
 
-		AnimationRemote:FireClient(Player,"Skateboard", "Stop", {Looped = false})
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            500,
+            { Character = Character, Module = "KilluaVFX", Function = "Skateboard", Skateboard = Skateboard }
+        )
 
-		CameraRemote:FireClient(Player,"TweenObject",{
-			LifeTime = .225,
-			EasingStyle = Enum.EasingStyle.Linear,
-			EasingDirection = Enum.EasingDirection.Out,
-			Return = false,
-			Properties = {FieldOfView = 70}
-		})
-		
-		local Data = ProfileService:GetPlayerProfile(Player)	
-		if Data.Character == "Killua" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end
-		
-		for Index = 0,2,.15 do
-			Skateboard.Transparency = Index
-			RunService.Heartbeat:Wait()
-		end
-		Debris:AddItem(Skateboard,.75)
-	end
+        local BodyGyro = Instance.new("BodyGyro")
+        BodyGyro.MaxTorque = Vector3.new(12, 15555, 12)
+        BodyGyro.P = 10000
+        BodyGyro.Parent = Root
+        Trash[#Trash + 1] = BodyGyro
+
+        Debris:AddItem(BodyGyro, 6)
+
+        local BodyVelocity = Instance.new("BodyVelocity")
+        BodyVelocity.Name = "SkateBoard"
+        BodyVelocity.MaxForce = Vector3.new(2e4, 0, 2e4)
+        BodyVelocity.Parent = Root
+        Trash[#Trash + 1] = BodyVelocity
+
+        Debris:AddItem(BodyVelocity, 6)
+
+        while BodyVelocity and RunService.Stepped:Wait() do
+            local SkillData = StateManager:ReturnData(Character, "LastSkill")
+
+            pcall(function()
+                local MouseHit = MouseRemote:InvokeClient(Player)
+
+                BodyGyro.CFrame = CFrame.lookAt(Root.CFrame.Position, MouseHit.Position + Vector3.new(0, 2, 0))
+                BodyVelocity.Velocity = MouseHit.LookVector * 50
+            end)
+            if
+                Root:FindFirstChild("SkateBoard") == nil
+                or SkillData.Skill == "Swing"
+                or StateManager:Peek(Character, "Stunned")
+            then
+                break
+            end
+        end
+        StateManager:ChangeState(Character, "Attacking", 0.1)
+        RemoveTrash(Trash)
+
+        AnimationRemote:FireClient(Player, "Skateboard", "Stop", { Looped = false })
+
+        CameraRemote:FireClient(Player, "TweenObject", {
+            LifeTime = 0.225,
+            EasingStyle = Enum.EasingStyle.Linear,
+            EasingDirection = Enum.EasingDirection.Out,
+            Return = false,
+            Properties = { FieldOfView = 70 },
+        })
+
+        local Data = ProfileService:GetPlayerProfile(Player)
+        if Data.Character == "Killua" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
+
+        for Index = 0, 2, 0.15 do
+            Skateboard.Transparency = Index
+            RunService.Heartbeat:Wait()
+        end
+        Debris:AddItem(Skateboard, 0.75)
+    end,
 }
 
 return Killua

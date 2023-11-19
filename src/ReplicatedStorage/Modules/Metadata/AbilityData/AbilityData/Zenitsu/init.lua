@@ -1,53 +1,53 @@
 return {
-	["FirstAbility"] = {
-		Name = "Thunderflash and Clap",
+    ["FirstAbility"] = {
+        Name = "Thunderflash and Clap",
 
-		StartTime = 0,
-		Cooldown = 8,
-		ModePoints = 15,
-		
-		Guardbreak = false,
-		Bool = false,
-		Damage = 15,
-	},
+        StartTime = 0,
+        Cooldown = 8,
+        ModePoints = 15,
 
-	["SecondAbility"] = {
-		Name = "Sleeping",
+        Guardbreak = false,
+        Bool = false,
+        Damage = 15,
+    },
 
-		StartTime = 0,
-		Cooldown = 10,
-		
-		Sleeping = false,
-		Guardbreak = false,
-		Bool = false,
+    ["SecondAbility"] = {
+        Name = "Sleeping",
 
-		Damage = 5,
-	},
-	
-	["ThirdAbility"] = {
-		Name = "Heat Lightning",
+        StartTime = 0,
+        Cooldown = 10,
 
-		StartTime = 0,
-		Cooldown = 12,
-		ModePoints = 8,
-		
-		Guardbreak = false,
-		Bool = false,
+        Sleeping = false,
+        Guardbreak = false,
+        Bool = false,
 
-		Damage = 10,
-	},
-	
-	["FourthAbility"] = {
-		Name = "Rice Spirit",
+        Damage = 5,
+    },
 
-		StartTime = 0,
-		Cooldown = 15,
-		StunTime = 1.25,
-		ModePoints = 8,
+    ["ThirdAbility"] = {
+        Name = "Heat Lightning",
 
-		Guardbreak = true,
-		Bool = false,
+        StartTime = 0,
+        Cooldown = 12,
+        ModePoints = 8,
 
-		Damage = 8,
-	}
+        Guardbreak = false,
+        Bool = false,
+
+        Damage = 10,
+    },
+
+    ["FourthAbility"] = {
+        Name = "Rice Spirit",
+
+        StartTime = 0,
+        Cooldown = 15,
+        StunTime = 1.25,
+        ModePoints = 8,
+
+        Guardbreak = true,
+        Bool = false,
+
+        Damage = 8,
+    },
 }
