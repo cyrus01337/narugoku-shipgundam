@@ -117,7 +117,7 @@ return function(Data)
 	RegularBall.Size = Vector3.new(40,40,40)
 
 	RegularBall.Color = Color3.fromRGB(255, 120, 66)
-	RegularBall.CFrame = Result.CFrame + Vector3.new(0,5,0)
+	RegularBall.CFrame = CFrame.new(Result.Position) + Vector3.new(0,5,0)
 
 	RegularBall.Parent = workspace.World.Visuals
 	Debris:AddItem(RegularBall,.2)

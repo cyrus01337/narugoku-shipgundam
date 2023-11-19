@@ -72,8 +72,12 @@ local function RaycastTarget(Radius,Character)
 
 	local Root = Character:FindFirstChild("HumanoidRootPart")
 
-	local RaycastResult = Ray.new(Root.CFrame.p, (MouseHit.Position - Root.CFrame.Position).Unit * Radius)
-	local Target,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals}, false, false)
+	local RayParam = RaycastParams.new()
+	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+
+	local RaycastResult = workspace:Raycast(Root.Position, (MouseHit.Position - Root.Position).Unit * Radius, RayParam) or {}
+	local Target, Position = RaycastResult.Instance, RaycastResult.Position 
 
 	if Target and Target:IsDescendantOf(workspace.World.Live) then
 		local Victim = Target:FindFirstAncestorWhichIsA("Model")

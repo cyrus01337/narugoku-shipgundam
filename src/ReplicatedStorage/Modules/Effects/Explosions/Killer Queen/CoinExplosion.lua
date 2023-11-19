@@ -70,8 +70,14 @@ return function(Data)
 
 	local Calculation = Part.CFrame - Part.CFrame.Position
 
-	local RaycastResult = Ray.new(Part.Position, Vector3.new(0,-1000,0))
-	local PartFount,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals}, false, false)
+	local RayParam = RaycastParams.new()
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+
+	local RaycastResult = workspace:Raycast(Part.PivotOffset.Position, Vector3.yAxis * -1000, raycastParams)
+	local PartFount = RaycastResult.Part
+	local Position = RaycastResult.Position
+
 	if PartFount then
 
 		local BurstParticle = Particles.Burst:Clone()

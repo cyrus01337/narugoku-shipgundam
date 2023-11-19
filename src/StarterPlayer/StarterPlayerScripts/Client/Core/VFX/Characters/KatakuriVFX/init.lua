@@ -209,7 +209,7 @@ local IchigoVFX = {
 		end)()
 
 		while true do
-			wait()
+			task.wait()
 			local End = Root.CFrame * CFrame.new(0,2,0) * CFrame.Angles(0, math.rad(math.random(-360, 360)), 0)
 
 			local BrickColorIndex = BrickColor.new("Really black")
@@ -219,8 +219,14 @@ local IchigoVFX = {
 				BrickColorIndex = BrickColor.new("White")
 			end
 
-			local RaycastResult = Ray.new(Root.Position, Vector3.new(0,-1000,500))
-			local Target,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals, workspace.World.Live}, false, false)
+			local RayParam = RaycastParams.new()
+			RayParam.FilterType = Enum.RaycastFilterType.Exclude
+			RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals, workspace.World.Live }
+
+			local RaycastResult = workspace:Raycast(Root.Position, Vector3.new(0, -1000, 500), RayParam) or {}
+
+			local Target, Position = RaycastResult.Instance, RaycastResult.Position
+
 			if Target then
 				Dust.Attachment.dust1.Enabled = true;
 				Dust.Attachment.dust1.Color = ColorSequence.new(Target.Color);

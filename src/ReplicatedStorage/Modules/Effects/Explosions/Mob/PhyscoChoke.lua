@@ -158,8 +158,13 @@ return function(Data)
 	Dust.Parent = workspace.World.Visuals
 	Debris:AddItem(Dust, 2.5)
 
-	local ray = Ray.new(VRoot.Position, Vector3.new(0,-1000,0))
-	local Part,Position = workspace:FindPartOnRayWithIgnoreList(ray, {Character, workspace.World.Visuals}, false, false)
+	local RayParam = RaycastParams.new()
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+
+	local RaycastResult = workspace:Raycast(VRoot.Position, Vector3.yAxis * -1000, RayParam) or {}
+	local Part, Position = RaycastResult.Instance, RaycastResult.Position
+	
 	if Part then
 
 		local CrashSmoke = Effects.CrashSmoke:Clone()

@@ -28,8 +28,13 @@ return function(a0, a1)
 	
 	task.wait(0.1)
 	
-	local ray = Ray.new(char.HumanoidRootPart.Position, Vector3.new(0, -5, 0))
-	local hit, vec2Pos, surfaceNormal = workspace:FindPartOnRayWithIgnoreList(ray, {char, workspace.Debris})
+	local RayParam = RaycastParams.new()
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+	RayParam.FilterDescendantsInstances = { char, workspace.Debris }
+
+	local RaycastResult = workspace:Raycast(char.HumanoidRootPart.Position, Vector3.yAxis * -5, RayParam) or {}
+	local hit, vec2Pos, surfaceNormal = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
+
 	if hit then
 		local hitCF = CFrame.new(vec2Pos, vec2Pos + surfaceNormal) * CFrame.Angles(-math.pi/2, 0, 0)
 		coroutine.wrap(function()

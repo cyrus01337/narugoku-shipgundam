@@ -148,8 +148,13 @@ return function(Data)
 		end
 	end))
 
-	local RaycastResult = Ray.new(VRoot.Position, Vector3.new(0,-1000,0))
-	local Part,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals}, false, false)
+	local RayParam = RaycastParams.new()
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+
+	local RaycastResult = workspace:Raycast(VRoot.Position, Vector3.yAxis * -1000, RayParam) or {}
+	local Part, Position = RaycastResult.Instance, RaycastResult.Position
+
 	if Part then
 		local GroundEffect = Particles.GroundSlamThing:Clone()
 		GroundEffect.Position = Position or VRoot.CFrame.p

@@ -47,22 +47,34 @@ local function mochiExplosion(OriginPosition, OriginInstance)
 
 		local rayCheck = CFrame.new(OriginPosition) * CFrame.new(Random.new():NextNumber(-30, 30), 15, Random.new():NextNumber(-30, 30))
 
-		local roofCheckRay = Ray.new(rayCheck.Position, Vector3.new(0, 50, 0))
-		local Rhit, Rvec2Pos, RsurfaceNormal = workspace:FindPartOnRayWithIgnoreList(roofCheckRay, {mochiPart, debrisFolder})
+		local RayParam = RaycastParams.new()
+		RayParam.FilterType = Enum.RaycastFilterType.Exclude
+		RayParam.FilterDescendantsInstances = { mochiPart, debrisFolder }
 
-		local ray
+		local RaycastResult = workspace:Raycast(rayCheck.Position, Vector3.yAxis * 50, RayParam) or {}
+
+		local Rhit, Rvec2Pos, RsurfaceNormal = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
+
 		local maxHeight
+
+		local origin
+		local direction = Vector3.yAxis * -1000
 
 		if Rhit then
 			maxHeight = (OriginPosition.Y - Rhit.Position.Y)
-			ray = Ray.new(Vector3.new(rayCheck.Position.X, maxHeight - 1, rayCheck.Position.Z), Vector3.new(0, -1000, 0))
+			origin = Vector3.new(rayCheck.Position.X, maxHeight - 1, rayCheck.Position.Z)
 		else
 			maxHeight = 50
-			ray = Ray.new(rayCheck.Position, Vector3.new(0, -1000, 0))
+			origin = rayCheck.Position
 		end
 
+		local RayParam = RaycastParams.new()
+		RayParam.FilterType = Enum.RaycastFilterType.Exclude
+		RayParam.FilterDescendantsInstances = { mochiPart, debrisFolder }
 
-		local hit, vec2Pos, surfaceNormal = workspace:FindPartOnRayWithIgnoreList(ray, {mochiPart, debrisFolder})
+		local RaycastResult = workspace:Raycast(origin, direction, RayParam) or {}
+
+		local hit, vec2Pos, surfaceNormal = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
 
 		if hit then
 			local endCF = CFrame.new(vec2Pos, vec2Pos + surfaceNormal) * CFrame.Angles(-math.pi/2, 0, 0)		

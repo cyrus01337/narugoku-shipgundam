@@ -228,7 +228,18 @@ local SanjiVFX = {
 		local IndexCalculation = MagnitudeIndex / 5
 		for Index = 1, IndexCalculation do
 			local LerpIndex = Root:Lerp(Root.CFrame, Index / IndexCalculation)
-			local Target, Position = workspace:FindPartOnRayWithIgnoreList(Ray.new(LerpIndex.p, LerpIndex.upVector * -10), { workspace.World.Visuals, IndexCalculation})
+
+			local RayParam = RaycastParams.new()
+			RayParam.FilterType = Enum.RaycastFilterType.Exclude
+			RayParam.FilterDescendantsInstances = { workspace.World.Visuals, IndexCalculation }
+
+			local Origin = LerpIndex.Position
+			local Direction = LerpIndex.UpVector * -10
+			local RaycastResult = workspace:Raycast(Origin, Direction, RayParam) or {
+				Position = Origin + Direction
+			}
+
+			local Target, Position = RaycastResult.Instance, RaycastResult.Position
 
 			local Trail = script.AscendTrail.trail:Clone()
 			Trail.CFrame = CFrame.new(Position)
@@ -286,8 +297,13 @@ local SanjiVFX = {
 		Dust.CFrame = CFrame.new(Root.CFrame.p) * CFrame.new(0, -Humanoid.HipHeight - 1, 0)
 		Dust.Parent = Victim
 
-		local RaycastResult = Ray.new(Root.Position, Vector3.new(0,-1000,500))
-		local Target,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals, Victim}, false, false)
+		local RayParam = RaycastParams.new()
+		RayParam.FilterType = Enum.RaycastFilterType.Exclude
+		RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals, Victim}
+
+		local RaycastResult = workspace:Raycast(Root.Position, Vector3.new(0, -1000, 500), RayParam) or {}
+		local Target, Position = RaycastResult.Instance, RaycastResult.Position
+
 		if Target then
 			Dust.Attachment.dust1.Color = ColorSequence.new(Target.Color)
 			Dust.Attachment.dust2.Color = ColorSequence.new(Target.Color)
@@ -371,8 +387,13 @@ local SanjiVFX = {
 				BrickColorIndex = BrickColor.new("White")
 			end
 
-			local RaycastResult = Ray.new(Root.Position, Vector3.new(0,-1000,500))
-			local Target,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals, workspace.World.Live}, false, false)
+			local RayParam = RaycastParams.new()
+			RayParam.FilterType = Enum.RaycastFilterType.Exclude
+			RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals, workspace.World.Live }
+
+			local RaycastResult = workspace:Raycast(Root.Position, Vector3.new(0, -1000, 500), RayParam) or {}
+			local Target, Position = RaycastResult.Instance, RaycastResult.Position
+
 			if Target then
 				Dust.Attachment.dust1.Enabled = true;
 				Dust.Attachment.dust1.Color = ColorSequence.new(Target.Color);
@@ -659,8 +680,13 @@ local SanjiVFX = {
 
 		local Dust = ReplicatedStorage.Assets.Effects.Particles.ParticleAttatchments.DustPUSSH:Clone()
 
-		local RaycastResult = Ray.new(Root.Position, Vector3.new(0,-1000,500))
-		local Target,Position = workspace:FindPartOnRayWithIgnoreList(RaycastResult, {Character, workspace.World.Visuals, workspace.World.Live}, false, false)
+		local RayParam = RaycastParams.new()
+		RayParam.FilterType = Enum.RaycastFilterType.Exclude
+		RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals, workspace.World.Live }
+
+		local RaycastResult = workspace:Raycast(Root.Position, Vector3.new(0, -1000, 500), RayParam) or {}
+		local Target, Position = RaycastResult.Instance, RaycastResult.Position
+
 		if Target then
 			coroutine.resume(coroutine.create(function()
 				for _ = 1,3 do

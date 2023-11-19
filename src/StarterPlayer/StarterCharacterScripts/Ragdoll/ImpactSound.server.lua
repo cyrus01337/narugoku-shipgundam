@@ -17,8 +17,13 @@ end)
 
 while true do
 	wait()
-	local ray = Ray.new(script.Parent.Position,Vector3.new(0,-3,0))
-	local h,p = game.Workspace:FindPartOnRay(ray,script.Parent.Parent)
+	local raycastParam = RaycastParams.new()
+	raycastParam.FilterDescendantsInstances = { script.Parent.Parent }
+	raycastParam.FilterType = Enum.RaycastFilterType.Exclude
+
+	local raycastResult = workspace:Raycast(script.Parent.Position, Vector3.new(0, -3, 0), raycastParam)
+
+	local h,p = raycastResult.Instance, raycastResult.Position
 	if h then
 	
 	else

@@ -30,15 +30,22 @@ end)
 camShake:Start()
 
 function GetMousePos(X,Y,Z,Boolean)
-	local RayMag1 = workspace.CurrentCamera:ScreenPointToRay(X, Y)
-	local NewRay = Ray.new(RayMag1.Origin, RayMag1.Direction * ((Z and Z) or 200))
-	local Target,Position,Surface = workspace:FindPartOnRayWithIgnoreList(NewRay, {Character,workspace.World.Visuals})
+	local RayMag1 = workspace.CurrentCamera:ScreenPointToRay(X, Y) 
+
+	local RayParam = RaycastParams.new()
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals }
+
+	local RaycastResult = workspace:Raycast(RayMag1.Origin, RayMag1.Direction * (Z or 200))
+	local Target, Position, Surface = RaycastResult.Instance, RaycastResult.Position, RaycastResult.Normal
+
 	if Boolean then
 		return Position,Target,Surface
 	else
 		return Position
 	end
 end
+
 
 local function urmom(Particle)
 	local Clone = Particle:Clone()
@@ -104,8 +111,16 @@ function Activate(Raycast,Color,Voltage,SP)
 end
 
 function DirtEffect(Pos,Character,pos2)
-	local Raycast = Ray.new(Pos,Vector3.new(0,-5,0))
-	local Target,Position = workspace:FindPartOnRayWithIgnoreList(Raycast,{Character,workspace.World.Visuals,workspace.World.Live})
+	local RayParam = RaycastParams.new()
+	RayParam.FilterType = Enum.RaycastFilterType.Exclude
+	RayParam.FilterDescendantsInstances = { Character, workspace.World.Visuals, workspace.World.Live }
+
+	local RaycastResult = workspace:Raycast(Pos, Vector3.new(0, -5, 0), RayParam) or {
+		Position = Pos + Vector3.new(0, -5, 0)
+	}
+
+	local Target, Position = RaycastResult.Instance, RaycastResult.Position
+
 	if Target then
 		local Table = {}
 		for _ = 1,1 do
@@ -254,7 +269,7 @@ local SasukeVFX = {
 
 		local PositionCalculation,PositionCalculation2 = End.Position,End.upVector * -200
 
-		local RaycastResult = workspace:Raycast(PositionCalculation,PositionCalculation2,raycastparams)
+		local RaycastResult = workspace:Raycast(PositionCalculation,PositionCalculation2,raycastparams) or {}
 		if RaycastResult and RaycastResult.Instance and (RaycastResult.Position - PositionCalculation).Magnitude < 30 then
 			local LeftDust = ReplicatedStorage.Assets.Effects.Meshes.JutsuDust:Clone()
 			LeftDust.Size = Vector3.new(LeftDust.Size.X,LeftDust.Size.Y,7)
