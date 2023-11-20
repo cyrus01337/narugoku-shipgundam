@@ -21,6 +21,7 @@ game:WaitForChild("ReplicatedStorage")
 local Modules = ReplicatedStorage:WaitForChild("Modules")
 local Shared = Modules:WaitForChild("Shared")
 
+local cyrus01337Utils = require(Modules:WaitForChild("cyrus01337Utils"))
 local SoundManager = require(Shared:WaitForChild("SoundManager"))
 local GlobalFunctions = require(ReplicatedStorage:WaitForChild("GlobalFunctions"))
 
@@ -45,7 +46,9 @@ local AnglesOfCamera = {}
 local Connections = {}
 
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
-StarterGui:SetCore("TopbarEnabled", false)
+cyrus01337Utils.retryForever("DisableTopbar", function()
+    StarterGui:SetCore("TopbarEnabled", false)
+end)
 
 local Humanoid, HumanoidRootPart = Character:WaitForChild("Humanoid"), Character:WaitForChild("HumanoidRootPart")
 
