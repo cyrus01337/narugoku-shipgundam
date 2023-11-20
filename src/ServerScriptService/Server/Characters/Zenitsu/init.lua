@@ -124,32 +124,22 @@ local Zenitsu = {
             { Character = Character, Module = "ZenitsuVFX", Function = "ThunderClapandFlash" }
         )
         TaskScheduler:AddTask(0.725, function()
-            HitboxModule.GetTouchingParts(
-                Player,
-                {
-                    Delay = 0.935,
-                    ExistTime = 2,
-                    Type = "Sword",
-                    KeysLogged = math.random(1, 3),
-                    Size = Vector3.new(12.417, 4.517, 58.929),
-                    Transparency = 1,
-                    PositionCFrame = Root.CFrame * CFrame.new(0, 0, -18.5),
-                },
-                KeyData.SerializedKey,
-                CharacterName
-            )
-            NetworkStream.FireClientDistance(
-                Character,
-                "ClientRemote",
-                200,
-                {
-                    Character = Character,
-                    Module = "ZenitsuVFX",
-                    Function = "Menbere",
-                    Distance = 100,
-                    ContactPointCFrame = Root.CFrame,
-                }
-            )
+            HitboxModule.GetTouchingParts(Player, {
+                Delay = 0.935,
+                ExistTime = 2,
+                Type = "Sword",
+                KeysLogged = math.random(1, 3),
+                Size = Vector3.new(12.417, 4.517, 58.929),
+                Transparency = 1,
+                PositionCFrame = Root.CFrame * CFrame.new(0, 0, -18.5),
+            }, KeyData.SerializedKey, CharacterName)
+            NetworkStream.FireClientDistance(Character, "ClientRemote", 200, {
+                Character = Character,
+                Module = "ZenitsuVFX",
+                Function = "Menbere",
+                Distance = 100,
+                ContactPointCFrame = Root.CFrame,
+            })
         end)
 
         --local Aiming = GlobalFunctions.NewInstance("BoolValue",{Parent = Character, Name = "Aiming"},.45)
@@ -161,18 +151,13 @@ local Zenitsu = {
 
         wait(0.75)
 
-        NetworkStream.FireClientDistance(
-            Character,
-            "ClientRemote",
-            200,
-            {
-                Character = Character,
-                Module = "ZenitsuVFX",
-                Function = "Dash",
-                Distance = 100,
-                ContactPointCFrame = Root.CFrame,
-            }
-        )
+        NetworkStream.FireClientDistance(Character, "ClientRemote", 200, {
+            Character = Character,
+            Module = "ZenitsuVFX",
+            Function = "Dash",
+            Distance = 100,
+            ContactPointCFrame = Root.CFrame,
+        })
 
         CameraRemote:FireClient(Player, "CreateFlashUI", CreateFrameData)
 
@@ -202,17 +187,13 @@ local Zenitsu = {
         StateManager:ChangeState(Character, "Guardbroken", 4e4)
 
         delay(0.2, function()
-            CameraRemote:FireClient(
-                Player,
-                "TweenObject",
-                {
-                    LifeTime = 0.35,
-                    EasingStyle = Enum.EasingStyle.Linear,
-                    EasingDirection = Enum.EasingDirection.Out,
-                    Return = true,
-                    Properties = { FieldOfView = 100 },
-                }
-            )
+            CameraRemote:FireClient(Player, "TweenObject", {
+                LifeTime = 0.35,
+                EasingStyle = Enum.EasingStyle.Linear,
+                EasingDirection = Enum.EasingDirection.Out,
+                Return = true,
+                Properties = { FieldOfView = 100 },
+            })
         end)
         TaskScheduler:AddTask(1, function()
             AnimationRemote:FireClient(Player, "Sleeping")
@@ -234,7 +215,7 @@ local Zenitsu = {
             HumanoidRootPart.Anchored = true
 
             local ModeData = StateManager:ReturnData(Character, "Mode")
-            local ModeNumber = Player:WaitForChild("Mode")
+            local ModeNumber = Player:WaitForChild("Mode", 60)
 
             if ModeData.Mode then
                 return
@@ -373,23 +354,18 @@ local Zenitsu = {
         local MouseHit = MouseRemote:InvokeClient(Player)
         local Direction = (MouseHit.Position - StartPoint.Position).Unit
 
-        NetworkStream.FireClientDistance(
-            Character,
-            "ClientRemote",
-            200,
-            {
-                Character = Character,
-                Module = "RazorVFX",
-                Function = "HardThrow",
-                StartPoint = StartPoint,
-                MouseHit = MouseHit,
-                Lifetime = Lifetime,
-                Velocity = Velocity,
-                Distance = 100,
-                Direction = Direction,
-                Ponts = Points,
-            }
-        )
+        NetworkStream.FireClientDistance(Character, "ClientRemote", 200, {
+            Character = Character,
+            Module = "RazorVFX",
+            Function = "HardThrow",
+            StartPoint = StartPoint,
+            MouseHit = MouseHit,
+            Lifetime = Lifetime,
+            Velocity = Velocity,
+            Distance = 100,
+            Direction = Direction,
+            Ponts = Points,
+        })
 
         RaycastManager:CastProjectileHitbox({
             Points = Points,
@@ -499,15 +475,12 @@ local Zenitsu = {
         Beam.Parent = workspace.World.Visuals
 
         Debris:AddItem(Beam, 0.25)
-        GlobalFunctions.TweenFunction(
-            {
-                ["Instance"] = Beam,
-                ["EasingStyle"] = Enum.EasingStyle.Quad,
-                ["EasingDirection"] = Enum.EasingDirection.Out,
-                ["Duration"] = 0.25,
-            },
-            { ["Size"] = Vector3.new(End, 0, 0) }
-        )
+        GlobalFunctions.TweenFunction({
+            ["Instance"] = Beam,
+            ["EasingStyle"] = Enum.EasingStyle.Quad,
+            ["EasingDirection"] = Enum.EasingDirection.Out,
+            ["Duration"] = 0.25,
+        }, { ["Size"] = Vector3.new(End, 0, 0) })
         SpeedManager.changeSpeed(Character, 0, 1.35, 4e4)
 
         Root.CFrame = VRoot.CFrame * CFrame.new(0, 0, 4)

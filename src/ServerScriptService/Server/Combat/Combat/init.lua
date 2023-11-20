@@ -292,7 +292,7 @@ local Combat = {
         local ModeData = StateManager:ReturnData(Character, "Mode")
         local CombatCopy = CombatData.ReturnData(Character, "Dash")
 
-        local ModeNumber = Player:WaitForChild("Mode")
+        local ModeNumber = Player:WaitForChild("Mode", 60)
         local ModeBoolean = ModeNumber and ModeNumber.ModeBoolean
         local Stats = Player:WaitForChild("leaderstats")
         local Points = Stats and Stats.Points
@@ -494,33 +494,21 @@ local Combat = {
 
         local _ = (
             HasCombat
-            and SwingVariations(
-                Player,
-                CharacterName,
-                KeyData,
-                MoveData,
-                {
-                    SwingType = "Combat",
-                    HitboxRange = 7,
-                    ComboInput = PlayerCombo.ComboVariation,
-                    WhichButton = ExtraData.WhichButton,
-                }
-            )
+            and SwingVariations(Player, CharacterName, KeyData, MoveData, {
+                SwingType = "Combat",
+                HitboxRange = 7,
+                ComboInput = PlayerCombo.ComboVariation,
+                WhichButton = ExtraData.WhichButton,
+            })
         )
             or (
                 not HasCombat
-                and SwingVariations(
-                    Player,
-                    CharacterName,
-                    KeyData,
-                    MoveData,
-                    {
-                        SwingType = "Sword",
-                        HitboxRange = 7.5,
-                        WhichButton = ExtraData.WhichButton,
-                        ComboInput = PlayerCombo.ComboVariation,
-                    }
-                )
+                and SwingVariations(Player, CharacterName, KeyData, MoveData, {
+                    SwingType = "Sword",
+                    HitboxRange = 7.5,
+                    WhichButton = ExtraData.WhichButton,
+                    ComboInput = PlayerCombo.ComboVariation,
+                })
             )
 
         PlayerCombo.LastPressed = os.clock()

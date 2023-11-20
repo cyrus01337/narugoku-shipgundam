@@ -100,7 +100,7 @@ local function onPlayerAdded(player: Player)
     playerLeaderstats.Name = "leaderstats"
     playerLeaderstats.Parent = player
     local playerChar = player.Character or player.CharacterAdded:Wait()
-    local playerMode = player:WaitForChild("Mode") :: NumberValue
+    local playerMode = player:WaitForChild("Mode", 60) :: NumberValue
 
     initPlayerCharacterMetadata(playerChar)
     player.CharacterAdded:Connect(initPlayerCharacterMetadata)

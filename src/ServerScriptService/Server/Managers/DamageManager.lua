@@ -109,19 +109,14 @@ local BlockFunctions = {
         local Damage = ModifierCopy.Damage
 
         VictimHumanoid:TakeDamage(Damage / 2 * DamageBoost)
-        NetworkStream.FireClientDistance(
-            Character,
-            "ClientRemote",
-            50,
-            {
-                Character = Character,
-                Damage = Damage / 2 * DamageBoost,
-                Victim = Victim,
-                Module = "PlayerClient",
-                Function = "DamageIndication",
-                StunTime = 0,
-            }
-        )
+        NetworkStream.FireClientDistance(Character, "ClientRemote", 50, {
+            Character = Character,
+            Damage = Damage / 2 * DamageBoost,
+            Victim = Victim,
+            Module = "PlayerClient",
+            Function = "DamageIndication",
+            StunTime = 0,
+        })
 
         NetworkStream.FireClientDistance(Character, "ClientRemote", 150, {
             Character = Character,
@@ -253,23 +248,18 @@ function DamageManager.DeductDamage(Character, Victim, SkillName, CharacterName,
             { SkillName = SkillName, CharacterName = CharacterName }
         )
     else
-        NetworkStream.FireClientDistance(
-            Character,
-            "ClientRemote",
-            50,
-            {
-                Character = Character,
-                Damage = Damage * DamageBoost,
-                Victim = Victim,
-                Module = "PlayerClient",
-                Function = "DamageIndication",
-                StunTime = StunTime,
-            }
-        )
+        NetworkStream.FireClientDistance(Character, "ClientRemote", 50, {
+            Character = Character,
+            Damage = Damage * DamageBoost,
+            Victim = Victim,
+            Module = "PlayerClient",
+            Function = "DamageIndication",
+            StunTime = StunTime,
+        })
         local Damage = SecondType == "Choke" and (VictimHumanoid.Health - Damage * DamageBoost) <= 0 and 0 or Damage
         VictimHumanoid:TakeDamage(Damage * DamageBoost)
 
-        local ModeNumber = Player:WaitForChild("Mode")
+        local ModeNumber = player:WaitForChild("Mode", 60)
         local Stats = Player:WaitForChild("leaderstats")
         local Points = Stats and Stats.Points
 
@@ -312,19 +302,14 @@ function DamageManager.DeductDamage(Character, Victim, SkillName, CharacterName,
             or BackwardVelocity
 
         if not string.find(SkillName, "Ability") then
-            NetworkStream.FireClientDistance(
-                Character,
-                "ClientRemote",
-                150,
-                {
-                    Character = Character,
-                    SecondType = SecondType,
-                    KeysLogged = KeysLogged,
-                    Victim = Victim,
-                    Module = Type .. "VFX",
-                    Function = "Light",
-                }
-            )
+            NetworkStream.FireClientDistance(Character, "ClientRemote", 150, {
+                Character = Character,
+                SecondType = SecondType,
+                KeysLogged = KeysLogged,
+                Victim = Victim,
+                Module = Type .. "VFX",
+                Function = "Light",
+            })
 
             local _ = string.len(PlayerCombo.ComboVariation) >= 5 and VfxHandler.RemoveBodyMover(Victim)
 
@@ -346,7 +331,7 @@ function DamageManager.DeductDamage(Character, Victim, SkillName, CharacterName,
                 VfxHandler.FaceVictim({ Character = Character, Victim = Victim })
 
                 local Data = ProfileService:GetPlayerProfile(Player)
-                local ModeNumber = Player:WaitForChild("Mode")
+                local ModeNumber = player:WaitForChild("Mode", 60)
                 local ModeBoolean = ModeNumber and ModeNumber.ModeBoolean
 
                 local _ = ModeBoolean.Value
@@ -365,19 +350,14 @@ function DamageManager.DeductDamage(Character, Victim, SkillName, CharacterName,
                     )
             end
         else
-            NetworkStream.FireClientDistance(
-                Character,
-                "ClientRemote",
-                150,
-                {
-                    Character = Character,
-                    SecondType = SecondType,
-                    KeysLogged = math.random(1, 4),
-                    Victim = Victim,
-                    Module = Type .. "VFX",
-                    Function = "Light",
-                }
-            )
+            NetworkStream.FireClientDistance(Character, "ClientRemote", 150, {
+                Character = Character,
+                SecondType = SecondType,
+                KeysLogged = math.random(1, 4),
+                Victim = Victim,
+                Module = Type .. "VFX",
+                Function = "Light",
+            })
         end
     end
 
