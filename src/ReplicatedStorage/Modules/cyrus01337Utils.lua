@@ -16,10 +16,10 @@ function cyrus01337Utils.retryForever(name: string, callback: () -> ())
 
         if not success then
             task.wait(1)
-        end
 
-        if iterations % 10 == 0 then
-            warn(string.format("Reached %d iterations whilst running %s", iterations, name))
+            if iterations % 10 == 0 then
+                warn(string.format("Reached %d iterations whilst running %s", iterations, name))
+            end
         end
     end
 end
