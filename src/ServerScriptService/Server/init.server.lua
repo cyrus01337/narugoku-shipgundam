@@ -71,11 +71,8 @@ local function onCharacterAdded(playerChar: Model)
         return
     end
 
-    --AddToEntites(playerChar)
-    --	ProfileService:Replicate(Players:GetPlayerFromCharacter(playerChar))
-
     spawnPlayer(player)
-    ProfileService:Replicate(Players:GetPlayerFromCharacter(playerChar))
+    ProfileService:Replicate(player)
 
     local playerData = ProfileService:GetPlayerProfile(player)
 
@@ -99,9 +96,9 @@ local function onCharacterRemoving(playerChar: Model)
 end
 
 local function onPlayerAdded(player: Player)
-    -- repeat
-    --     wait(0.1)
-    -- until ProfileService:IsLoaded(Player) == true
+    while not ProfileService:IsLoaded(player) do
+        task.wait(1)
+    end
 
     local playerChar = player.Character or player.CharacterAdded:Wait()
 
@@ -111,10 +108,8 @@ local function onPlayerAdded(player: Player)
         spawnPlayer(player)
     end)
 
-    --AddToEntites(Character)
-
+    onCharacterAdded(playerChar)
     ProfileService:Replicate(player)
-
     player.CharacterAdded:Connect(onCharacterAdded)
     player.CharacterRemoving:Connect(onCharacterRemoving)
 end
@@ -213,7 +208,7 @@ local function onServerRemote(player: Player, skillName: string, keyName: string
     end
 end
 
-local function onServerRequest(player: Player, request, character: string, type_)
+local function onServerRequest(player: Player, request: string, character: string, type_: string)
     local requestHandlerFound = requestModules[request]
 
     if requestHandlerFound then
@@ -222,28 +217,23 @@ local function onServerRequest(player: Player, request, character: string, type_
 end
 
 local function onDataRequest(player: Player)
-    if not ProfileService:IsLoaded(player) then
-        warn(string.format("Unable to process data request for %s", player.Name))
-        return
-    end
-
     local start = time()
 
-    repeat
-        wait(0.5)
-    until ProfileService:IsLoaded(player) or time() - start >= 20
-
-    return ProfileService:GetPlayerProfile(player)
+    while not ProfileService:IsLoaded(player) or time() - start >= 20 do
+        task.wait(1)
+    end
 end
 
 local function setupLobbyDummies()
-    local BlockDummy = workspace.World.Live.BlockDummy
-    local ParryDummy = workspace.World.Live.ParryDummy
-    local BlockHum = BlockDummy:FindFirstChild("Humanoid")
-    local ParryHum = ParryDummy:FindFirstChild("Humanoid")
+    local blockDummy = workspace.World.Live:WaitForChild("BlockDummy"):WaitForChild("blockDummy")
+    local parryDummy = workspace.World.Live:WaitForChild("ParryDummy"):WaitForChild("parryDummy")
+    local blockAnimation =
+        blockDummy.Humanoid:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Combat.Block.BlockIdle)
+    local parryAnimation =
+        parryDummy.Humanoid:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Combat.Block.BlockIdle)
 
-    BlockHum:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Combat.Block.BlockIdle):Play()
-    ParryHum:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Combat.Block.BlockIdle):Play()
+    blockAnimation:Play()
+    parryAnimation:Play()
 end
 
 local function accurateTimer(duration: number, callback: () -> ())
@@ -268,7 +258,13 @@ local function doRound()
     task.wait(ROUND_DURATION)
 end
 
+for _, player in Players:GetPlayers() do
+    task.spawn(onPlayerAdded, player)
+end
+
 ScriptContext.Error:Connect(logError)
+Players.PlayerAdded:Connect(onPlayerAdded)
+Players.PlayerRemoving:Connect(removePlayerMetadata)
 serverRemote.OnServerEvent:Connect(onServerRemote)
 serverRequest.OnServerEvent:Connect(onServerRequest)
 dataRequest.OnServerEvent:Connect(onDataRequest)
@@ -289,15 +285,9 @@ for _, descendant in script:GetDescendants() do
     cachedModules[descendant.Name] = require(descendant)
 end
 
-for _, player in Players:GetPlayers() do
-    task.spawn(onPlayerAdded, player)
-end
-
-Players.PlayerAdded:Connect(onPlayerAdded)
-Players.PlayerRemoving:Connect(removePlayerMetadata)
 setupLobbyDummies()
 
-while true do
-    accurateTimer(INTERMISSION_DURATION, intermission)
-    accurateTimer(ROUND_DURATION, doRound)
-end
+-- while true do
+--     accurateTimer(INTERMISSION_DURATION, intermission)
+--     accurateTimer(ROUND_DURATION, doRound)
+-- end
