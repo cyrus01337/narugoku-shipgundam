@@ -1,108 +1,131 @@
---|| Services ||--
-local Players = game:GetService("Players")
-
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerScriptService = game:GetService("ServerScriptService")
-
-local RunService = game:GetService("RunService")
-
 local MarketPlaceService = game:GetService("MarketplaceService")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local ServerScriptService = game:GetService("ServerScriptService")
+local ServerStorage = game:GetService("ServerStorage")
 
---|| Remotes ||--
-local AnimationRemote = ReplicatedStorage.Remotes.AnimationRemote
-local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
-
---|| Imports ||--
-local Messages = require(script.Prefixes)
-
-local GlobalFunctions = require(ReplicatedStorage.GlobalFunctions)
-
+local messages = require(script.Prefixes)
 local StateManager = require(ReplicatedStorage.Modules.Shared.StateManager)
 local SoundManager = require(ReplicatedStorage.Modules.Shared.SoundManager)
-
 local ProfileService = require(ServerScriptService.Server.ProfileService)
 
-local BannedIds = {
+local animationRemote = ReplicatedStorage.Remotes.AnimationRemote
+local leaderstatsTemplate = ServerStorage:WaitForChild("LeaderstatsTemplate", 60)
+local connections: { [Player]: RBXScriptConnection } = {}
+local bannedIDs = {
     1078192621,
     262511964,
     330532194,
 }
 
-local Connections = {}
+local function addEntity(playerChar: Model)
+    local player = Players:GetPlayerFromCharacter(playerChar) :: Player
 
-local function AddToEntites(Character)
-    while Players:FindFirstChild(Character.Name) and Character.Parent ~= workspace.World.Live do
-        RunService.Heartbeat:Wait()
-        if Players:GetPlayerFromCharacter(Character) and Players:FindFirstChild(Character.Name) then
-            Character.Parent = workspace.World.Live
-            --ProfileService:Replicate(Players:GetPlayerFromCharacter(Character))
+    while playerChar.Parent ~= workspace.World.Live do
+        if playerChar.Parent == nil then
+            playerChar.AncestryChanged:Wait()
         end
+
+        playerChar.Parent = workspace.World.Live
+        --ProfileService:Replicate(Players:GetPlayerFromCharacter(Character))
     end
-    AnimationRemote:FireClient(
-        Players:GetPlayerFromCharacter(Character),
-        Character,
+
+    animationRemote:FireClient(
+        player,
+        playerChar,
         "LoadAnimations",
         ReplicatedStorage.Assets.Animations.Shared:GetDescendants()
     )
     --ProfileService:Replicate(Players:GetPlayerFromCharacter(Character))
 end
 
-Players.PlayerAdded:Connect(function(Player)
-    local _ = table.find(BannedIds, Player.UserId) and Player:Kick()
+local function initPlayerCharacterMetadata(playerChar: Model)
+    addEntity(playerChar)
+    StateManager:ChangeState(playerChar, "Running", false)
+end
 
-    Connections[Player] = Player.CharacterAdded:Connect(function(Character)
-        AddToEntites(Character)
+-- TODO: Refactor using Cmdr
+local function processChatEmotes(message: string, speaker: Player?)
+    if not speaker then
+        return
+    end
 
-        StateManager:ChangeState(Character, "Running", false)
-    end)
+    local Character = speaker.Character or speaker.CharacterAdded:Wait()
+    local Humanoid = Character:FindFirstChild("Humanoid")
 
-    local Stats = GlobalFunctions.NewInstance("Folder", { Parent = Player, Name = "leaderstats" })
+    if MarketPlaceService:UserOwnsGamePassAsync(speaker.UserId, 18729033) then
+        for index, emotes in messages do
+            if message == "/e " .. index and StateManager:Peek(Character, "Emoting") then
+                local isAttacking = StateManager:Peek(Character, "Attacking")
+                    and not StateManager:Peek(Character, "Stunned")
 
-    GlobalFunctions.NewInstance("NumberValue", { Parent = Stats, Name = "Points", Value = 0 })
-    GlobalFunctions.NewInstance("NumberValue", { Parent = Player, Name = "Mode", Value = 0 })
-    GlobalFunctions.NewInstance(
-        "BoolValue",
-        { Parent = Player:WaitForChild("Mode"), Name = "ModeBoolean", Value = false }
-    )
+                StateManager:ChangeState(Character, "Emoting", 4e4)
+                -- SoundManager:AddSound(Index,{Parent = Character:FindFirstChild("HumanoidRootPart"), Volume = Table["Volume"], Looped = true}, "Client", {Duration = 1000})
+                animationRemote:FireClient(speaker, index, "Play", { Looped = true })
 
-    Player:WaitForChild("Mode").Changed:Connect(function(NewValue)
-        local ModeValue = Player:WaitForChild("Mode")
-        local ModeData = StateManager:ReturnData(Player.Character or Player.CharacterAdded:Wait(), "Mode")
+                if isAttacking then
+                    Humanoid.WalkSpeed = emotes.WalkSpeed
+                    Humanoid.JumpPower = emotes.JumpPower
 
-        ModeValue.Value = math.clamp(NewValue, 0, ModeData.MaxModeValue + 5)
-        ModeData.ModeValue = ModeValue.Value
-    end)
-
-    Player.Chatted:Connect(function(Message)
-        local Character = Player.Character or Player.CharacterAdded:Wait()
-        local Humanoid = Character:FindFirstChild("Humanoid")
-
-        if MarketPlaceService:UserOwnsGamePassAsync(Player.UserId, 18729033) then
-            for Index, Table in next, Messages do
-                if Message == "/e " .. Index and StateManager:Peek(Character, "Emoting") then
-                    StateManager:ChangeState(Character, "Emoting", 4e4)
-                    -- SoundManager:AddSound(Index,{Parent = Character:FindFirstChild("HumanoidRootPart"), Volume = Table["Volume"], Looped = true}, "Client", {Duration = 1000})
-                    AnimationRemote:FireClient(Player, Index, "Play", { Looped = true })
-
-                    while StateManager:Peek(Character, "Attacking") and not StateManager:Peek(Character, "Stunned") do
-                        Humanoid.WalkSpeed = Table["WalkSpeed"]
-                        Humanoid.JumpPower = Table["JumpPower"]
+                    while isAttacking do
+                        isAttacking = StateManager:Peek(Character, "Attacking")
+                            and not StateManager:Peek(Character, "Stunned")
 
                         RunService.Heartbeat:Wait()
                     end
-                    Humanoid.WalkSpeed = 14
-                    Humanoid.JumpPower = 50
-
-                    SoundManager:StopSound(Index, { Parent = Character:FindFirstChild("HumanoidRootPart") }, "Client")
-                    AnimationRemote:FireClient(Player, Index, "Stop")
-                    StateManager:ChangeState(Character, "Emoting", 0.001)
                 end
+
+                Humanoid.WalkSpeed = 14
+                Humanoid.JumpPower = 50
+
+                SoundManager:StopSound(index, { Parent = Character:FindFirstChild("HumanoidRootPart") }, "Client")
+                animationRemote:FireClient(speaker, index, "Stop")
+                StateManager:ChangeState(Character, "Emoting", 0.001)
             end
         end
-    end)
-    ProfileService:GetPlayerProfile(Player)
-end)
+    end
+end
 
-Players.PlayerRemoving:Connect(function(Player)
-    Connections[Player] = Connections[Player] and Connections[Player]:Disconnect()
-end)
+local function onPlayerAdded(player: Player)
+    local playerBanned = table.find(bannedIDs, player.UserId)
+
+    if playerBanned then
+        player:Kick()
+
+        return
+    end
+
+    local playerLeaderstats = leaderstatsTemplate:Clone()
+    playerLeaderstats.Name = "leaderstats"
+    playerLeaderstats.Parent = player
+    local playerChar = player.Character or player.CharacterAdded:Wait()
+    local playerMode = player:WaitForChild("Mode") :: NumberValue
+
+    initPlayerCharacterMetadata(playerChar)
+    player.CharacterAdded:Connect(initPlayerCharacterMetadata)
+    player.Chatted:Connect(processChatEmotes)
+
+    playerMode.Changed:Connect(function(mode)
+        local ModeData = StateManager:ReturnData(playerChar, "Mode")
+        playerMode.Value = math.clamp(mode, 0, ModeData.MaxModeValue + 5)
+        ModeData.ModeValue = playerMode.Value
+    end)
+
+    ProfileService:GetPlayerProfile(player)
+end
+
+local function onPlayerRemoving(player: Player)
+    local connectionFound = connections[player]
+
+    if not connectionFound then
+        return
+    end
+
+    connectionFound:Disconnect()
+
+    connections[player] = nil
+end
+
+Players.PlayerAdded:Connect(onPlayerAdded)
+Players.PlayerRemoving:Connect(onPlayerRemoving)
