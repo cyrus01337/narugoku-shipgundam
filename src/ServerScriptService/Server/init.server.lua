@@ -16,11 +16,10 @@ local DebounceManager = require(state.DebounceManager)
 local HttpModule = require(script.HttpModule)
 local MetadataManager = require(metadata.MetadataManager)
 local ProfileService = require(server.ProfileService)
+local Rounds = require(server.Rounds)
 local StateManager = require(shared.StateManager)
 local ToSwapCharacter = require(serverRequests.CharacterChange.ToSwapCharacter)
 
-local INTERMISSION_DURATION = 10
-local ROUND_DURATION = 300
 local serverRemote = ReplicatedStorage.Remotes.ServerRemote
 local serverRequest = ReplicatedStorage.Remotes.ServerRequest
 local guiRemote = ReplicatedStorage.Remotes.GUIRemote
@@ -216,8 +215,8 @@ local function onDataRequest(player: Player)
 end
 
 local function setupLobbyDummies()
-    local blockDummy = workspace.World.Live:WaitForChild("BlockDummy"):WaitForChild("blockDummy")
-    local parryDummy = workspace.World.Live:WaitForChild("ParryDummy"):WaitForChild("parryDummy")
+    local blockDummy = workspace.World.Live:WaitForChild("BlockDummy")
+    local parryDummy = workspace.World.Live:WaitForChild("ParryDummy")
     local blockAnimation =
         blockDummy.Humanoid:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Combat.Block.BlockIdle)
     local parryAnimation =
@@ -227,26 +226,13 @@ local function setupLobbyDummies()
     parryAnimation:Play()
 end
 
-local function accurateTimer(duration: number, callback: () -> ())
-    local start = time()
+local function waitForInitialPlayer()
+    local allPlayersInGame = Players:GetPlayers()
+    local initialPlayer = if #allPlayersInGame > 0 then allPlayersInGame[1] else Players.PlayerAdded:Wait()
 
-    callback()
-
-    local now = time()
-
-    task.wait(duration - (now - start))
-end
-
-local function intermission()
-    local start = time()
-
-    local now = time()
-
-    task.wait(INTERMISSION_DURATION - (now - start))
-end
-
-local function doRound()
-    task.wait(ROUND_DURATION)
+    if not initialPlayer.Character then
+        initialPlayer.CharacterAdded:Wait()
+    end
 end
 
 for _, player in Players:GetPlayers() do
@@ -277,8 +263,9 @@ for _, descendant in script:GetDescendants() do
 end
 
 setupLobbyDummies()
+waitForInitialPlayer()
 
--- while true do
---     accurateTimer(INTERMISSION_DURATION, intermission)
---     accurateTimer(ROUND_DURATION, doRound)
--- end
+while true do
+    Rounds.intermission()
+    Rounds.doRound()
+end
