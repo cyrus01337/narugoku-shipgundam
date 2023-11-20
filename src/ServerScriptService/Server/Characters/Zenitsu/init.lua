@@ -215,7 +215,7 @@ local Zenitsu = {
             HumanoidRootPart.Anchored = true
 
             local ModeData = StateManager:ReturnData(Character, "Mode")
-            local ModeNumber = Player:WaitForChild("Mode", 60)
+            local ModeNumber = Player:WaitForChild("Mode")
 
             if ModeData.Mode then
                 return

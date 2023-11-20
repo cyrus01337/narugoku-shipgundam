@@ -100,7 +100,7 @@ local function onPlayerAdded(player: Player)
     playerLeaderstats.Name = "leaderstats"
     playerLeaderstats.Parent = player
     local playerChar = player.Character or player.CharacterAdded:Wait()
-    local playerMode = player:WaitForChild("Mode", 60) :: NumberValue
+    local playerMode = player:WaitForChild("Mode") :: NumberValue
 
     initPlayerCharacterMetadata(playerChar)
     player.CharacterAdded:Connect(initPlayerCharacterMetadata)
@@ -125,6 +125,10 @@ local function onPlayerRemoving(player: Player)
     connectionFound:Disconnect()
 
     connections[player] = nil
+end
+
+for _, player in Players:GetPlayers() do
+    task.spawn(onPlayerAdded, player)
 end
 
 Players.PlayerAdded:Connect(onPlayerAdded)

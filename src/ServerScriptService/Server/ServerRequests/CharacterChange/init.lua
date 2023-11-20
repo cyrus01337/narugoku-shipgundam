@@ -33,7 +33,7 @@ return function(Player, Request, Character, Datastore, Type) -- Player:Instance,
         local ModeData = StateManager:ReturnData(Player.Character or Player.CharacterAdded:Wait(), "Mode")
         ModeData.Mode = false
 
-        player:WaitForChild("Mode", 60).Value = 0
+        player:WaitForChild("Mode").Value = 0
 
         local WarningText = " Alucard is banned."
 

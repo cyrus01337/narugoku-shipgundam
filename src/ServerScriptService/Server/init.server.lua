@@ -38,19 +38,9 @@ local function logError(error: string, stackTrace: string, scriptObject: BaseScr
 end
 
 local function spawnPlayer(player: Player)
-    local playerChar = player.Character or player.CharacterAdded:Wait()
-    local playerHum = playerChar:WaitForChild("Humanoid") :: Humanoid
     local playerData = ProfileService:GetPlayerProfile(player)
-    local playerMode = player:WaitForChild("Mode", 60)
-    local playerModeState = StateManager:ReturnData(playerChar, "Mode")
-    local mode = if player.Name == "DaWunbo" or player.Name == "Freshzsz" then 285 else 0
-    playerMode.Value = mode
-    playerModeState.ModeValue = mode
 
     ToSwapCharacter({ ToSwap = playerData.Character, Player = player })
-
-    playerHum.WalkSpeed = 14
-
     ProfileService:Replicate(player)
 end
 
@@ -125,6 +115,7 @@ local function onServerRemote(player: Player, skillName: string, keyName: string
     local playerHumFound: Humanoid? = playerChar:FindFirstChild("Humanoid")
 
     if not (playerChar and playerRootFound and playerHumFound and playerHumFound.Health > 0) then
+        print("Here!")
         return
     end
 

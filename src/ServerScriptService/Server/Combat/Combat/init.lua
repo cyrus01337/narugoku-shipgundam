@@ -292,7 +292,7 @@ local Combat = {
         local ModeData = StateManager:ReturnData(Character, "Mode")
         local CombatCopy = CombatData.ReturnData(Character, "Dash")
 
-        local ModeNumber = Player:WaitForChild("Mode", 60)
+        local ModeNumber = Player:WaitForChild("Mode")
         local ModeBoolean = ModeNumber and ModeNumber.ModeBoolean
         local Stats = Player:WaitForChild("leaderstats")
         local Points = Stats and Stats.Points

@@ -259,7 +259,7 @@ function DamageManager.DeductDamage(Character, Victim, SkillName, CharacterName,
         local Damage = SecondType == "Choke" and (VictimHumanoid.Health - Damage * DamageBoost) <= 0 and 0 or Damage
         VictimHumanoid:TakeDamage(Damage * DamageBoost)
 
-        local ModeNumber = player:WaitForChild("Mode", 60)
+        local ModeNumber = player:WaitForChild("Mode")
         local Stats = Player:WaitForChild("leaderstats")
         local Points = Stats and Stats.Points
 
@@ -331,7 +331,7 @@ function DamageManager.DeductDamage(Character, Victim, SkillName, CharacterName,
                 VfxHandler.FaceVictim({ Character = Character, Victim = Victim })
 
                 local Data = ProfileService:GetPlayerProfile(Player)
-                local ModeNumber = player:WaitForChild("Mode", 60)
+                local ModeNumber = player:WaitForChild("Mode")
                 local ModeBoolean = ModeNumber and ModeNumber.ModeBoolean
 
                 local _ = ModeBoolean.Value
