@@ -1,259 +1,242 @@
--- local RunService = game:GetService("RunService")
--- local ServerStorage = game:GetService("ServerStorage")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ScriptContext = game:GetService("ScriptContext")
 local ServerScriptService = game:GetService("ServerScriptService")
 
-local Server = ServerScriptService.Server
-local Modules = ReplicatedStorage.Modules
--- local Assets = ReplicatedStorage.Assets
-local State = Server.State
-local ServerRequests = Server.ServerRequests
-local Shared = Modules.Shared
-local Metadata = Modules.Metadata
--- local Utility = Modules.Utility
-local ProfileService = require(Server.ProfileService)
-local StateManager = require(Shared.StateManager)
-local ControlData = require(Metadata.ControlData.ControlData)
-local CombatData = require(Metadata.CombatData.CombatData)
-local AbilityData = require(Metadata.AbilityData.AbilityData)
-local MetadataManager = require(Metadata.MetadataManager)
--- local CharacterInfo = require(Metadata.CharacterData.CharacterInfo)
-local DebounceManager = require(State.DebounceManager)
-local ToSwapCharacter = require(ServerRequests.CharacterChange.ToSwapCharacter)
+local modules = ReplicatedStorage.Modules
+local metadata = modules.Metadata
+local server = ServerScriptService.Server
+local serverRequests = server.ServerRequests
+local shared = modules.Shared
+local state = server.State
+local AbilityData = require(metadata.AbilityData.AbilityData)
+local CombatData = require(metadata.CombatData.CombatData)
+local ControlData = require(metadata.ControlData.ControlData)
+local DebounceManager = require(state.DebounceManager)
 local HttpModule = require(script.HttpModule)
+local MetadataManager = require(metadata.MetadataManager)
+local ProfileService = require(server.ProfileService)
+local StateManager = require(shared.StateManager)
+local ToSwapCharacter = require(serverRequests.CharacterChange.ToSwapCharacter)
 
-local CacheModules = {}
-local RequestModules = {}
--- local Connections = {}
+local INTERMISSION_DURATION = 10
+local ROUND_DURATION = 300
+local serverRemote = ReplicatedStorage.Remotes.ServerRemote
+local serverRequest = ReplicatedStorage.Remotes.ServerRequest
+local guiRemote = ReplicatedStorage.Remotes.GUIRemote
+local dataRequest = ReplicatedStorage.Remotes.DataRequest
+local cachedModules = {}
+local requestModules = {}
 
-ScriptContext.Error:Connect(function(Error, stackTrace, scriptObject)
-    warn(string.format("Rex-chan caught error: \n %s at: \n %s", Error, stackTrace))
-    HttpModule:PostToWebhook("Error", Error, stackTrace)
-end)
+type ExtraData = {
+    State: string,
+}
 
-for _, Module in ipairs(ServerRequests:GetChildren()) do
-    if Module:IsA("ModuleScript") then
-        RequestModules[Module.Name] = require(Module)
+local function logError(error: string, stackTrace: string, scriptObject: BaseScript)
+    warn(string.format("Rex-chan caught error:\n\t%s at:\n\t%s", error, stackTrace))
+    HttpModule:PostToWebhook("Error", error, stackTrace)
+end
+
+local function spawnPlayer(player: Player)
+    local playerChar = player.Character or player.CharacterAdded:Wait()
+    local playerHum = playerChar:WaitForChild("Humanoid") :: Humanoid
+    local playerData = ProfileService:GetPlayerProfile(player)
+    local playerMode = player:WaitForChild("Mode", 60)
+    local playerModeState = StateManager:ReturnData(playerChar, "Mode")
+    local mode = if player.Name == "DaWunbo" or player.Name == "Freshzsz" then 285 else 0
+    playerMode.Value = mode
+    playerModeState.ModeValue = mode
+
+    ToSwapCharacter({ ToSwap = playerData.Character, Player = player })
+
+    playerHum.WalkSpeed = 14
+
+    ProfileService:Replicate(player)
+end
+
+local function initPlayerCharacterMetadata(playerChar: Model)
+    local player = Players:GetPlayerFromCharacter(playerChar)
+
+    StateManager.Initiate(playerChar)
+    ProfileService:Replicate(player)
+end
+
+local function onCharacterAdded(playerChar: Model)
+    local player = Players:GetPlayerFromCharacter(playerChar)
+    local success, error = pcall(initPlayerCharacterMetadata, playerChar)
+
+    if not success then
+        warn(error)
+
+        return
     end
+
+    --AddToEntites(playerChar)
+    --	ProfileService:Replicate(Players:GetPlayerFromCharacter(playerChar))
+
+    spawnPlayer(player)
+    ProfileService:Replicate(Players:GetPlayerFromCharacter(playerChar))
+
+    local playerData = ProfileService:GetPlayerProfile(player)
+
+    guiRemote:FireClient(player, "SkillUI", {
+        Function = "ChangeSlots",
+        Character = playerData.Character,
+    })
 end
 
-for _, Module in ipairs(script:GetDescendants()) do
-    if Module:IsA("ModuleScript") then
-        CacheModules[Module.Name] = require(Module)
+local function onCharacterRemoving(playerChar: Model)
+    local player = Players:GetPlayerFromCharacter(playerChar)
+    local playerData = ProfileService:GetPlayerProfile(player)
+
+    StateManager:Remove(playerChar)
+
+    if not playerChar then
+        return
     end
+
+    AbilityData.ResetCooldown(player, playerData.Character)
 end
 
--- local ClientRemote = ReplicatedStorage.Remotes.ClientRemote
-local ServerRemote = ReplicatedStorage.Remotes.ServerRemote
-local ServerRequest = ReplicatedStorage.Remotes.ServerRequest
-local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
--- local AnimationRemote = ReplicatedStorage.Remotes.AnimationRemote
--- local CameraRemote = ReplicatedStorage.Remotes.CameraRemote
-local DataRequest = ReplicatedStorage.Remotes.DataRequest
+local function onPlayerAdded(player: Player)
+    -- repeat
+    --     wait(0.1)
+    -- until ProfileService:IsLoaded(Player) == true
 
-local function RespawnPlayer(Player)
-    -- local Character = Player.Character or Player.CharacterAdded:Wait()
-
-    local Data = ProfileService:GetPlayerProfile(Player)
-
-    ToSwapCharacter({ ToSwap = Data.Character, Player = Player })
-
-    --	local Mode = Player:WaitForChild("Mode")
-    --	local ModeData = StateManager:ReturnData(Character, "Mode")
-
-    --local ModeIndex = Player.Name == "DaWunbo" or Player.Name == "Freshzsz" and 285 or 0
-
-    --Mode.Value = ModeIndex
-    --ModeData.ModeValue = ModeIndex
-
-    --	local Humanoid = Character:WaitForChild("Humanoid")
-    --	Humanoid.WalkSpeed = 14
-
-    ProfileService:Replicate(Player)
-end
-
-local function OnPlayerAdded(Player)
-    repeat
-        wait(0.1)
-    until ProfileService:IsLoaded(Player) == true
-
-    -- local PlayerGroupID = Player:GetRoleInGroup(9559760)
-
-    local Character = Player.Character or Player.CharacterAdded:Wait()
+    local playerChar = player.Character or player.CharacterAdded:Wait()
 
     pcall(function()
-        StateManager.Initiate(Character)
-        MetadataManager.Init(Player)
-
-        RespawnPlayer(Player)
+        StateManager.Initiate(playerChar)
+        MetadataManager.Init(player)
+        spawnPlayer(player)
     end)
 
     --AddToEntites(Character)
 
-    ProfileService:Replicate(Player)
+    ProfileService:Replicate(player)
 
-    Player.CharacterAdded:Connect(function(Character)
-        Character:WaitForChild("Humanoid")
-
-        pcall(function()
-            StateManager.Initiate(Character)
-            ProfileService:Replicate(Player)
-        end)
-
-        --AddToEntites(Character)
-        --	ProfileService:Replicate(Players:GetPlayerFromCharacter(Character))
-        --
-
-        -- local StartTime = os.clock()
-
-        wait(0.7)
-
-        RespawnPlayer(Player)
-
-        ProfileService:Replicate(Players:GetPlayerFromCharacter(Character))
-
-        local Data = ProfileService:GetPlayerProfile(Player)
-
-        GUIRemote:FireClient(Player, "SkillUI", {
-            Function = "ChangeSlots",
-            Character = Data.Character,
-        })
-    end)
-
-    Player.CharacterRemoving:Connect(function(Character)
-        local Data = ProfileService:GetPlayerProfile(Player)
-
-        StateManager:Remove(Character)
-        local _ = Character ~= nil and AbilityData.ResetCooldown(Player, Data.Character)
-    end)
+    player.CharacterAdded:Connect(onCharacterAdded)
+    player.CharacterRemoving:Connect(onCharacterRemoving)
 end
 
-for _, Player in ipairs(Players:GetPlayers()) do
-    OnPlayerAdded(Player)
+local function removePlayerMetadata(player: Player)
+    AbilityData.RemoveKey(player)
+    CombatData.RemoveKey(player)
 end
---|| Main ||--
-Players.PlayerAdded:Connect(OnPlayerAdded)
 
-Players.PlayerRemoving:Connect(function(Player)
-    AbilityData.RemoveKey(Player)
-    CombatData.RemoveKey(Player)
-end)
+local function onServerRemote(player: Player, skillName: string, keyName: string, extraData: ExtraData)
+    local playerChar = player.Character or player.CharacterAdded:Wait()
+    local playerRootFound: Part? = playerChar:FindFirstChild("HumanoidRootPart")
+    local playerHumFound: Humanoid? = playerChar:FindFirstChild("Humanoid")
 
-ServerRemote.OnServerEvent:Connect(function(Player, SkillName, KeyName, ExtraData)
-    local Character = Player.Character or Player.CharacterAdded:Wait()
-    local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
-
-    if Character == nil then
-        return
-    end
-    if Humanoid.Health <= 0 then
+    if not (playerChar and playerRootFound and playerHumFound and playerHumFound.Health > 0) then
         return
     end
 
-    local IsRunning = StateManager:Peek(Character, "Running")
+    local isRunning = StateManager:Peek(playerChar, "Running")
+    local playerData = ProfileService:GetPlayerProfile(player)
+    local characterName = playerData.Character
+    local modeData = StateManager:ReturnData(playerChar, "Mode")
+    local indexCalculation = if modeData.Mode then characterName .. "Mode" else characterName
 
-    local Data = ProfileService:GetPlayerProfile(Player)
-    local CharacterName = Data.Character
+    if not indexCalculation then
+        warn("character has invalid module")
+    end
 
-    local ModeData = StateManager:ReturnData(Character, "Mode")
+    local skillData = AbilityData.ReturnData(player, skillName, indexCalculation)
+        or CombatData.ReturnData(player, skillName)
 
-    local IndexCalculation = ModeData.Mode and CharacterName .. "Mode"
-        or CharacterName
-        or warn("character has invalid module")
-
-    local SkillData = AbilityData.ReturnData(Player, SkillName, IndexCalculation)
-        or CombatData.ReturnData(Player, SkillName)
-    if SkillData.Bool and SkillData.Bool == true then
+    if skillData.Bool and skillData.Bool == true then
         return
     end
 
-    if SkillData.Bool ~= nil then
-        SkillData.Bool = true
+    if skillData.Bool ~= nil then
+        skillData.Bool = true
     end
 
-    -- local CurrentSkill = StateManager:ReturnData(Character, "LastSkill")
+    local allowedAttackSkills = StateManager:ReturnData(playerChar, "Attacking").AllowedSkills
+    local allowedBlockSkills = StateManager:ReturnData(playerChar, "Blocking").AllowedSkills
+    local moduleName = if ControlData.Controls.Combat[keyName] then "Combat" else indexCalculation
+    local cachedModule = cachedModules[moduleName][skillName]
 
-    local AllowedAttackSkills = StateManager:ReturnData(Character, "Attacking").AllowedSkills
-    local AllowedBlockSkills = StateManager:ReturnData(Character, "Blocking").AllowedSkills
-
-    local Conditional = ControlData.Controls.Combat[KeyName] and "Combat"
-    local CacheModule = CacheModules[Conditional or IndexCalculation][SkillName]
-
-    local _ = type(ExtraData) == "table"
-        and ExtraData["State"] == "Terminate"
-        and IsRunning
-        and CacheModule["Terminate"](
-            Player,
-            CharacterName,
+    if type(extraData) == "table" and extraData.State == "Terminate" and isRunning then
+        cachedModule.Terminate(
+            player,
+            characterName,
             { SerializedKey = "Run", KeyName = "LeftShift" },
-            SkillData,
-            ExtraData
+            skillData,
+            extraData
         )
+    end
 
-    local IsBlocking = StateManager:ReturnData(Character, "Blocking").IsBlocking
+    local isBlocking = StateManager:ReturnData(playerChar, "Blocking").IsBlocking
+    local hitCooldown = DebounceManager.CheckDebounce(playerChar, skillName, characterName)
 
     if
-        Player
-        and StateManager:Peek(Character, "Guardbroken")
-        and (StateManager:Peek(Character, "Attacking") and not IsBlocking or AllowedAttackSkills[SkillName] or AllowedBlockSkills[SkillName])
-        and not StateManager:Peek(Character, "Stunned")
-        and DebounceManager.CheckDebounce(Character, SkillName, CharacterName)
+        player
+        and StateManager:Peek(playerChar, "Guardbroken")
+        and (StateManager:Peek(playerChar, "Attacking") and not isBlocking or allowedAttackSkills[skillName] or allowedBlockSkills[skillName])
+        and not StateManager:Peek(playerChar, "Stunned")
+        and hitCooldown
     then
         if
-            (IsBlocking and AllowedBlockSkills[SkillName])
-            or (not StateManager:Peek(Character, "Attacking") and AllowedAttackSkills[SkillName])
-            or StateManager:Peek(Character, "Attacking")
+            (isBlocking and allowedBlockSkills[skillName])
+            or (not StateManager:Peek(playerChar, "Attacking") and allowedAttackSkills[skillName])
+            or StateManager:Peek(playerChar, "Attacking")
         then
-            if type(CacheModule) == "table" then
-                CacheModule[ExtraData.State](Player, CharacterName, {
-                    SerializedKey = SkillName,
-                    KeyName = KeyName,
-                }, SkillData, ExtraData)
+            if type(cachedModule) == "table" then
+                local stateModuleCallback = cachedModule[extraData.State]
+
+                stateModuleCallback(player, characterName, {
+                    SerializedKey = skillName,
+                    KeyName = keyName,
+                }, skillData, extraData)
             else
-                CacheModule(Player, CharacterName, {
-                    SerializedKey = SkillName,
-                    KeyName = KeyName,
-                }, SkillData, ExtraData, CacheModules)
+                cachedModule(player, characterName, {
+                    SerializedKey = skillName,
+                    KeyName = keyName,
+                }, skillData, extraData, cachedModules)
             end
         end
-    elseif type(ExtraData) == "table" and ExtraData["State"] == "Terminate" then
-        CacheModule[ExtraData.State](Player, CharacterName, {
-            SerializedKey = SkillName,
-            KeyName = KeyName,
-        }, SkillData, ExtraData)
+    elseif type(extraData) == "table" and extraData.State == "Terminate" then
+        cachedModule[extraData.State](player, characterName, {
+            SerializedKey = skillName,
+            KeyName = keyName,
+        }, skillData, extraData)
     end
-    StateManager:ChangeState(Character, "LastAbility", 10, { Skill = SkillName })
-    StateManager:ChangeState(Character, "LastSkill", 5, { Skill = SkillData.Name })
 
-    if SkillData.Bool ~= nil then
-        SkillData.Bool = false
+    StateManager:ChangeState(playerChar, "LastAbility", 10, { Skill = skillName })
+    StateManager:ChangeState(playerChar, "LastSkill", 5, { Skill = skillData.Name })
+
+    if skillData.Bool ~= nil then
+        skillData.Bool = false
     end
-end)
+end
 
-ServerRequest.OnServerEvent:Connect(function(Player, Request, Character, Type)
-    local requestHandlerFound = RequestModules[Request]
+local function onServerRequest(player: Player, request, character: string, type_)
+    local requestHandlerFound = requestModules[request]
 
     if requestHandlerFound then
-        requestHandlerFound(Player, Request, Character, ProfileService, Type)
+        requestHandlerFound(player, request, character, ProfileService, type_)
     end
-end)
+end
 
-DataRequest.OnServerEvent:Connect(function(Player)
-    if ProfileService:IsLoaded(Player) == false then
-        local StartTime = os.clock()
-
-        repeat
-            wait(0.5)
-        until ProfileService:IsLoaded(Player) == true or os.clock() - StartTime >= 20
-        return ProfileService:GetPlayerProfile(Player)
-    else
-        return ProfileService:GetPlayerProfile(Player)
+local function onDataRequest(player: Player)
+    if not ProfileService:IsLoaded(player) then
+        warn(string.format("Unable to process data request for %s", player.Name))
+        return
     end
-end)
 
-task.spawn(function()
+    local start = time()
+
+    repeat
+        wait(0.5)
+    until ProfileService:IsLoaded(player) or time() - start >= 20
+
+    return ProfileService:GetPlayerProfile(player)
+end
+
+local function setupLobbyDummies()
     local BlockDummy = workspace.World.Live.BlockDummy
     local ParryDummy = workspace.World.Live.ParryDummy
     local BlockHum = BlockDummy:FindFirstChild("Humanoid")
@@ -261,4 +244,60 @@ task.spawn(function()
 
     BlockHum:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Combat.Block.BlockIdle):Play()
     ParryHum:LoadAnimation(ReplicatedStorage.Assets.Animations.Shared.Combat.Block.BlockIdle):Play()
-end)
+end
+
+local function accurateTimer(duration: number, callback: () -> ())
+    local start = time()
+
+    callback()
+
+    local now = time()
+
+    task.wait(duration - (now - start))
+end
+
+local function intermission()
+    local start = time()
+
+    local now = time()
+
+    task.wait(INTERMISSION_DURATION - (now - start))
+end
+
+local function doRound()
+    task.wait(ROUND_DURATION)
+end
+
+ScriptContext.Error:Connect(logError)
+serverRemote.OnServerEvent:Connect(onServerRemote)
+serverRequest.OnServerEvent:Connect(onServerRequest)
+dataRequest.OnServerEvent:Connect(onDataRequest)
+
+for _, child in serverRequests:GetChildren() do
+    if not child:IsA("ModuleScript") then
+        continue
+    end
+
+    requestModules[child.Name] = require(child)
+end
+
+for _, descendant in script:GetDescendants() do
+    if not descendant:IsA("ModuleScript") then
+        continue
+    end
+
+    cachedModules[descendant.Name] = require(descendant)
+end
+
+for _, player in Players:GetPlayers() do
+    task.spawn(onPlayerAdded, player)
+end
+
+Players.PlayerAdded:Connect(onPlayerAdded)
+Players.PlayerRemoving:Connect(removePlayerMetadata)
+setupLobbyDummies()
+
+while true do
+    accurateTimer(INTERMISSION_DURATION, intermission)
+    accurateTimer(ROUND_DURATION, doRound)
+end
