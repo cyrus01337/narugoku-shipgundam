@@ -1,55 +1,86 @@
-local Players = game:GetService("Players")
+local ServerScriptService = game:GetService("ServerScriptService")
 local ServerStorage = game:GetService("ServerStorage")
 
+local ProfileService = require(ServerScriptService.Server.ProfileService)
 local Store = require(ServerStorage.Modules.Store)
 
 local INTERMISSION_DURATION = 10
 local ROUND_DURATION = 300
+local DEFAULT_HEALTH = 100
+local PARTICIPATION_REWARD = 100
 local LOBBY_SPAWN: SpawnLocation = workspace:WaitForChild("Lobby").SpawnLocation
 local BATTLEFIELD_SPAWN: SpawnLocation = workspace.World:WaitForChild("Map").SpawnLocation
-local Rounds = {}
+local Rounds = {
+    Spawns = {
+        Lobby = LOBBY_SPAWN,
+        Battlefield = BATTLEFIELD_SPAWN,
+    },
+}
 
-local function stupidTimer(duration: number)
-    for i = 1, duration do
-        print("Waiting for", duration - i + 1, "second(s)...")
-        task.wait(1)
+type DebugTimerCallback = () -> boolean
+
+local function getHalfHeightOf(player: Player): Vector3
+    if not player.Character then
+        return Vector3.zero
     end
+
+    local _, playerCharBounds = player.Character:GetBoundingBox()
+
+    return Vector3.new(0, playerCharBounds.Y / 2, 0)
+end
+
+local function debugTimer(name: string, duration: number, shouldCancel: DebugTimerCallback?)
+    for i = 1, duration do
+        print("Waiting on", name, "for", duration - i + 1, "second(s)...")
+        task.wait(1)
+
+        if shouldCancel ~= nil and shouldCancel() then
+            return
+        end
+    end
+end
+
+function Rounds.spawn(player: Player, spawnLocation: SpawnLocation)
+    local playerChar = player.Character or player.CharacterAdded:Wait()
+
+    -- cyrus01337: Setting Position/CFrame causes the centre of the player to be
+    -- placed at the centre of the spawn, so we add half of the player's height
+    -- to achieve perfect placement
+    playerChar:PivotTo(spawnLocation.CFrame + getHalfHeightOf(player))
 end
 
 function Rounds.intermission()
-    BATTLEFIELD_SPAWN.Enabled = false
-    LOBBY_SPAWN.Enabled = true
+    -- TODO: Reset score
+    for _, player in Store.playersFighting do
+        local playerHum: Humanoid = player.Character.Humanoid
+        playerHum.Health = math.huge
+        playerHum.MaxHealth = math.huge
+        local playerData = ProfileService:GetPlayerProfile(player)
+        playerData.Cash += PARTICIPATION_REWARD
 
-    for _, player in Players:GetPlayers() do
-        -- TODO: PLEASE change once state is unified properly
-        local cyrus01337State = Store.useStateSliceFor(player)
-
-        if not cyrus01337State.InRound then
-            continue
-        end
-
-        cyrus01337State.InRound = false
-
-        print(cyrus01337State)
-        player:LoadCharacter()
+        ProfileService:Replicate(player)
+        table.insert(Store.playersFighting, player)
+        Rounds.spawn(player, LOBBY_SPAWN)
     end
 
-    stupidTimer(INTERMISSION_DURATION)
+    debugTimer("Intermission", INTERMISSION_DURATION)
+end
+
+local function isEmptyBattlefield()
+    return #Store.playersFighting == 0
 end
 
 function Rounds.doRound()
-    BATTLEFIELD_SPAWN.Enabled = true
-    LOBBY_SPAWN.Enabled = false
+    for _, player in Store.playersPastMainMenu do
+        local playerHum: Humanoid = player.Character.Humanoid
+        playerHum.Health = DEFAULT_HEALTH
+        playerHum.MaxHealth = DEFAULT_HEALTH
 
-    for _, player in Players:GetPlayers() do
-        local cyrus01337State = Store.useStateSliceFor(player)
-        cyrus01337State.InRound = true
-
-        print(cyrus01337State)
-        player:LoadCharacter()
+        table.insert(Store.playersFighting, player)
+        Rounds.spawn(player, BATTLEFIELD_SPAWN)
     end
 
-    stupidTimer(ROUND_DURATION)
+    debugTimer("Round", ROUND_DURATION, isEmptyBattlefield)
 end
 
 return Rounds

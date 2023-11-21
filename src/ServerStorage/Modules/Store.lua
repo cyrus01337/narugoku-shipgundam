@@ -1,37 +1,16 @@
-local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-type StateSlice = {
-    InRound: boolean,
+local Signal = require(ReplicatedStorage.Modules.Utility.Signal)
+
+local Store = {
+    PlayerPassedMainMenu = Signal.new(),
+    playersPastMainMenu = {} :: { Player },
+    playersFighting = {} :: { Player },
 }
-type StateSliceStore = { [Player]: StateSlice }
-local _internalSliceStore: StateSliceStore = {}
-local Store = {}
 
-local function invalidateStateSlice(player: Player)
-    _internalSliceStore[player] = nil
-
-    warn(string.format("Invalidated state for %s", player.Name))
+function Store.tagPlayerPastMainMenu(player: Player)
+    table.insert(Store.playersPastMainMenu, player)
+    Store.PlayerPassedMainMenu:Fire(player)
 end
-
-function createDefaultSlice(): StateSlice
-    return {
-        InRound = false,
-    }
-end
-
-function Store.useStateSliceFor(player: Player)
-    local sliceFound: StateSlice? = _internalSliceStore[player]
-
-    if sliceFound then
-        return sliceFound
-    end
-
-    local slice = createDefaultSlice()
-    _internalSliceStore[player] = slice
-
-    return slice
-end
-
-Players.PlayerRemoving:Connect(invalidateStateSlice)
 
 return Store

@@ -9,6 +9,7 @@ local messages = require(script.Prefixes)
 local StateManager = require(ReplicatedStorage.Modules.Shared.StateManager)
 local SoundManager = require(ReplicatedStorage.Modules.Shared.SoundManager)
 local ProfileService = require(ServerScriptService.Server.ProfileService)
+local Rounds = require(ServerScriptService.Server.Rounds)
 
 local animationRemote = ReplicatedStorage.Remotes.AnimationRemote
 local leaderstatsTemplate = ServerStorage:WaitForChild("LeaderstatsTemplate", 60)
@@ -23,11 +24,15 @@ local bannedIDs = {
 local function addEntity(playerChar: Model)
     local player = Players:GetPlayerFromCharacter(playerChar) :: Player
 
-    while playerChar.Parent ~= workspace.World.Live do
+    -- TODO: Re-place
+    while playerChar.Parent ~= workspace do
         playerChar.AncestryChanged:Wait()
     end
 
-    playerChar.Parent = workspace.World.Live
+    task.delay(1, function()
+        playerChar.Parent = workspace.World.Live
+        Rounds.spawn(player, Rounds.Spawns.Lobby)
+    end)
 
     -- TODO: Refactor - move to client
     animationRemote:FireClient(

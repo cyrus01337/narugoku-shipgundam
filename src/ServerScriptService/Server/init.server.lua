@@ -2,28 +2,29 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ScriptContext = game:GetService("ScriptContext")
 local ServerScriptService = game:GetService("ServerScriptService")
+local ServerStorage = game:GetService("ServerStorage")
 
 local modules = ReplicatedStorage.Modules
-local metadata = modules.Metadata
 local server = ServerScriptService.Server
-local serverRequests = server.ServerRequests
-local shared = modules.Shared
-local state = server.State
-local AbilityData = require(metadata.AbilityData.AbilityData)
-local CombatData = require(metadata.CombatData.CombatData)
-local ControlData = require(metadata.ControlData.ControlData)
-local DebounceManager = require(state.DebounceManager)
+local AbilityData = require(modules.Metadata.AbilityData.AbilityData)
+local CombatData = require(modules.Metadata.CombatData.CombatData)
+local ControlData = require(modules.Metadata.ControlData.ControlData)
+local DebounceManager = require(script.State.DebounceManager)
 local HttpModule = require(script.HttpModule)
-local MetadataManager = require(metadata.MetadataManager)
+local MetadataManager = require(modules.Metadata.MetadataManager)
 local ProfileService = require(server.ProfileService)
 local Rounds = require(server.Rounds)
-local StateManager = require(shared.StateManager)
-local ToSwapCharacter = require(serverRequests.CharacterChange.ToSwapCharacter)
+local StateManager = require(modules.Shared.StateManager)
+local Store = require(ServerStorage.Modules.Store)
+local ToSwapCharacter = require(script.ServerRequests.CharacterChange.ToSwapCharacter)
 
-local serverRemote = ReplicatedStorage.Remotes.ServerRemote
-local serverRequest = ReplicatedStorage.Remotes.ServerRequest
-local guiRemote = ReplicatedStorage.Remotes.GUIRemote
-local dataRequest = ReplicatedStorage.Remotes.DataRequest
+local remotes = ReplicatedStorage.Remotes
+local dataRequest: RemoteEvent = remotes.DataRequest
+local enteredGame: RemoteEvent = remotes.EnteredGame
+local guiRemote: RemoteEvent = remotes.GUIRemote
+local serverRemote: RemoteEvent = remotes.ServerRemote
+local serverRequest: RemoteEvent = remotes.ServerRequest
+-- TODO: Purge
 local cachedModules = {}
 local requestModules = {}
 
@@ -81,10 +82,14 @@ local function onCharacterRemoving(playerChar: Model)
         return
     end
 
-    AbilityData.ResetCooldown(player, playerData.Character)
+    -- Avoid niche error where the profile is invalidated when needed
+    if playerData then
+        AbilityData.ResetCooldown(player, playerData.Character)
+    end
 end
 
 local function onPlayerAdded(player: Player)
+    -- TODO: Refactor to use a Signal
     while not ProfileService:IsLoaded(player) do
         task.wait(1)
     end
@@ -94,7 +99,6 @@ local function onPlayerAdded(player: Player)
     pcall(function()
         StateManager.Initiate(playerChar)
         MetadataManager.Init(player)
-        spawnPlayer(player)
     end)
 
     onCharacterAdded(playerChar)
@@ -106,6 +110,8 @@ end
 local function removePlayerMetadata(player: Player)
     AbilityData.RemoveKey(player)
     CombatData.RemoveKey(player)
+    table.remove(Store.playersPastMainMenu, table.find(Store.playersPastMainMenu, player))
+    table.remove(Store.playersFighting, table.find(Store.playersFighting, player))
 end
 
 local function onServerRemote(player: Player, skillName: string, keyName: string, extraData: ExtraData)
@@ -114,7 +120,6 @@ local function onServerRemote(player: Player, skillName: string, keyName: string
     local playerHumFound: Humanoid? = playerChar:FindFirstChild("Humanoid")
 
     if not (playerChar and playerRootFound and playerHumFound and playerHumFound.Health > 0) then
-        print("Here!")
         return
     end
 
@@ -157,6 +162,7 @@ local function onServerRemote(player: Player, skillName: string, keyName: string
     local isBlocking = StateManager:ReturnData(playerChar, "Blocking").IsBlocking
     local hitCooldown = DebounceManager.CheckDebounce(playerChar, skillName, characterName)
 
+    -- TODO: Find out what this does
     if
         player
         and StateManager:Peek(playerChar, "Guardbroken")
@@ -214,6 +220,16 @@ local function onDataRequest(player: Player)
     end
 end
 
+local function trackUniqueInGamePlayer(player: Player)
+    local entryIndexFound = table.find(Store.playersPastMainMenu, player)
+
+    if entryIndexFound then
+        return
+    end
+
+    Store.tagPlayerPastMainMenu(player)
+end
+
 local function setupLobbyDummies()
     local blockDummy = workspace.World.Live:WaitForChild("BlockDummy")
     local parryDummy = workspace.World.Live:WaitForChild("ParryDummy")
@@ -226,15 +242,6 @@ local function setupLobbyDummies()
     parryAnimation:Play()
 end
 
-local function waitForInitialPlayer()
-    local allPlayersInGame = Players:GetPlayers()
-    local initialPlayer = if #allPlayersInGame > 0 then allPlayersInGame[1] else Players.PlayerAdded:Wait()
-
-    if not initialPlayer.Character then
-        initialPlayer.CharacterAdded:Wait()
-    end
-end
-
 for _, player in Players:GetPlayers() do
     task.spawn(onPlayerAdded, player)
 end
@@ -245,8 +252,9 @@ Players.PlayerRemoving:Connect(removePlayerMetadata)
 serverRemote.OnServerEvent:Connect(onServerRemote)
 serverRequest.OnServerEvent:Connect(onServerRequest)
 dataRequest.OnServerEvent:Connect(onDataRequest)
+enteredGame.OnServerEvent:Connect(trackUniqueInGamePlayer)
 
-for _, child in serverRequests:GetChildren() do
+for _, child in script.ServerRequests:GetChildren() do
     if not child:IsA("ModuleScript") then
         continue
     end
@@ -263,9 +271,12 @@ for _, descendant in script:GetDescendants() do
 end
 
 setupLobbyDummies()
-waitForInitialPlayer()
 
 while true do
+    if #Store.playersPastMainMenu == 0 then
+        Store.PlayerPassedMainMenu:Wait()
+    end
+
     Rounds.intermission()
     Rounds.doRound()
 end
