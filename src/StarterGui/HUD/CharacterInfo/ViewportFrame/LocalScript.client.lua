@@ -19,7 +19,7 @@ local function clearViewport()
     end
 end
 
-local function characterAdded(newCharacter: Model)
+local function setupCharacterPreview(newCharacter: Model)
     clearViewport()
 
     character = newCharacter
@@ -38,8 +38,8 @@ local function characterAdded(newCharacter: Model)
     characterClone.Parent = viewportFrame
 end
 
-player.CharacterAdded:Connect(characterAdded)
+player.CharacterAdded:Connect(setupCharacterPreview)
 
 if player.Character then
-    characterAdded(player.Character)
+    setupCharacterPreview(player.Character)
 end

@@ -1,115 +1,81 @@
---|| Services ||--
 local Players = game:GetService("Players")
-
-if Players.LocalPlayer.Name == "DaWunbo" then
-    script:Destroy()
-    return
-end
-
-local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
+local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StarterGui = game:GetService("StarterGui")
-local UserInputService = game:GetService("UserInputService")
-local ReplicatedFirst = game:GetService("ReplicatedFirst")
+local TweenService = game:GetService("TweenService")
 
-ReplicatedFirst:RemoveDefaultLoadingScreen()
+local modules = ReplicatedStorage:WaitForChild("Modules")
+local cyrus01337Utils = require(modules:WaitForChild("cyrus01337Utils"))
+local globalFunctions = require(ReplicatedStorage:WaitForChild("GlobalFunctions"))
 
---|| Modules ||--
-game:WaitForChild("ReplicatedStorage")
-
-local Modules = ReplicatedStorage:WaitForChild("Modules")
-local Shared = Modules:WaitForChild("Shared")
-
-local cyrus01337Utils = require(Modules:WaitForChild("cyrus01337Utils"))
-local SoundManager = require(Shared:WaitForChild("SoundManager"))
-local GlobalFunctions = require(ReplicatedStorage:WaitForChild("GlobalFunctions"))
-
---|| Variables ||--
-local Player = Players.LocalPlayer
-local PlayerMouse = Player:GetMouse()
-local Character = Player.Character or Player.CharacterAdded:Wait()
-
-if Player.Name == "DaWunbo" or Player.Name == "FreshThingInnit" or Player.Name == "Freshzsz" then
-    script:Destroy()
-    return
-end
-
-local Camera = workspace.CurrentCamera
-local World = workspace.World
-
-local Tweeninf = TweenInfo.new(5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true, 0)
+local player = Players.LocalPlayer
+local playerChar = player.Character or player.CharacterAdded:Wait()
+local playerRoot = playerChar:WaitForChild("HumanoidRootPart")
+local playerGui = player:WaitForChild("PlayerGui")
+local playerHud = playerGui:WaitForChild("HUD")
+playerHud.Enabled = false
+local instanceValue = script:WaitForChild("Value")
+local menu = script:WaitForChild("Menu")
+menu.Parent = playerGui
+local defaultRotation
+local angle = 0
+local cameraAngles = {}
+local connections: { [string]: RBXScriptConnection } = {}
+local cameraValue = globalFunctions.NewInstance("IntValue", {
+    Name = "CameraValue",
+    Parent = script,
+    Value = 1,
+})
 local Tweeninf2 = TweenInfo.new(15, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true, 0)
 local Tweeninf3 = TweenInfo.new(2, Enum.EasingStyle.Circular, Enum.EasingDirection.Out, 0, false, 0)
 
-local AnglesOfCamera = {}
-local Connections = {}
-
+ReplicatedFirst:RemoveDefaultLoadingScreen()
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true)
 cyrus01337Utils.retryForever("DisableTopbar", function()
     StarterGui:SetCore("TopbarEnabled", false)
 end)
 
-local Humanoid, HumanoidRootPart = Character:WaitForChild("Humanoid"), Character:WaitForChild("HumanoidRootPart")
-
-script:WaitForChild("Value")
-script:WaitForChild("Menu")
-
-local Menu = script:WaitForChild("Menu")
-Menu.Parent = Player:WaitForChild("PlayerGui")
-
-Player:WaitForChild("PlayerGui"):WaitForChild("HUD").Enabled = false
-
-for _, v in ipairs(World.Map.CameraAngles:GetChildren()) do
-    AnglesOfCamera[v.Name] = v.CFrame
-    v:Destroy()
+for _, angleInstance in workspace.World.Map.CameraAngles:GetChildren() do
+    cameraAngles[angleInstance.Name] = angleInstance.CFrame
+    angleInstance:Destroy()
 end
 
-local CameraValue = GlobalFunctions.NewInstance("IntValue", { Name = "CameraValue", Parent = script, Value = 1 })
+script.Value.Value = cameraAngles.CameraMenuAngle1
+local MenuTween = TweenService:Create(instanceValue, Tweeninf2, {
+    Value = cameraAngles.CameraMenuAngle2,
+})
 
-script.Value.Value = AnglesOfCamera["CameraMenuAngle1"]
-local MenuTween = TweenService:Create(script.Value, Tweeninf2, { Value = AnglesOfCamera["CameraMenuAngle2"] })
-
-function UpdateCameraValue()
-    if MenuTween.PlaybackState ~= Enum.PlaybackState.Playing then
-        MenuTween:Play()
+local function updateCameraValue()
+    if MenuTween.PlaybackState == Enum.PlaybackState.Playing then
+        return
     end
+
+    MenuTween:Play()
 end
 
-UpdateCameraValue()
-CameraValue:GetPropertyChangedSignal("Value"):Connect(UpdateCameraValue)
+updateCameraValue()
+cameraValue.Changed:Connect(updateCameraValue)
 
-local DefaultRotation = nil
+while playerGui.InCamera.Value do
+    workspace.CurrentCamera.CameraType = Enum.CameraType.Scriptable
+    defaultRotation = playerRoot.CFrame - playerRoot.Position
+    local Tween = TweenService:Create(playerRoot, Tweeninf3, {
+        CFrame = CFrame.new(playerRoot.Position) * defaultRotation * CFrame.Angles(0, angle, 0),
+    })
 
-local Angle = 0
+    Tween:Play()
+    Tween:Destroy()
 
-while Player:WaitForChild("PlayerGui").InCamera.Value do
-    Camera.CameraType = Enum.CameraType.Scriptable
-    if Player and Character and HumanoidRootPart then
-        DefaultRotation = HumanoidRootPart.CFrame - HumanoidRootPart.Position
-
-        local Tween = TweenService:Create(
-            HumanoidRootPart,
-            Tweeninf3,
-            { CFrame = (CFrame.new(HumanoidRootPart.Position) * DefaultRotation * CFrame.Angles(0, Angle, 0)) }
-        )
-        Tween:Play()
-        Tween:Destroy()
-    end
-    Camera.CFrame = script.Value.Value
-    RunService.RenderStepped:Wait()
-    if not Player:WaitForChild("PlayerGui"):FindFirstChild("InCamera").Value then
-        break
-    end
+    workspace.CurrentCamera.CFrame = instanceValue.Value
+    task.wait()
 end
-
---MenuRemote:FireServer()
 
 StarterGui:SetCore("TopbarEnabled", true)
-Camera.CameraType = Enum.CameraType.Custom
-Player.PlayerGui.HUD.Enabled = true
+workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+playerHud.Enabled = true
 
-for _, v in ipairs(Connections) do
-    v:Disconnect()
-    v = nil
+for key, connection in connections do
+    connection:Disconnect()
+
+    connections[key] = nil
 end
