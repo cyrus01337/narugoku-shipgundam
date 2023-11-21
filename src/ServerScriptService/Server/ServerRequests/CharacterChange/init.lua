@@ -1,6 +1,7 @@
 --|| Services ||--
 local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 -- local ServerStorage = game:GetService("ServerStorage")
 
 --|| Directories ||--
@@ -19,6 +20,7 @@ local CharacterInfo = require(CharacterData.CharacterInfo)
 local StateManager = require(Shared.StateManager)
 
 local ProfileService = require(ServerScriptService.Server.ProfileService)
+local Store = require(ServerStorage.Modules.Store)
 
 local ToSwapCharacter = require(script.ToSwapCharacter)
 
@@ -63,6 +65,10 @@ return function(Player, Request, Character, Datastore, Type) -- Player:Instance,
             end
         end
         Data.Character = Character
+        -- cyrus01337: Eventually, the selected character will be reset every
+        -- time the player rejoins the game, so to prepare for this we will be
+        -- using non-persistent state through a localised state store
+        Store.selectedCharacter = Character
         ProfileService:Replicate(Player)
 
         Player:ClearCharacterAppearance()

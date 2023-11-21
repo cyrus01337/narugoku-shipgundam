@@ -6,6 +6,7 @@ local Store = {
     PlayerPassedMainMenu = Signal.new(),
     playersPastMainMenu = {} :: { Player },
     playersFighting = {} :: { Player },
+    selectedCharacter = "",
 }
 
 function Store.tagPlayerPastMainMenu(player: Player)
