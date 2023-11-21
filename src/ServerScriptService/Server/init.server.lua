@@ -6,6 +6,7 @@ local ServerStorage = game:GetService("ServerStorage")
 
 local modules = ReplicatedStorage.Modules
 local server = ServerScriptService.Server
+local Constants = require(script.Constants)
 local AbilityData = require(modules.Metadata.AbilityData.AbilityData)
 local CombatData = require(modules.Metadata.CombatData.CombatData)
 local ControlData = require(modules.Metadata.ControlData.ControlData)
@@ -40,8 +41,15 @@ end
 local function spawnPlayer(player: Player)
     local playerData = ProfileService:GetPlayerProfile(player)
 
+    if playerData.Character == Constants.NO_CHARACTER then
+        local message = string.format("No character selected for %s", player.Name)
+
+        warn(message)
+
+        return
+    end
+
     ToSwapCharacter({ ToSwap = playerData.Character, Player = player })
-    ProfileService:Replicate(player)
 end
 
 local function initPlayerCharacterMetadata(playerChar: Model)
