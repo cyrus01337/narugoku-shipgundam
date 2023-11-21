@@ -66,12 +66,22 @@ function Rounds.intermission()
     debugTimer("Intermission", INTERMISSION_DURATION)
 end
 
+local function legibleToFight(player: Player)
+    local playerData = ProfileService:GetPlayerProfile(player)
+
+    return playerData ~= nil
+end
+
 local function isEmptyBattlefield()
     return #Store.playersFighting == 0
 end
 
 function Rounds.doRound()
     for _, player in Store.playersPastMainMenu do
+        if not legibleToFight(player) then
+            continue
+        end
+
         local playerHum: Humanoid = player.Character.Humanoid
         playerHum.Health = DEFAULT_HEALTH
         playerHum.MaxHealth = DEFAULT_HEALTH
