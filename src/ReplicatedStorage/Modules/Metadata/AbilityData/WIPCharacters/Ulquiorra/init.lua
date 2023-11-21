@@ -1,46 +1,46 @@
 return {
-	["FirstAbility"] = {
-		Name = "Cero",
+    ["FirstAbility"] = {
+        Name = "Cero",
 
-		StartTime = 0,
-		Cooldown = 1,
+        StartTime = 0,
+        Cooldown = 1,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		Damage = 5,
-	},
+        Damage = 5,
+    },
 
-	["SecondAbility"] = {
-		Name = "Bala",
+    ["SecondAbility"] = {
+        Name = "Bala",
 
-		StartTime = 0,
-		Cooldown = 1,
-		
-		Guardbreak = false,
+        StartTime = 0,
+        Cooldown = 1,
 
-		Damage = 5,
-	},
-	
-	["ThirdAbility"] = {
-		Name = "Sonido Slash",
+        Guardbreak = false,
 
-		StartTime = 0,
-		Cooldown = 1,
-		
-		Guardbreak = false,
-		
-		Damage = 50,
-	},
-	
-	["FourthAbility"] = {
-		Name = "Skill4",
+        Damage = 5,
+    },
 
-		StartTime = 0,
-		Cooldown = 1,
-		StunTime = 1.25,
+    ["ThirdAbility"] = {
+        Name = "Sonido Slash",
 
-		Guardbreak = true,
-		
-		Damage = 5,
-	}
+        StartTime = 0,
+        Cooldown = 1,
+
+        Guardbreak = false,
+
+        Damage = 50,
+    },
+
+    ["FourthAbility"] = {
+        Name = "Skill4",
+
+        StartTime = 0,
+        Cooldown = 1,
+        StunTime = 1.25,
+
+        Guardbreak = true,
+
+        Damage = 5,
+    },
 }

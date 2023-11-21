@@ -24,23 +24,21 @@ local CameraRemote = ReplicatedStorage.Remotes.CameraRemote
 
 local CombatData = {}
 
-
 function CombatData.CreateProfile(Player)
-	CombatData[Player.Name] = {
-		["Combat"] = Utility.GetDeepCopy(CombatPresets)
-	}
-	
+    CombatData[Player.Name] = {
+        ["Combat"] = Utility.GetDeepCopy(CombatPresets),
+    }
 end
 
-function CombatData.ReturnData(Player,PathIndex)
-	PathIndex = (type(PathIndex) == "string" and PathIndex) or warn("Invalid type.")
+function CombatData.ReturnData(Player, PathIndex)
+    PathIndex = (type(PathIndex) == "string" and PathIndex) or warn("Invalid type.")
 
-	return CombatData[Player.Name]["Combat"][PathIndex] or warn("path was not specified")
+    return CombatData[Player.Name]["Combat"][PathIndex] or warn("path was not specified")
 end
 
 function CombatData.RemoveKey(Player)
-	CombatData[Player.Name] = nil
-	local _  = CombatData[Player.Name] == nil and warn("cleared combat data for",Player.Name)
+    CombatData[Player.Name] = nil
+    local _ = CombatData[Player.Name] == nil and warn("cleared combat data for", Player.Name)
 end
 
 return CombatData

@@ -1,50 +1,50 @@
 return {
-	["FirstAbility"] = {
-		Name = "Unknowing Fire",
+    ["FirstAbility"] = {
+        Name = "Unknowing Fire",
 
-		StartTime = 0,
-		Cooldown = 1,
+        StartTime = 0,
+        Cooldown = 1,
 
-		Guardbreak = false,
-		Bool = false,
+        Guardbreak = false,
+        Bool = false,
 
-		Damage = 5,
-	},
+        Damage = 5,
+    },
 
-	["SecondAbility"] = {
-		Name = "Rising Scorching Sun",
+    ["SecondAbility"] = {
+        Name = "Rising Scorching Sun",
 
-		StartTime = 0,
-		Cooldown = 1,
-		
-		Guardbreak = false,
-		Bool = false,
+        StartTime = 0,
+        Cooldown = 1,
 
-		Damage = 5,
-	},
-	
-	["ThirdAbility"] = {
-		Name = "Flame Tiger",
+        Guardbreak = false,
+        Bool = false,
 
-		StartTime = 0,
-		Cooldown = 1,
-		
-		Guardbreak = false,
-		Bool = false,
+        Damage = 5,
+    },
 
-		Damage = 5,
-	},
-	
-	["FourthAbility"] = {
-		Name = "Blooming Flame Undulation",
+    ["ThirdAbility"] = {
+        Name = "Flame Tiger",
 
-		StartTime = 0,
-		Cooldown = 1,
-		StunTime = 1.25,
+        StartTime = 0,
+        Cooldown = 1,
 
-		Guardbreak = true,
-		Bool = false,
+        Guardbreak = false,
+        Bool = false,
 
-		Damage = 5,
-	}
+        Damage = 5,
+    },
+
+    ["FourthAbility"] = {
+        Name = "Blooming Flame Undulation",
+
+        StartTime = 0,
+        Cooldown = 1,
+        StunTime = 1.25,
+
+        Guardbreak = true,
+        Bool = false,
+
+        Damage = 5,
+    },
 }

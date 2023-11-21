@@ -55,23 +55,23 @@ local PlayerMouse = Player:GetMouse()
 local Humanoid = Character:WaitForChild("Humanoid")
 
 local KiritusuguVFX = {
-	["DoubleAccel"] = function(PathData)
-	
-		local Character = PathData.Character or nil
-		local ContactPoint = PathData.ContactPoint
+    ["DoubleAccel"] = function(PathData)
+        local Character = PathData.Character or nil
+        local ContactPoint = PathData.ContactPoint
 
-		for i = 1,2 do
-			VfxHandler.AfterImage({Character = Character, Duration = .25, StartTransparency = .5,Color = Color3.fromRGB(180,40,70)})
-			wait(.05)
-		end
+        for i = 1, 2 do
+            VfxHandler.AfterImage({
+                Character = Character,
+                Duration = 0.25,
+                StartTransparency = 0.5,
+                Color = Color3.fromRGB(180, 40, 70),
+            })
+            wait(0.05)
+        end
 
-		-- SoundManager:AddSound("Dodge", {Parent = Character.HumanoidRootPart}, "Client")
-	end,
-	["Heavyshot"] = function(Data)
-		
-		
-	end,
+        -- SoundManager:AddSound("Dodge", {Parent = Character.HumanoidRootPart}, "Client")
+    end,
+    ["Heavyshot"] = function(Data) end,
 }
-
 
 return KiritusuguVFX

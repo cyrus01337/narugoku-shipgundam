@@ -36,56 +36,66 @@ _G.DataSignal = Signal.new()
 _G.FPS = 60
 
 for _, child in script:GetDescendants() do
-	if child:IsA("ModuleScript") then
-		CachedModules[child.Name] = require(child)
-	end
+    if child:IsA("ModuleScript") then
+        CachedModules[child.Name] = require(child)
+    end
 end
 
 GUIRemote.OnClientEvent:Connect(function(ui, data)
-	local moduleFound = CachedModules[ui]
+    local moduleFound = CachedModules[ui]
 
-	if not moduleFound then return end
+    if not moduleFound then
+        return
+    end
 
-	local uiHandlerFound = moduleFound[data.Function]
+    local uiHandlerFound = moduleFound[data.Function]
 
-	if uiHandlerFound then
-		uiHandlerFound(data)
-	end
+    if uiHandlerFound then
+        uiHandlerFound(data)
+    end
 end)
 
 --local CharacterSelectionScreen = playerGui:WaitForChild("CharacterSelection")
 --local FrameSelection = CharacterSelectionScreen:WaitForChild("CharacterSelection").Selection
 --local AvaialableCharacters = ReplicatedStorage.Modules.Metadata.AbilityData.AbilityData:GetChildren()
-table.insert(connections, menu.MouseButton1Down:Connect(function()
-	if debounce then return end
+table.insert(
+    connections,
+    menu.MouseButton1Down:Connect(function()
+        if debounce then
+            return
+        end
 
-	debounce = true
+        debounce = true
 
-	GuisEffect.ClickEffect(menu, false, .8)
-	-- SoundManager:AddSound("ClickMenu", {Parent = playerGui}, "Client")
+        GuisEffect.ClickEffect(menu, false, 0.8)
+        -- SoundManager:AddSound("ClickMenu", {Parent = playerGui}, "Client")
 
-	if not inMenu then
-		inMenu = true
-		characterSelection:TweenPosition(IN_POSITION)
-	else
-		inMenu = false
-		characterSelection:TweenPosition(OUT_POSITION)
-	end
+        if not inMenu then
+            inMenu = true
+            characterSelection:TweenPosition(IN_POSITION)
+        else
+            inMenu = false
+            characterSelection:TweenPosition(OUT_POSITION)
+        end
 
-	task.wait(1)
+        task.wait(1)
 
-	debounce = false
-end))
+        debounce = false
+    end)
+)
 
-table.insert(connections, music.MouseButton1Down:Connect(function()
-	if musicOn then
-		playerGui.Music.Volume = 0
-		musicOn = false
-	else
-		playerGui.Music.Volume = 1
-		musicOn = true
-	end
-end))
+table.insert(
+    connections,
+    music.MouseButton1Down:Connect(function()
+        if musicOn then
+            playerGui.Music.Volume = 0
+            musicOn = false
+        else
+            playerGui.Music.Volume = 1
+            musicOn = true
+        end
+    end)
+)
 
 -- Connections[#Connections + 1] = AerialTing.MouseButton1Down:Connect(function()
 -- 	GuisEffect.ClickEffect(AerialTing, false, .8)
@@ -100,26 +110,36 @@ end))
 -- 	end
 -- end)
 
-hud.RageFrame.RageBar:TweenSize(UDim2.new(points.Value / 295,0, .588, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .25)
+hud.RageFrame.RageBar:TweenSize(
+    UDim2.new(points.Value / 295, 0, 0.588, 0),
+    Enum.EasingDirection.Out,
+    Enum.EasingStyle.Quad,
+    0.25
+)
 
 points:GetPropertyChangedSignal("Value"):Connect(function()
-	local TextTing = points.Value <= 285 and "RAGE" or "H TO MODE"
-	hud.RageFrame.Rage.Text = TextTing
+    local TextTing = points.Value <= 285 and "RAGE" or "H TO MODE"
+    hud.RageFrame.Rage.Text = TextTing
 
-	if points.Value <= 285 then
-		hud.RageFrame.RageBar:TweenSize(UDim2.new(points.Value / 295, 0, .588, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, .05)
-	end
+    if points.Value <= 285 then
+        hud.RageFrame.RageBar:TweenSize(
+            UDim2.new(points.Value / 295, 0, 0.588, 0),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quad,
+            0.05
+        )
+    end
 end)
 
 playerHumanoid:GetPropertyChangedSignal("Health"):Connect(function()
-	local healthFrame = hud.CharacterInfo.HealthFrame
+    local healthFrame = hud.CharacterInfo.HealthFrame
 
-	local size = UDim2.new(playerHumanoid.Health / playerHumanoid.MaxHealth, 0, 1, 0)
-	local easingDirection = Enum.EasingDirection.Out
-	local easingStyle = Enum.EasingStyle.Linear
+    local size = UDim2.new(playerHumanoid.Health / playerHumanoid.MaxHealth, 0, 1, 0)
+    local easingDirection = Enum.EasingDirection.Out
+    local easingStyle = Enum.EasingStyle.Linear
 
-	healthFrame.HealthBckg.HealthBar:TweenSize(size, easingDirection, easingStyle, 0.25, true)
-	healthFrame.HealthBckg.HealthBarRed:TweenSize(size, easingDirection, easingStyle, 0.35, true)
+    healthFrame.HealthBckg.HealthBar:TweenSize(size, easingDirection, easingStyle, 0.25, true)
+    healthFrame.HealthBckg.HealthBarRed:TweenSize(size, easingDirection, easingStyle, 0.35, true)
 end)
 
 -- local Clocker = nil
@@ -151,106 +171,113 @@ _G.StateSignal:Connect(function(Data)
 end)]]
 
 _G.Data = {
-	Level =  0,
-	Xp = 0,
-	Character = "Gilgamesh",
-	Cash = 25000,
-	Unlocked = {},
-	Skins = {}
+    Level = 0,
+    Xp = 0,
+    Character = "Gilgamesh",
+    Cash = 25000,
+    Unlocked = {},
+    Skins = {},
 }
 
 ReplicateRemote.OnClientEvent:Connect(function(data)
-	_G.Data = data
-	local unlockedCharacter = data.Unlocked
+    _G.Data = data
+    local unlockedCharacter = data.Unlocked
 
-	if Store.Frames == nil then
-		Store.PopulatedFrames:Wait()
-	end
+    if Store.Frames == nil then
+        Store.PopulatedFrames:Wait()
+    end
 
-	-- cyrus01337: when waiting for character frames to load, which requires
-	-- frames to be populated and an event to be fired, for some reason it
-	-- doesnt run when left alone my guess is that printing gives the script
-	-- enough time to do what it needs to do and be processed in the event loop,
-	-- or its something else related to loading
-	print("Populated frames!")
+    -- cyrus01337: when waiting for character frames to load, which requires
+    -- frames to be populated and an event to be fired, for some reason it
+    -- doesnt run when left alone my guess is that printing gives the script
+    -- enough time to do what it needs to do and be processed in the event loop,
+    -- or its something else related to loading
+    print("Populated frames!")
 
-	for _, frame in Store.Frames do
-		local unlockedCharacterFound = unlockedCharacter[frame.Name]
-		local lockedFrameImage = frame:WaitForChild("Locked", 300)
-		local miniPreviewImage = frame:WaitForChild("MiniPreview", 300)
-		local characterSelectionScreen = playerGui:WaitForChild("CharacterSelection", 300)
-		local displayFrame = characterSelectionScreen.CharacterSelection.Display
+    for _, frame in Store.Frames do
+        local unlockedCharacterFound = unlockedCharacter[frame.Name]
+        local lockedFrameImage = frame:WaitForChild("Locked", 300)
+        local miniPreviewImage = frame:WaitForChild("MiniPreview", 300)
+        local characterSelectionScreen = playerGui:WaitForChild("CharacterSelection", 300)
+        local displayFrame = characterSelectionScreen.CharacterSelection.Display
 
-		cashUI.Text = "$" .. data.Cash
-		lockedFrameImage.ImageTransparency = if unlockedCharacterFound then 1 else .5
-		miniPreviewImage.ImageTransparency = if unlockedCharacterFound then .35 else .85
-		displayFrame.Select.Text = if frame.Locked.ImageTransparency == 1 then "Select" else "Purchase"
-		displayFrame.Select.BackgroundColor3 = if frame.Locked.ImageTransparency == 1 then Color3.fromRGB(37, 255, 80) else Color3.fromRGB(255, 11, 64)
-	end
+        cashUI.Text = "$" .. data.Cash
+        lockedFrameImage.ImageTransparency = if unlockedCharacterFound then 1 else 0.5
+        miniPreviewImage.ImageTransparency = if unlockedCharacterFound then 0.35 else 0.85
+        displayFrame.Select.Text = if frame.Locked.ImageTransparency == 1 then "Select" else "Purchase"
+        displayFrame.Select.BackgroundColor3 = if frame.Locked.ImageTransparency == 1
+            then Color3.fromRGB(37, 255, 80)
+            else Color3.fromRGB(255, 11, 64)
+    end
 end)
 
 playerChar.ChildAdded:Connect(function(Child)
-	--if Child:IsA("BoolValue") and Child.Name == "Running" and _G.CameraLock then
-	--UserGameSettings.RotationType = Enum.RotationType.MovementRelative
-	--end
-	if Child:IsA("BoolValue") and Child.Name == "Aiming" then
-		local Positioner = playerChar.HumanoidRootPart:FindFirstChild"Positioner" or Instance.new("BodyVelocity")
-		Positioner.Name = "Positioner"
-		Positioner.MaxForce = Vector3.new(1,1,1) * 50000
-		Positioner.Velocity = Vector3.new(0,0,0)
-		Positioner.Parent = playerChar.HumanoidRootPart
+    --if Child:IsA("BoolValue") and Child.Name == "Running" and _G.CameraLock then
+    --UserGameSettings.RotationType = Enum.RotationType.MovementRelative
+    --end
+    if Child:IsA("BoolValue") and Child.Name == "Aiming" then
+        local Positioner = playerChar.HumanoidRootPart:FindFirstChild("Positioner") or Instance.new("BodyVelocity")
+        Positioner.Name = "Positioner"
+        Positioner.MaxForce = Vector3.new(1, 1, 1) * 50000
+        Positioner.Velocity = Vector3.new(0, 0, 0)
+        Positioner.Parent = playerChar.HumanoidRootPart
 
-		local Rotater = playerChar.HumanoidRootPart:FindFirstChild"Rotater" or Instance.new("BodyGyro")
-		Rotater.Name = "Rotater"
-		Rotater.MaxTorque = Vector3.new(1,1,1) * 50000
-		Rotater.D = 150
-		Rotater.P = 5000
-		Rotater.Parent = playerChar.HumanoidRootPart
+        local Rotater = playerChar.HumanoidRootPart:FindFirstChild("Rotater") or Instance.new("BodyGyro")
+        Rotater.Name = "Rotater"
+        Rotater.MaxTorque = Vector3.new(1, 1, 1) * 50000
+        Rotater.D = 150
+        Rotater.P = 5000
+        Rotater.Parent = playerChar.HumanoidRootPart
 
-		while playerChar:FindFirstChild("Aiming") do
-			task.wait()
+        while playerChar:FindFirstChild("Aiming") do
+            task.wait()
 
-			Rotater.CFrame = CFrame.lookAt(playerChar.HumanoidRootPart.Position, playerMouse.Hit.Position)
-		end
+            Rotater.CFrame = CFrame.lookAt(playerChar.HumanoidRootPart.Position, playerMouse.Hit.Position)
+        end
 
-		Positioner:Destroy()
-		Rotater:Destroy()
-	elseif Child:IsA("StringValue") and Child.Name == "Aiming" then
-		local Positioner = playerChar.HumanoidRootPart:FindFirstChild"Positioner" or Instance.new("BodyVelocity")
-		Positioner.Name = "Positioner"
-		Positioner.MaxForce = Vector3.new(1,1,1) * 50000
-		Positioner.Velocity = Vector3.new(0,0,0)
-		Positioner.Parent = playerChar.HumanoidRootPart
+        Positioner:Destroy()
+        Rotater:Destroy()
+    elseif Child:IsA("StringValue") and Child.Name == "Aiming" then
+        local Positioner = playerChar.HumanoidRootPart:FindFirstChild("Positioner") or Instance.new("BodyVelocity")
+        Positioner.Name = "Positioner"
+        Positioner.MaxForce = Vector3.new(1, 1, 1) * 50000
+        Positioner.Velocity = Vector3.new(0, 0, 0)
+        Positioner.Parent = playerChar.HumanoidRootPart
 
-		local Rotater = playerChar.HumanoidRootPart:FindFirstChild"Rotater" or Instance.new("BodyGyro")
-		Rotater.Name = "Rotater"
-		Rotater.MaxTorque = Vector3.new(1,1,1) * 50000
-		Rotater.D = 150
-		Rotater.P = 5000
-		Rotater.Parent = playerChar.HumanoidRootPart
+        local Rotater = playerChar.HumanoidRootPart:FindFirstChild("Rotater") or Instance.new("BodyGyro")
+        Rotater.Name = "Rotater"
+        Rotater.MaxTorque = Vector3.new(1, 1, 1) * 50000
+        Rotater.D = 150
+        Rotater.P = 5000
+        Rotater.Parent = playerChar.HumanoidRootPart
 
-		while playerChar:FindFirstChild("Aiming") do
-			task.wait()
+        while playerChar:FindFirstChild("Aiming") do
+            task.wait()
 
-			Rotater.CFrame = CFrame.lookAt(playerChar.HumanoidRootPart.Position, workspace.World.Live[Child.Value].HumanoidRootPart.Position)
-		end
+            Rotater.CFrame = CFrame.lookAt(
+                playerChar.HumanoidRootPart.Position,
+                workspace.World.Live[Child.Value].HumanoidRootPart.Position
+            )
+        end
 
-		Positioner:Destroy()
-		Rotater:Destroy()
-	end
+        Positioner:Destroy()
+        Rotater:Destroy()
+    end
 end)
 
 local StartTime = os.clock()
 
 playerHumanoid:GetPropertyChangedSignal("Jump"):Connect(function()
-	if not playerHumanoid.Jump then return end
+    if not playerHumanoid.Jump then
+        return
+    end
 
-	if os.clock() - StartTime >= 1 then
-		playerHumanoid.Jump = true
-		StartTime = os.clock()
-	else
-		playerHumanoid.Jump = false
-	end
+    if os.clock() - StartTime >= 1 then
+        playerHumanoid.Jump = true
+        StartTime = os.clock()
+    else
+        playerHumanoid.Jump = false
+    end
 end)
 
 versionText.Text = string.format("Server version: %s", game.PlaceVersion)

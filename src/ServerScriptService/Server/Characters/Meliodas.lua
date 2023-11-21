@@ -43,7 +43,6 @@ local SpeedManager = require(Shared.StateManager.Speed)
 
 local SoundManager = require(Shared.SoundManager)
 
-
 local RaycastManager = require(Shared.RaycastManager)
 local TaskScheduler = require(Utility.TaskScheduler)
 
@@ -59,95 +58,112 @@ local CameraRemote = ReplicatedStorage.Remotes.CameraRemote
 local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 local MouseRemote = ReplicatedStorage.Remotes.GetMouse
 
-local function GetNearestFromMouse(Character, Range)	
-	local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
+local function GetNearestFromMouse(Character, Range)
+    local MouseHit = MouseRemote:InvokeClient(Players:GetPlayerFromCharacter(Character))
 
-	for _, Entity in ipairs(workspace.World.Live:GetChildren()) do
-		if Entity:IsA("Model") and GlobalFunctions.IsAlive(Entity) and Entity ~= Character then
-			local EntityPrimary = Entity:FindFirstChild("HumanoidRootPart")
-			local Distance = (MouseHit.Position - EntityPrimary.Position).Magnitude
+    for _, Entity in ipairs(workspace.World.Live:GetChildren()) do
+        if Entity:IsA("Model") and GlobalFunctions.IsAlive(Entity) and Entity ~= Character then
+            local EntityPrimary = Entity:FindFirstChild("HumanoidRootPart")
+            local Distance = (MouseHit.Position - EntityPrimary.Position).Magnitude
 
-			if Distance <= Range then 
-				return Entity or nil
-			end
-		end
-	end
+            if Distance <= Range then
+                return Entity or nil
+            end
+        end
+    end
 end
 
 local Meliodas = {
-	["FirstAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local HumanoidRootPart,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+    ["FirstAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local HumanoidRootPart, Humanoid =
+            Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		local Data = ProfileService:GetPlayerProfile(Player)
+        local Data = ProfileService:GetPlayerProfile(Player)
 
-		if Data.Character == "Meliodas" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end 	
-		
-		local MouseHit = MouseRemote:InvokeClient(Player)
+        if Data.Character == "Meliodas" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
 
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, MouseHit = MouseHit, Module = "MeliodasVFX", Function = "Hellblaze"})	
-	end,
+        local MouseHit = MouseRemote:InvokeClient(Player)
 
-	["SecondAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local HumanoidRootPart,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            200,
+            { Character = Character, MouseHit = MouseHit, Module = "MeliodasVFX", Function = "Hellblaze" }
+        )
+    end,
 
-		local Data = ProfileService:GetPlayerProfile(Player)
+    ["SecondAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local HumanoidRootPart, Humanoid =
+            Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		if Data.Character == "Meliodas" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end 	
-	end,
+        local Data = ProfileService:GetPlayerProfile(Player)
 
-	["ThirdAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local HumanoidRootPart,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+        if Data.Character == "Meliodas" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
+    end,
 
-		local Data = ProfileService:GetPlayerProfile(Player)
+    ["ThirdAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local HumanoidRootPart, Humanoid =
+            Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		if Data.Character == "Meliodas" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end 	
-	end,
+        local Data = ProfileService:GetPlayerProfile(Player)
 
-	["FourthAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+        if Data.Character == "Meliodas" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
+    end,
 
+    ["FourthAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		local Data = ProfileService:GetPlayerProfile(Player)
+        local Data = ProfileService:GetPlayerProfile(Player)
 
-		if Data.Character == "Meliodas" then
-			DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-			CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		end 	
-		
-		
-		StateManager:ChangeState(Character, "IFrame", 3, {IFrameType = "Counter"})
-		
+        if Data.Character == "Meliodas" then
+            DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+            CameraRemote:FireClient(
+                Player,
+                "ChangeUICooldown",
+                { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+            )
+        end
 
-	end;
-	
-	
-	["Counter"] = function(Data)
-		local Victim = Data.Victim
-		local Character = Data.Character
-		
-		local Damage = Data.Damage
-		
-		--do ur thig here wunbo-tan-- >.<
-		
-		StateManager:ChangeState(Character, "IFrame", 0)
-		
-		DamageManager.DeductDamage(Character,Victim, Data.SkillName, Data.CharacterName, Data.ExtraData)
-	end,
+        StateManager:ChangeState(Character, "IFrame", 3, { IFrameType = "Counter" })
+    end,
+
+    ["Counter"] = function(Data)
+        local Victim = Data.Victim
+        local Character = Data.Character
+
+        local Damage = Data.Damage
+
+        --do ur thig here wunbo-tan-- >.<
+
+        StateManager:ChangeState(Character, "IFrame", 0)
+
+        DamageManager.DeductDamage(Character, Victim, Data.SkillName, Data.CharacterName, Data.ExtraData)
+    end,
 }
-
-
 
 return Meliodas

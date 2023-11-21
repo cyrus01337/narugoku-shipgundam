@@ -7,10 +7,10 @@ local Temp = script:WaitForChild("Ended").Value
 workspace.CurrentCamera.CameraSubject = Character.Head
 
 while script.Ended.Value == false do
-	if Humanoid.Health <= 0 then
-		break
-	end
-	game["Run Service"].Heartbeat:wait()
+    if Humanoid.Health <= 0 then
+        break
+    end
+    game["Run Service"].Heartbeat:wait()
 end
 print("wat")
 

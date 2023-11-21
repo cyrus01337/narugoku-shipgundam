@@ -1,51 +1,51 @@
 return {
-	["FirstAbility"] = {
-		Name = "-",
+    ["FirstAbility"] = {
+        Name = "-",
 
-		StartTime = os.clock(),
-		Cooldown = 1,
+        StartTime = os.clock(),
+        Cooldown = 1,
 
-		Guardbreak = false,
-		BlockDeduction = .25,
+        Guardbreak = false,
+        BlockDeduction = 0.25,
 
-		Damage = 1.15,
-		StunTime = .775,	
-	},
+        Damage = 1.15,
+        StunTime = 0.775,
+    },
 
-	["SecondAbility"] = {
-		Name = "-",
+    ["SecondAbility"] = {
+        Name = "-",
 
-		Damage = 15,
-		StunTime = 2,
-		EndLag = 1,
+        Damage = 15,
+        StunTime = 2,
+        EndLag = 1,
 
-		Guardbreak = true,
+        Guardbreak = true,
 
-		StartTime = os.clock(),
-		Cooldown = 1,
-	},
+        StartTime = os.clock(),
+        Cooldown = 1,
+    },
 
-	["ThirdAbility"] = {
-		Name = "-",
+    ["ThirdAbility"] = {
+        Name = "-",
 
-		Damage = 12,
-		StunTime = 1,
+        Damage = 12,
+        StunTime = 1,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		StartTime = os.clock(),
-		Cooldown = 1,
-	},
+        StartTime = os.clock(),
+        Cooldown = 1,
+    },
 
-	["FourthAbility"] = {
-		Name = "-",	
+    ["FourthAbility"] = {
+        Name = "-",
 
-		Damage = 30,
-		StunTime = 1,
+        Damage = 30,
+        StunTime = 1,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		StartTime = os.clock(),
-		Cooldown = 1,
-	},
+        StartTime = os.clock(),
+        Cooldown = 1,
+    },
 }

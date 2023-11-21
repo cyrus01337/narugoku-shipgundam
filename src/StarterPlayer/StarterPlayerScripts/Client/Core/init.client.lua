@@ -54,138 +54,137 @@ local PlayerMouse = Player:GetMouse()
 local Humanoid = Character:WaitForChild("Humanoid")
 
 local AnimationSettings = {
-	["Play"] = function(AnimationName, AnimationData)
-		AnimationManager.PlayAnimation(AnimationName,AnimationData)
-	end,
-	["Stop"] = function(AnimationName, AnimationData)
-		AnimationManager.StopAnimation(AnimationName,AnimationData)
-	end,
-	["LoadAnimations"] = function(Character, ClassNames)
-		AnimationManager.LoadAnimations(Character, ClassNames)
-	end,
+    ["Play"] = function(AnimationName, AnimationData)
+        AnimationManager.PlayAnimation(AnimationName, AnimationData)
+    end,
+    ["Stop"] = function(AnimationName, AnimationData)
+        AnimationManager.StopAnimation(AnimationName, AnimationData)
+    end,
+    ["LoadAnimations"] = function(Character, ClassNames)
+        AnimationManager.LoadAnimations(Character, ClassNames)
+    end,
 }
 local function FunRun()
-	local properties = {FieldOfView = DefaultFOV + 10}
-	local Info = TweenInfo.new(0.5,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0.1)
-	T = game:GetService("TweenService"):Create(game.Workspace.CurrentCamera,Info,properties)
-	T:Play()
-
+    local properties = { FieldOfView = DefaultFOV + 10 }
+    local Info = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 0.1)
+    T = game:GetService("TweenService"):Create(game.Workspace.CurrentCamera, Info, properties)
+    T:Play()
 end
 
 local function FunRunEnd()
-	local properties = {FieldOfView = DefaultFOV}
-	local Info = TweenInfo.new(0.5,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0.1)
-	T = game:GetService("TweenService"):Create(game.Workspace.CurrentCamera,Info,properties)
-	T:Play()
-	
+    local properties = { FieldOfView = DefaultFOV }
+    local Info = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 0.1)
+    T = game:GetService("TweenService"):Create(game.Workspace.CurrentCamera, Info, properties)
+    T:Play()
 end
---|| Functions ||-- 
+--|| Functions ||--
 local LastWTap = 0
-UserInputService.InputBegan:Connect(function(Input,Typing)
-	if not Typing then
-		local KeyEvaluation = (Input.KeyCode == Enum.KeyCode.Unknown and Input.UserInputType.Name or Input.KeyCode.Name)
+UserInputService.InputBegan:Connect(function(Input, Typing)
+    if not Typing then
+        local KeyEvaluation = (Input.KeyCode == Enum.KeyCode.Unknown and Input.UserInputType.Name or Input.KeyCode.Name)
 
-		local Combat = ControlData.Controls.Combat[KeyEvaluation]
-		local Ability = ControlData.Controls.Ability[KeyEvaluation]
+        local Combat = ControlData.Controls.Combat[KeyEvaluation]
+        local Ability = ControlData.Controls.Ability[KeyEvaluation]
 
-		local ExecuteEvaluation = (Combat or Ability)
+        local ExecuteEvaluation = (Combat or Ability)
 
-		if ExecuteEvaluation == "Run" then
-			local Cached = LastWTap
-			LastWTap = time()
+        if ExecuteEvaluation == "Run" then
+            local Cached = LastWTap
+            LastWTap = time()
 
-			if (time() - Cached) > 0.5 then
-				return
-			end
-			FunRun()
-		end
-		
-		pcall(function()
-			local ChosenModule = CachedModules[(Ability and _G.Data.Character) or (Combat and "Combat") or ExecuteEvaluation][Ability or Combat or ExecuteEvaluation]
-			if typeof(ChosenModule) == "table" then
-				ChosenModule["Execute"](ExecuteEvaluation,KeyEvaluation)
-			else
-				ChosenModule(ExecuteEvaluation,KeyEvaluation)
-			end
-		end)    
-	end
+            if (time() - Cached) > 0.5 then
+                return
+            end
+            FunRun()
+        end
+
+        pcall(function()
+            local ChosenModule =
+                CachedModules[(Ability and _G.Data.Character) or (Combat and "Combat") or ExecuteEvaluation][Ability or Combat or ExecuteEvaluation]
+            if typeof(ChosenModule) == "table" then
+                ChosenModule["Execute"](ExecuteEvaluation, KeyEvaluation)
+            else
+                ChosenModule(ExecuteEvaluation, KeyEvaluation)
+            end
+        end)
+    end
 end)
 
+UserInputService.InputEnded:Connect(function(Input, Typing)
+    if not Typing then
+        local KeyEvaluation = (Input.KeyCode == Enum.KeyCode.Unknown and Input.UserInputType.Name or Input.KeyCode.Name)
 
-UserInputService.InputEnded:Connect(function(Input,Typing)
-	if not Typing then
-		local KeyEvaluation = (Input.KeyCode == Enum.KeyCode.Unknown and Input.UserInputType.Name or Input.KeyCode.Name)
+        local Combat = ControlData.Controls.Combat[KeyEvaluation]
+        local Ability = ControlData.Controls.Ability[KeyEvaluation]
 
-		local Combat = ControlData.Controls.Combat[KeyEvaluation]
-		local Ability = ControlData.Controls.Ability[KeyEvaluation]
-
-		local ExecuteEvaluation = ( Combat or Ability)
-		if ExecuteEvaluation == "Run" then
-			FunRunEnd()
-		end
-		pcall(function()
-			local ChosenModule = CachedModules[(Ability and _G.Data.Character) or (Combat and "Combat") or ExecuteEvaluation][Ability or Combat or ExecuteEvaluation]
-			if typeof(ChosenModule) == "table" then
-				ChosenModule["Terminate"](ExecuteEvaluation,KeyEvaluation)
-			end
-		end)
-	end
+        local ExecuteEvaluation = (Combat or Ability)
+        if ExecuteEvaluation == "Run" then
+            FunRunEnd()
+        end
+        pcall(function()
+            local ChosenModule =
+                CachedModules[(Ability and _G.Data.Character) or (Combat and "Combat") or ExecuteEvaluation][Ability or Combat or ExecuteEvaluation]
+            if typeof(ChosenModule) == "table" then
+                ChosenModule["Terminate"](ExecuteEvaluation, KeyEvaluation)
+            end
+        end)
+    end
 end)
 
 for _, Module in ipairs(script:GetDescendants()) do
-	if Module:IsA("ModuleScript") then
-		CachedModules[Module.Name] = require(Module)
-	end
+    if Module:IsA("ModuleScript") then
+        CachedModules[Module.Name] = require(Module)
+    end
 end
 
-AnimationRemote.OnClientEvent:Connect(function(AnimationName,Task,AnimationData)
-	AnimationSettings[Task](AnimationName,AnimationData)
+AnimationRemote.OnClientEvent:Connect(function(AnimationName, Task, AnimationData)
+    AnimationSettings[Task](AnimationName, AnimationData)
 end)
 
-CameraRemote.OnClientEvent:Connect(function(Task,Data)
-	CachedModules["CameraEffects"][Task](Data)
+CameraRemote.OnClientEvent:Connect(function(Task, Data)
+    CachedModules["CameraEffects"][Task](Data)
 end)
 
 ClientRemote.OnClientEvent:Connect(function(PathData)
-	CachedModules[PathData.Module][PathData.Function](PathData)
+    CachedModules[PathData.Module][PathData.Function](PathData)
 end)
 
 ChangeSpeed.OnClientEvent:Connect(function(Data)
-	local Character = Player.Character
-	local Humanoid = Character:WaitForChild"Humanoid"
+    local Character = Player.Character
+    local Humanoid = Character:WaitForChild("Humanoid")
 
-	PlayerConnections[#PlayerConnections + 1] = RunService.Stepped:Connect(function()
-		Humanoid.WalkSpeed = Data.WalkSpeed
-		Humanoid.JumpPower = Data.JumpPower		
-	end)
+    PlayerConnections[#PlayerConnections + 1] = RunService.Stepped:Connect(function()
+        Humanoid.WalkSpeed = Data.WalkSpeed
+        Humanoid.JumpPower = Data.JumpPower
+    end)
 
-	TaskScheduler:AddTask(Data.Duration,function()
-		Humanoid.WalkSpeed = Data.OldWalkSpeed
-		Humanoid.JumpPower = Data.OldJumpPower
-		for _,Connections in ipairs(PlayerConnections) do 
-			Connections:Disconnect()
-			Connections = nil
-		end
-	end)
+    TaskScheduler:AddTask(Data.Duration, function()
+        Humanoid.WalkSpeed = Data.OldWalkSpeed
+        Humanoid.JumpPower = Data.OldJumpPower
+        for _, Connections in ipairs(PlayerConnections) do
+            Connections:Disconnect()
+            Connections = nil
+        end
+    end)
 end)
 
 local function Mouse()
-	PlayerMouse.TargetFilter = workspace.World.Visuals
-	local Mouse = PlayerMouse.Hit
-	return Mouse
+    PlayerMouse.TargetFilter = workspace.World.Visuals
+    local Mouse = PlayerMouse.Hit
+    return Mouse
 end
 GetMouse.OnClientInvoke = Mouse
 
-local function HoldingKey(Key,Type)
-	if Type == "Mouse" then
-		if UserInputService:IsMouseButtonPressed(Key) then
-			return true or false
-		end
-	elseif Type == "Key" then
-		if UserInputService:IsKeyDown(Key) then
-			return true or false
-		end
-	end
+local function HoldingKey(Key, Type)
+    if Type == "Mouse" then
+        if UserInputService:IsMouseButtonPressed(Key) then
+            return true or false
+        end
+    elseif Type == "Key" then
+        if UserInputService:IsKeyDown(Key) then
+            return true or false
+        end
+    end
 end
 GetKeyHeld.OnClientInvoke = HoldingKey
 

@@ -1,53 +1,53 @@
 return {
-	["FirstAbility"] = {
-		Name = "Lightning Palm",
+    ["FirstAbility"] = {
+        Name = "Lightning Palm",
 
-		Damage = 20,
-		StunTime = 2,
-		EndLag = 1,
+        Damage = 20,
+        StunTime = 2,
+        EndLag = 1,
 
-		Guardbreak = true,
+        Guardbreak = true,
 
-		StartTime = os.clock(),
-		Cooldown = 20,
-	},
+        StartTime = os.clock(),
+        Cooldown = 20,
+    },
 
-	["SecondAbility"] = {
-		Name = "Whirlwind",
+    ["SecondAbility"] = {
+        Name = "Whirlwind",
 
-		Damage = 1.5,
-		StunTime = 2,
-		EndLag = 1,
+        Damage = 1.5,
+        StunTime = 2,
+        EndLag = 1,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		StartTime = os.clock(),
-		Cooldown = 25,
-	},
+        StartTime = os.clock(),
+        Cooldown = 25,
+    },
 
-	["ThirdAbility"] = {
-		Name = "-",
+    ["ThirdAbility"] = {
+        Name = "-",
 
-		Damage = 12,
-		StunTime = 1,
-		Rocks = 3,
-		Range = 10,
+        Damage = 12,
+        StunTime = 1,
+        Rocks = 3,
+        Range = 10,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		StartTime = os.clock(),
-		Cooldown = 1,
-	},
+        StartTime = os.clock(),
+        Cooldown = 1,
+    },
 
-	["FourthAbility"] = {
-		Name = "-",	
+    ["FourthAbility"] = {
+        Name = "-",
 
-		Damage = 30,
-		StunTime = 1,
+        Damage = 30,
+        StunTime = 1,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		StartTime = os.clock(),
-		Cooldown = 1,
-	},
+        StartTime = os.clock(),
+        Cooldown = 1,
+    },
 }

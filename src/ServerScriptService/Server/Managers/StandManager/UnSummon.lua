@@ -28,39 +28,41 @@ local Utilities = require(Utility.Utility)
 local Effects = ReplicatedStorage.Assets.Effects.Meshes
 local Particles = ReplicatedStorage.Assets.Effects.Particles
 
-return function(Player,Data)
-	local Character = Player.Character or Player.CharacterAdded:Wait()
-	local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+return function(Player, Data)
+    local Character = Player.Character or Player.CharacterAdded:Wait()
+    local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-	local ChosenStand = Data.Stand
+    local ChosenStand = Data.Stand
 
-	local Stands = Character
+    local Stands = Character
 
-	local Stand = Stands:FindFirstChild(ChosenStand)
+    local Stand = Stands:FindFirstChild(ChosenStand)
 
-	if not Stand then return end
+    if not Stand then
+        return
+    end
 
-	-- SoundManager:AddSound("StandPoof",{Parent = Root, Volume = 1.25}, "Client")
-	StateManager:ChangeState(Character, "Attacking", 1.25)
+    -- SoundManager:AddSound("StandPoof",{Parent = Root, Volume = 1.25}, "Client")
+    StateManager:ChangeState(Character, "Attacking", 1.25)
 
-	local Weld = Stand.PrimaryPart.Weld
+    local Weld = Stand.PrimaryPart.Weld
 
-	GlobalFunctions.TweenFunction({
-		["Instance"] = Weld,
-		["EasingStyle"] = Enum.EasingStyle.Exponential,
-		["EasingDirection"] = Enum.EasingDirection.Out,
-		["Duration"] = .4,
-	},{
-		["C0"] = CFrame.new(0,0,0)
-	})
+    GlobalFunctions.TweenFunction({
+        ["Instance"] = Weld,
+        ["EasingStyle"] = Enum.EasingStyle.Exponential,
+        ["EasingDirection"] = Enum.EasingDirection.Out,
+        ["Duration"] = 0.4,
+    }, {
+        ["C0"] = CFrame.new(0, 0, 0),
+    })
 
-	for Index = 0,1,.05 do
-		for _,v in ipairs(Stand:GetDescendants()) do
-			if v:IsA("Decal") or v:IsA("Part") or v:IsA("MeshPart") then
-				v.Transparency = Index
-			end
-		end
-		RunService.Heartbeat:Wait()
-	end
-	Stand:Destroy()
+    for Index = 0, 1, 0.05 do
+        for _, v in ipairs(Stand:GetDescendants()) do
+            if v:IsA("Decal") or v:IsA("Part") or v:IsA("MeshPart") then
+                v.Transparency = Index
+            end
+        end
+        RunService.Heartbeat:Wait()
+    end
+    Stand:Destroy()
 end

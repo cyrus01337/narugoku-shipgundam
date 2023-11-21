@@ -29,24 +29,23 @@ local Humanoid = Character:WaitForChild("Humanoid")
 
 local Mouse = Player:GetMouse()
 
-local Sanji = {	
-	
-	["FirstAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName)
-	end,
-	
-	["SecondAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})
-	end,
-	
-	["ThirdAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})
-	end,
-	
-	["FourthAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})
-	end,
+local Sanji = {
+
+    ["FirstAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName)
+    end,
+
+    ["SecondAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
+
+    ["ThirdAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
+
+    ["FourthAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
 }
 
 return Sanji
-

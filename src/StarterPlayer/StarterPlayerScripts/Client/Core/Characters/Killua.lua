@@ -14,7 +14,6 @@ local Utility = Modules.Utility
 
 --||Imports||--
 
-
 --||Remotes||--
 local ClientRemote = ReplicatedStorage.Remotes.ClientRemote
 local ServerRemote = ReplicatedStorage.Remotes.ServerRemote
@@ -29,22 +28,21 @@ local Character = Player.Character or Player.CharacterAdded:Wait()
 local Mouse = Player:GetMouse()
 local Humanoid = Character:WaitForChild("Humanoid")
 
-
 local Alucard = {
-	["FirstAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{MouseTarget = Mouse.Target})	
-	end,
-	["SecondAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{MouseTarget = Mouse.Target})		
-	end,
+    ["FirstAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, { MouseTarget = Mouse.Target })
+    end,
+    ["SecondAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, { MouseTarget = Mouse.Target })
+    end,
 
-	["ThirdAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})		
-	end,
+    ["ThirdAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
 
-	["FourthAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})		
-	end,
+    ["FourthAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
 }
 
 return Alucard

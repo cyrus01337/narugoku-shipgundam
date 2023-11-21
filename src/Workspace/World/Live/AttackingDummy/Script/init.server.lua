@@ -13,7 +13,7 @@ local CombatAnims = ReplicatedStorage.Assets.Animations.Shared.Combat.L
 local Server = ServerScriptService.Server
 local Modules = ReplicatedStorage.Modules
 
-local Shared = Modules.Shared 
+local Shared = Modules.Shared
 local Utility = Modules.Utility
 local Effects = Modules.Effects
 
@@ -27,31 +27,37 @@ local DamageManager = require(script.DamageManager)
 --|| Variables ||--
 local Character = script.Parent
 
-local Humanoid,Root = Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
+local Humanoid, Root = Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
 
 --|| Debounces ||--
 local Combo = 0
 
 while true do
-	if not StateManager:Peek(Character,"Stunned") then
-		Combo += 1
+    if not StateManager:Peek(Character, "Stunned") then
+        Combo += 1
 
-		Humanoid:LoadAnimation(CombatAnims["CombatL"..Combo]):Play()
+        Humanoid:LoadAnimation(CombatAnims["CombatL" .. Combo]):Play()
 
-		-- SoundManager:AddSound("CombatSwing", {Parent = Root, Volume = .75}, "Client")
+        -- SoundManager:AddSound("CombatSwing", {Parent = Root, Volume = .75}, "Client")
 
-		local HitResult,HitObject = HitboxModule.MagnitudeModule(Character, {Range = 5, KeysLogged = Combo, Type = "Combat"}, "Swing", "Killer Queen", false)
-		if HitResult then
-			local Victim = HitObject.Parent
-			local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
+        local HitResult, HitObject = HitboxModule.MagnitudeModule(
+            Character,
+            { Range = 5, KeysLogged = Combo, Type = "Combat" },
+            "Swing",
+            "Killer Queen",
+            false
+        )
+        if HitResult then
+            local Victim = HitObject.Parent
+            local VRoot, VHum = Victim:FindFirstChild("HumanoidRootPart"), Victim:FindFirstChild("Humanoid")
 
-			DamageManager.DeductDamage(Character,Victim,"ThirdAbility", "Natsu", Combo)
-		end
+            DamageManager.DeductDamage(Character, Victim, "ThirdAbility", "Natsu", Combo)
+        end
 
-		if Combo >= 5 then
-			Combo = 1
-			StateManager:ChangeState(Character,"Stunned",2)
-		end
-	end
-	wait(.35)
+        if Combo >= 5 then
+            Combo = 1
+            StateManager:ChangeState(Character, "Stunned", 2)
+        end
+    end
+    wait(0.35)
 end

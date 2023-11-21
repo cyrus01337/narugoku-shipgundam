@@ -63,33 +63,40 @@ local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 local AnimationRemote = RemoteFolder.AnimationRemote
 
 local raycastParams = RaycastParams.new()
-raycastParams.FilterDescendantsInstances = {workspace.World.Map}
+raycastParams.FilterDescendantsInstances = { workspace.World.Map }
 raycastParams.FilterType = Enum.RaycastFilterType.Include
 
 local Finishers = {
-	["Hiei"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Humanoid,HumanoidRootPart = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
+    ["Hiei"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Humanoid, HumanoidRootPart =
+            Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
 
-		local Victim = ExtraData.Victim
-		local VHum,VRoot = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
+        local Victim = ExtraData.Victim
+        local VHum, VRoot = Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
 
-		NetworkStream.FireClientDistance(Character,"ClientRemote",200,{Character = Character, Victim = Victim, Module = "HieiVFX", Function = "BezierDash"})
-		coroutine.wrap(function()
-			wait(.75)
-			VfxHandler.RemoveBodyMover(Character)
-			HumanoidRootPart.CFrame = VRoot.CFrame * CFrame.new(0,0,4)
-		end)()
-	end,
-	
-	["Gilgamesh"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Humanoid,HumanoidRootPart = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
+        NetworkStream.FireClientDistance(
+            Character,
+            "ClientRemote",
+            200,
+            { Character = Character, Victim = Victim, Module = "HieiVFX", Function = "BezierDash" }
+        )
+        coroutine.wrap(function()
+            wait(0.75)
+            VfxHandler.RemoveBodyMover(Character)
+            HumanoidRootPart.CFrame = VRoot.CFrame * CFrame.new(0, 0, 4)
+        end)()
+    end,
 
-		local Victim = ExtraData.Victim
-		local VHum,VRoot = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
+    ["Gilgamesh"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Humanoid, HumanoidRootPart =
+            Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
 
-	--[[coroutine.wrap(function()
+        local Victim = ExtraData.Victim
+        local VHum, VRoot = Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
+
+        --[[coroutine.wrap(function()
 			for Index = 1,2 do
 				task.spawn(function()
 					Gilgamesh.FirstAbility(Player,CharacterName,KeyData,MoveData,{MouseHit = VRoot.CFrame, Type = "Aerial"})
@@ -97,7 +104,7 @@ local Finishers = {
 				wait(.35)
 			end
 		end)()]]
-	end,
+    end,
 }
 
 return Finishers

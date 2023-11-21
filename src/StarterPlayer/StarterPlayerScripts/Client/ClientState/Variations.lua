@@ -20,32 +20,31 @@ local Mouse = Player:GetMouse()
 local module = {}
 
 function module.Aiming(StateData)
-	if GlobalFunctions.IsAlive(Character) then
-		
-		-- dis mysts
-		Mouse.TargetFilter = workspace.Visuals
-		
-		local Positioner = Character.HumanoidRootPart:FindFirstChild"Positioner" or Instance.new("BodyVelocity")
-		Positioner.Name = "Positioner"
-		Positioner.MaxForce = Vector3.new(1,1,1) * 50000
-		Positioner.Velocity = Vector3.new(0,0,0)
-		Positioner.Parent = Character.HumanoidRootPart
+    if GlobalFunctions.IsAlive(Character) then
+        -- dis mysts
+        Mouse.TargetFilter = workspace.Visuals
 
-		local Rotater = Character.HumanoidRootPart:FindFirstChild"Rotater" or Instance.new("BodyGyro")
-		Rotater.Name = "Rotater"
-		Rotater.MaxTorque = Vector3.new(1,1,1) * 50000
-		Rotater.D = 150
-		Rotater.P = 5000
-		Rotater.Parent = Character.HumanoidRootPart
+        local Positioner = Character.HumanoidRootPart:FindFirstChild("Positioner") or Instance.new("BodyVelocity")
+        Positioner.Name = "Positioner"
+        Positioner.MaxForce = Vector3.new(1, 1, 1) * 50000
+        Positioner.Velocity = Vector3.new(0, 0, 0)
+        Positioner.Parent = Character.HumanoidRootPart
 
-		--while StateData.IsAim do
-			RunService.Stepped:Wait()
-			Rotater.CFrame = CFrame.lookAt(Character.HumanoidRootPart.Position, Mouse.Hit.Position)
-	--	end
+        local Rotater = Character.HumanoidRootPart:FindFirstChild("Rotater") or Instance.new("BodyGyro")
+        Rotater.Name = "Rotater"
+        Rotater.MaxTorque = Vector3.new(1, 1, 1) * 50000
+        Rotater.D = 150
+        Rotater.P = 5000
+        Rotater.Parent = Character.HumanoidRootPart
 
-		Positioner:Destroy()
-		Rotater:Destroy()
-	end
+        --while StateData.IsAim do
+        RunService.Stepped:Wait()
+        Rotater.CFrame = CFrame.lookAt(Character.HumanoidRootPart.Position, Mouse.Hit.Position)
+        --	end
+
+        Positioner:Destroy()
+        Rotater:Destroy()
+    end
 end
 
 return module

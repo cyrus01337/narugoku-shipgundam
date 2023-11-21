@@ -44,254 +44,328 @@ local SoundManager = require(Shared.SoundManager)
 local AbilityData = require(Metadata.AbilityData.AbilityData)
 local CombatData = require(Metadata.CombatData.CombatData)
 
-local CameraData = {Size = 30, Length = .25}
+local CameraData = { Size = 30, Length = 0.25 }
 
 local function ClearTable(Table)
-	for Array in ipairs(Table) do
-		Table[Array] = nil
-	end
+    for Array in ipairs(Table) do
+        Table[Array] = nil
+    end
 end
 
 local DamageManager = {
-	DamagedEntities = {},
+    DamagedEntities = {},
 }
 
 local BlockFunctions = {
-	["Parry"] = function(Character, Victim,  BlockData, BlockDeduction, Type)
-		local Humanoid,Root = Character:FindFirstChild("Humanoid"),Character:FindFirstChild("HumanoidRootPart")
-		
-		local SkillData = CombatData.ReturnData(Players:GetPlayerFromCharacter(Character),"Block")
-		if not SkillData.CanParry then return end
-		
-		StateManager:ChangeState(Character, "Stunned", 1.15)
+    ["Parry"] = function(Character, Victim, BlockData, BlockDeduction, Type)
+        local Humanoid, Root = Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
 
-		NetworkStream.FireClientDistance(Character,"ClientRemote",150,{
-			Character = Character,
-			Module = "CombatVFX",
-			Function = "Parry"
-		})
-	end,
-	
-	["Block"] = function(Character, Victim, BlockData, BlockDeduction, Type)
-		BlockData.BlockVal -= BlockDeduction
+        local SkillData = CombatData.ReturnData(Players:GetPlayerFromCharacter(Character), "Block")
+        if not SkillData.CanParry then
+            return
+        end
 
-		NetworkStream.FireClientDistance(Character,"ClientRemote",150,{
-			Character = Character,
-			Victim = Victim,
-			WeaponType = Type,
-			Module = "CombatVFX",
-			Function = "Block"
-		}) 
-	end,
-	
-	["Guardbreak"] = function(Character, Victim, BlockData, BlockDeduction, Type,ExtraData)
-		local VictimHumanoid, VictimRoot = Victim:FindFirstChild("Humanoid"), Victim:FindFirstChild("HumanoidRootPart")
-		
-		local ModeData = StateManager:ReturnData(Character, "Mode")
-		local DamageData = StateManager:ReturnData(Character,"DamageMultiplier")
-		
-		local DamageBoost = DamageData.DamageBooster
-		
-		StateManager:ChangeState(Victim, "Blocking", false)
-		StateManager:ChangeState(Victim, "Guardbroken", 1.875)
-		
-		local IndexCalculation = ModeData.Mode and ExtraData.CharacterName.."Mode" or ExtraData.CharacterName or warn"character has invalid module"
-		
-		local ModifierCopy = AbilityData.ReturnData(Players:GetPlayerFromCharacter(Character),ExtraData.SkillName,IndexCalculation) or CombatData.ReturnData(Players:GetPlayerFromCharacter(Character),ExtraData.SkillName) 
-		local Damage = ModifierCopy.Damage
-		
-		VictimHumanoid:TakeDamage(Damage / 2 * DamageBoost)
-		NetworkStream.FireClientDistance(Character,"ClientRemote",50,{Character = Character, Damage = Damage / 2 * DamageBoost , Victim = Victim, Module = "PlayerClient", Function = "DamageIndication", StunTime = 0})
+        StateManager:ChangeState(Character, "Stunned", 1.15)
 
-		NetworkStream.FireClientDistance(Character,"ClientRemote",150,{
-			Character = Character,
-			Victim = Victim,
-			Module = "CombatVFX",
-			Function = "GuardBreak"
-		}) 
-	end,
+        NetworkStream.FireClientDistance(Character, "ClientRemote", 150, {
+            Character = Character,
+            Module = "CombatVFX",
+            Function = "Parry",
+        })
+    end,
+
+    ["Block"] = function(Character, Victim, BlockData, BlockDeduction, Type)
+        BlockData.BlockVal -= BlockDeduction
+
+        NetworkStream.FireClientDistance(Character, "ClientRemote", 150, {
+            Character = Character,
+            Victim = Victim,
+            WeaponType = Type,
+            Module = "CombatVFX",
+            Function = "Block",
+        })
+    end,
+
+    ["Guardbreak"] = function(Character, Victim, BlockData, BlockDeduction, Type, ExtraData)
+        local VictimHumanoid, VictimRoot = Victim:FindFirstChild("Humanoid"), Victim:FindFirstChild("HumanoidRootPart")
+
+        local ModeData = StateManager:ReturnData(Character, "Mode")
+        local DamageData = StateManager:ReturnData(Character, "DamageMultiplier")
+
+        local DamageBoost = DamageData.DamageBooster
+
+        StateManager:ChangeState(Victim, "Blocking", false)
+        StateManager:ChangeState(Victim, "Guardbroken", 1.875)
+
+        local IndexCalculation = ModeData.Mode and ExtraData.CharacterName .. "Mode"
+            or ExtraData.CharacterName
+            or warn("character has invalid module")
+
+        local ModifierCopy = AbilityData.ReturnData(
+            Players:GetPlayerFromCharacter(Character),
+            ExtraData.SkillName,
+            IndexCalculation
+        ) or CombatData.ReturnData(Players:GetPlayerFromCharacter(Character), ExtraData.SkillName)
+        local Damage = ModifierCopy.Damage
+
+        VictimHumanoid:TakeDamage(Damage / 2 * DamageBoost)
+        NetworkStream.FireClientDistance(Character, "ClientRemote", 50, {
+            Character = Character,
+            Damage = Damage / 2 * DamageBoost,
+            Victim = Victim,
+            Module = "PlayerClient",
+            Function = "DamageIndication",
+            StunTime = 0,
+        })
+
+        NetworkStream.FireClientDistance(Character, "ClientRemote", 150, {
+            Character = Character,
+            Victim = Victim,
+            Module = "CombatVFX",
+            Function = "GuardBreak",
+        })
+    end,
 }
 
-function DamageManager.DeductDamage(Character,Victim,SkillName,CharacterName,ExtraData,Blur)
-	local Player = Players:GetPlayerFromCharacter(Character)
-	local VictimPlayer = Players:GetPlayerFromCharacter(Victim)
+function DamageManager.DeductDamage(Character, Victim, SkillName, CharacterName, ExtraData, Blur)
+    local Player = Players:GetPlayerFromCharacter(Character)
+    local VictimPlayer = Players:GetPlayerFromCharacter(Victim)
 
-	local KeysLogged = AbilityData.ReturnData(Player,"PlayerCombos","GlobalInformation").KeysLogged
-	local ComboData = AbilityData.ReturnData(Player,"PlayerCombos","GlobalInformation")
-	local Type = ExtraData and ExtraData.Type or "Combat"
-	local SecondType = ExtraData and ExtraData.SecondType or ""
-	
-	ExtraData = ExtraData or {Type = Type, SecondType = SecondType}
-	
-	local Humanoid, Root = Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
-	local VictimHumanoid, VictimRoot =  Victim:FindFirstChild("Humanoid"), Victim:FindFirstChild("HumanoidRootPart")
+    local KeysLogged = AbilityData.ReturnData(Player, "PlayerCombos", "GlobalInformation").KeysLogged
+    local ComboData = AbilityData.ReturnData(Player, "PlayerCombos", "GlobalInformation")
+    local Type = ExtraData and ExtraData.Type or "Combat"
+    local SecondType = ExtraData and ExtraData.SecondType or ""
 
-	SkillName = (type(SkillName) == "string" and SkillName) or warn("Invalid type.")
+    ExtraData = ExtraData or { Type = Type, SecondType = SecondType }
 
-	local ModeData = StateManager:ReturnData(Character, "Mode")
+    local Humanoid, Root = Character:FindFirstChild("Humanoid"), Character:FindFirstChild("HumanoidRootPart")
+    local VictimHumanoid, VictimRoot = Victim:FindFirstChild("Humanoid"), Victim:FindFirstChild("HumanoidRootPart")
 
-	local IndexCalculation = ModeData.Mode and CharacterName.."Mode" or CharacterName or warn"character has invalid module"
-	local ModifierCopy = AbilityData.ReturnData(Player,SkillName,IndexCalculation) or CombatData.ReturnData(Player,SkillName) 
-	
-	--print(ExtraData.Damage)
+    SkillName = (type(SkillName) == "string" and SkillName) or warn("Invalid type.")
 
-	local Damage = ExtraData.Damage or ModifierCopy.Damage
-	local StunTime = ModifierCopy.StunTime or .625
-	local EndLag = ModifierCopy.Endlag or 0
-	local Guardbreak = ModifierCopy.Guardbreak
-	local BlockDeduction = ModifierCopy.BlockDeduction or 1
+    local ModeData = StateManager:ReturnData(Character, "Mode")
 
-	local UnitVector = (Root.Position - VictimRoot.Position).Unit
-	local VictimLook = VictimRoot.CFrame.lookVector
-	local DotVector = UnitVector:Dot(VictimLook)
+    local IndexCalculation = ModeData.Mode and CharacterName .. "Mode"
+        or CharacterName
+        or warn("character has invalid module")
+    local ModifierCopy = AbilityData.ReturnData(Player, SkillName, IndexCalculation)
+        or CombatData.ReturnData(Player, SkillName)
 
-	local DamageData = StateManager:ReturnData(Character,"DamageMultiplier")
-	local DamageBoost = DamageData.DamageBooster
-	
-	local PlayerCombo = AbilityData.ReturnData(Player,"PlayerCombos","GlobalInformation")
-	
-	if VictimHumanoid.Health <= 0 or Humanoid.Health == 0 then return end
-	if Victim == Character or StateManager:ReturnData(Victim, "Attacking") == nil then return end
-	--print(StateManager:ReturnData(Victim, "IFrame"))
-	if not StateManager:Peek(Victim, "IFrame") then
+    --print(ExtraData.Damage)
 
-		local IFrameData = StateManager:ReturnData(Victim, "IFrame")
+    local Damage = ExtraData.Damage or ModifierCopy.Damage
+    local StunTime = ModifierCopy.StunTime or 0.625
+    local EndLag = ModifierCopy.Endlag or 0
+    local Guardbreak = ModifierCopy.Guardbreak
+    local BlockDeduction = ModifierCopy.BlockDeduction or 1
 
-		local IFrameType = IFrameData.IFrameType
-		
-	
-		if IFrameType == "" then return end
-	
-		
-		local VictimPlayer = Players:GetPlayerFromCharacter(Victim)
-		local VictimData = ProfileService:GetPlayerProfile(VictimPlayer)
+    local UnitVector = (Root.Position - VictimRoot.Position).Unit
+    local VictimLook = VictimRoot.CFrame.lookVector
+    local DotVector = UnitVector:Dot(VictimLook)
 
-		local CharacterModule = require(Server.Characters[VictimData.Character])
+    local DamageData = StateManager:ReturnData(Character, "DamageMultiplier")
+    local DamageBoost = DamageData.DamageBooster
 
+    local PlayerCombo = AbilityData.ReturnData(Player, "PlayerCombos", "GlobalInformation")
 
-		local ObservationData = {
-			Character = Victim,
-			Victim = Character,
+    if VictimHumanoid.Health <= 0 or Humanoid.Health == 0 then
+        return
+    end
+    if Victim == Character or StateManager:ReturnData(Victim, "Attacking") == nil then
+        return
+    end
+    --print(StateManager:ReturnData(Victim, "IFrame"))
+    if not StateManager:Peek(Victim, "IFrame") then
+        local IFrameData = StateManager:ReturnData(Victim, "IFrame")
 
-			SkillName = SkillName,
-			CharacterName = CharacterName,
+        local IFrameType = IFrameData.IFrameType
 
-			ExtraData = ExtraData,
+        if IFrameType == "" then
+            return
+        end
 
-			ModifierCopy = ModifierCopy,
+        local VictimPlayer = Players:GetPlayerFromCharacter(Victim)
+        local VictimData = ProfileService:GetPlayerProfile(VictimPlayer)
 
+        local CharacterModule = require(Server.Characters[VictimData.Character])
 
-		}
-	
-		CharacterModule[IFrameType](ObservationData)
+        local ObservationData = {
+            Character = Victim,
+            Victim = Character,
 
-	
-		return 
-	end
+            SkillName = SkillName,
+            CharacterName = CharacterName,
 
-	local BlockData = StateManager:ReturnData(Victim, "Blocking")
-	local IsBlocking = StateManager:Peek(Victim, "Blocking") and DotVector >= -.5 and true or false
+            ExtraData = ExtraData,
 
-	local GuardbreakCalculation = not string.find(SkillName,"Ability") and string.len(PlayerCombo.ComboVariation) >= 5 and true or false
-	Guardbreak = GuardbreakCalculation or Guardbreak
+            ModifierCopy = ModifierCopy,
+        }
 
-	local BlockBreak = (Guardbreak or BlockData.BlockVal == 0 or string.len(PlayerCombo.ComboVariation) == 5 and Guardbreak and true) or false
-	local PerfectBlock = (os.clock() - BlockData.StartTime <= .135 and true) or false
+        CharacterModule[IFrameType](ObservationData)
 
-	if StateManager:Peek(Victim,"ForceField") then
-		if Players:GetPlayerFromCharacter(Victim) then
-			local Data = ProfileService:GetPlayerProfile(Players:GetPlayerFromCharacter(Victim))
+        return
+    end
 
-			CameraRemote:FireClient(VictimPlayer, "CameraShake", {FirstText = 8, SecondText = 10})
-			NetworkStream.FireClientDistance(Character,"ClientRemote",250,{Character = Victim, Module = Data.Character.."VFX", Function = "boingzz"})
-		end
-		return
-	end
+    local BlockData = StateManager:ReturnData(Victim, "Blocking")
+    local IsBlocking = StateManager:Peek(Victim, "Blocking") and DotVector >= -0.5 and true or false
 
-	if IsBlocking then
-		local BlockTypeEvaluation = BlockBreak and "Guardbreak" or PerfectBlock and "Parry" or "Block"
-		BlockFunctions[BlockTypeEvaluation](Character, Victim, BlockData, BlockDeduction, Type,{SkillName = SkillName, CharacterName = CharacterName})
-	else
-		NetworkStream.FireClientDistance(Character,"ClientRemote",50,{Character = Character, Damage = Damage * DamageBoost , Victim = Victim, Module = "PlayerClient", Function = "DamageIndication", StunTime = StunTime})
-		local Damage = SecondType == "Choke" and (VictimHumanoid.Health - Damage * DamageBoost) <= 0 and 0 or Damage
-		VictimHumanoid:TakeDamage(Damage * DamageBoost)
+    local GuardbreakCalculation = not string.find(SkillName, "Ability")
+            and string.len(PlayerCombo.ComboVariation) >= 5
+            and true
+        or false
+    Guardbreak = GuardbreakCalculation or Guardbreak
 
-		local ModeNumber = Player:WaitForChild("Mode")
-		local Stats = Player:WaitForChild("leaderstats")
-		local Points = Stats and Stats.Points
+    local BlockBreak = (
+        Guardbreak
+        or BlockData.BlockVal == 0
+        or string.len(PlayerCombo.ComboVariation) == 5 and Guardbreak and true
+    ) or false
+    local PerfectBlock = (os.clock() - BlockData.StartTime <= 0.135 and true) or false
 
-		Points.Value += ModifierCopy.ModePoints or math.random(3,5)
+    if StateManager:Peek(Victim, "ForceField") then
+        if Players:GetPlayerFromCharacter(Victim) then
+            local Data = ProfileService:GetPlayerProfile(Players:GetPlayerFromCharacter(Victim))
 
-		coroutine.wrap(function()
-			local ModeData = StateManager:ReturnData(Character, "Mode")
+            CameraRemote:FireClient(VictimPlayer, "CameraShake", { FirstText = 8, SecondText = 10 })
+            NetworkStream.FireClientDistance(
+                Character,
+                "ClientRemote",
+                250,
+                { Character = Victim, Module = Data.Character .. "VFX", Function = "boingzz" }
+            )
+        end
+        return
+    end
 
-			if ModeData.Mode then return end
+    if IsBlocking then
+        local BlockTypeEvaluation = BlockBreak and "Guardbreak" or PerfectBlock and "Parry" or "Block"
+        BlockFunctions[BlockTypeEvaluation](
+            Character,
+            Victim,
+            BlockData,
+            BlockDeduction,
+            Type,
+            { SkillName = SkillName, CharacterName = CharacterName }
+        )
+    else
+        NetworkStream.FireClientDistance(Character, "ClientRemote", 50, {
+            Character = Character,
+            Damage = Damage * DamageBoost,
+            Victim = Victim,
+            Module = "PlayerClient",
+            Function = "DamageIndication",
+            StunTime = StunTime,
+        })
+        local Damage = SecondType == "Choke" and (VictimHumanoid.Health - Damage * DamageBoost) <= 0 and 0 or Damage
+        VictimHumanoid:TakeDamage(Damage * DamageBoost)
 
-			if ModeNumber.Value <= ModeData.MaxModeValue then
-				if Player.Name == "Freshzsz" or Player.Name == "DaWunbo" then
-					ModeNumber.Value += 285
-				else
-					ModeNumber.Value += ModifierCopy.ModePoints or math.random(3,5)
-				end
-			end
-		end)()
+        local ModeNumber = player:WaitForChild("Mode")
+        local Stats = Player:WaitForChild("leaderstats")
+        local Points = Stats and Stats.Points
 
-		ComboData.Hits = ComboData.Hits + 1
+        Points.Value += ModifierCopy.ModePoints or math.random(3, 5)
 
-		local Hits = Character:FindFirstChild("Hits")
-		if Hits then
-			Hits.Value += 1
-		end
+        coroutine.wrap(function()
+            local ModeData = StateManager:ReturnData(Character, "Mode")
 
-		local _ = StateManager:Peek(Character,"InAir") and VfxHandler.FaceVictim({Character = Character, Victim = Victim})
+            if ModeData.Mode then
+                return
+            end
 
-		local ForwardVelocity = (VictimRoot.CFrame.p - Root.CFrame.p).Unit * 12
-		local BackwardVelocity = CFrame.new(Root.Position,Root.Position + (Root.CFrame.lookVector * 10) + (Root.CFrame.upVector * 1.25)).lookVector * 100
+            if ModeNumber.Value <= ModeData.MaxModeValue then
+                if Player.Name == "Freshzsz" or Player.Name == "DaWunbo" then
+                    ModeNumber.Value += 285
+                else
+                    ModeNumber.Value += ModifierCopy.ModePoints or math.random(3, 5)
+                end
+            end
+        end)()
 
-		local VelocityCalculation = (string.len(PlayerCombo.ComboVariation) < 5 or PlayerCombo.KeysLogged < 5) and ForwardVelocity or BackwardVelocity
+        ComboData.Hits = ComboData.Hits + 1
 
-		if not string.find(SkillName,"Ability") then
-			NetworkStream.FireClientDistance(Character,"ClientRemote",150,{Character = Character, SecondType = SecondType, KeysLogged = KeysLogged, Victim = Victim, Module = Type.."VFX", Function = "Light"})
-			
-			local _ = string.len(PlayerCombo.ComboVariation) >= 5 and VfxHandler.RemoveBodyMover(Victim)
-			
-			local BodyVelocity = Instance.new("BodyVelocity")
-			BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4)
-			BodyVelocity.Velocity = VelocityCalculation
-			BodyVelocity.Parent = VictimRoot
-			Debris:AddItem(BodyVelocity,.25)
-			
-		--	if string.len(PlayerCombo.ComboVariation) == 5 then
-				local BodyVelocity = Instance.new("BodyVelocity")
-				BodyVelocity.MaxForce = Vector3.new(4e4,4e4,4e4)
-				BodyVelocity.Velocity = (VictimRoot.CFrame.p - Root.CFrame.p).Unit * 12
-				BodyVelocity.Parent = Root
-				Debris:AddItem(BodyVelocity,.25)
-		--	end	
+        local Hits = Character:FindFirstChild("Hits")
+        if Hits then
+            Hits.Value += 1
+        end
 
-			if string.len(PlayerCombo.ComboVariation) == 5 then
-				VfxHandler.FaceVictim({Character = Character, Victim = Victim})
-				
-				local Data = ProfileService:GetPlayerProfile(Player)			
-				local ModeNumber = Player:WaitForChild("Mode")
-				local ModeBoolean = ModeNumber and ModeNumber.ModeBoolean
-				
-				local _ = ModeBoolean.Value and Data.Character == "Sanji" and math.random(1,2) == 1 and VfxHandler.FireProc({Character = Character, Victim = Victim, Duration = 2, Damage = 1})
-				
-				CameraRemote:FireClient(Player, "CameraShake",{FirstText = 8, SecondText = 4, FourthText = 1})
-				--local _ = Blur == nil and CameraRemote:FireClient(Player,"CreateBlur",CameraData)
-				local _ = Blur == nil and NetworkStream.FireClientDistance(Character,"ClientRemote",150,{Character = Character, Victim = Victim, Module = Type.."VFX", Function = "LastHit"})				
-			end
-		else
-			NetworkStream.FireClientDistance(Character,"ClientRemote",150,{Character = Character, SecondType = SecondType, KeysLogged = math.random(1,4), Victim = Victim, Module = Type.."VFX", Function = "Light"})
-		end
-	end
+        local _ = StateManager:Peek(Character, "InAir")
+            and VfxHandler.FaceVictim({ Character = Character, Victim = Victim })
 
-	if not StateManager:Peek(Victim,"Blocking") then	
-		StateManager:ChangeState(Victim, "Stunned", StunTime)
-		local _ = not StateManager:Peek(Victim,"Frozen") and StateManager:ChangeState(Victim,"Frozen",0)
-		StateManager:ChangeState(Character, "IFrame", .135)
-	end	
+        local ForwardVelocity = (VictimRoot.CFrame.p - Root.CFrame.p).Unit * 12
+        local BackwardVelocity = CFrame.new(
+            Root.Position,
+            Root.Position + (Root.CFrame.lookVector * 10) + (Root.CFrame.upVector * 1.25)
+        ).lookVector * 100
+
+        local VelocityCalculation = (string.len(PlayerCombo.ComboVariation) < 5 or PlayerCombo.KeysLogged < 5)
+                and ForwardVelocity
+            or BackwardVelocity
+
+        if not string.find(SkillName, "Ability") then
+            NetworkStream.FireClientDistance(Character, "ClientRemote", 150, {
+                Character = Character,
+                SecondType = SecondType,
+                KeysLogged = KeysLogged,
+                Victim = Victim,
+                Module = Type .. "VFX",
+                Function = "Light",
+            })
+
+            local _ = string.len(PlayerCombo.ComboVariation) >= 5 and VfxHandler.RemoveBodyMover(Victim)
+
+            local BodyVelocity = Instance.new("BodyVelocity")
+            BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+            BodyVelocity.Velocity = VelocityCalculation
+            BodyVelocity.Parent = VictimRoot
+            Debris:AddItem(BodyVelocity, 0.25)
+
+            --	if string.len(PlayerCombo.ComboVariation) == 5 then
+            local BodyVelocity = Instance.new("BodyVelocity")
+            BodyVelocity.MaxForce = Vector3.new(4e4, 4e4, 4e4)
+            BodyVelocity.Velocity = (VictimRoot.CFrame.p - Root.CFrame.p).Unit * 12
+            BodyVelocity.Parent = Root
+            Debris:AddItem(BodyVelocity, 0.25)
+            --	end
+
+            if string.len(PlayerCombo.ComboVariation) == 5 then
+                VfxHandler.FaceVictim({ Character = Character, Victim = Victim })
+
+                local Data = ProfileService:GetPlayerProfile(Player)
+                local ModeNumber = player:WaitForChild("Mode")
+                local ModeBoolean = ModeNumber and ModeNumber.ModeBoolean
+
+                local _ = ModeBoolean.Value
+                    and Data.Character == "Sanji"
+                    and math.random(1, 2) == 1
+                    and VfxHandler.FireProc({ Character = Character, Victim = Victim, Duration = 2, Damage = 1 })
+
+                CameraRemote:FireClient(Player, "CameraShake", { FirstText = 8, SecondText = 4, FourthText = 1 })
+                --local _ = Blur == nil and CameraRemote:FireClient(Player,"CreateBlur",CameraData)
+                local _ = Blur == nil
+                    and NetworkStream.FireClientDistance(
+                        Character,
+                        "ClientRemote",
+                        150,
+                        { Character = Character, Victim = Victim, Module = Type .. "VFX", Function = "LastHit" }
+                    )
+            end
+        else
+            NetworkStream.FireClientDistance(Character, "ClientRemote", 150, {
+                Character = Character,
+                SecondType = SecondType,
+                KeysLogged = math.random(1, 4),
+                Victim = Victim,
+                Module = Type .. "VFX",
+                Function = "Light",
+            })
+        end
+    end
+
+    if not StateManager:Peek(Victim, "Blocking") then
+        StateManager:ChangeState(Victim, "Stunned", StunTime)
+        local _ = not StateManager:Peek(Victim, "Frozen") and StateManager:ChangeState(Victim, "Frozen", 0)
+        StateManager:ChangeState(Character, "IFrame", 0.135)
+    end
 end
 
 return DamageManager

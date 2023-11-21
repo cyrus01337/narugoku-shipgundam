@@ -41,7 +41,6 @@ local SpeedManager = require(Shared.StateManager.Speed)
 
 local SoundManager = require(Shared.SoundManager)
 
-
 local RaycastManager = require(Shared.RaycastManager)
 local TaskScheduler = require(Utility.TaskScheduler)
 
@@ -57,42 +56,56 @@ local CameraRemote = ReplicatedStorage.Remotes.CameraRemote
 local GUIRemote = ReplicatedStorage.Remotes.GUIRemote
 local MouseRemote = ReplicatedStorage.Remotes.GetMouse
 
-
-
 local Beatrice = {
-	["FirstAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
+    ["FirstAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Hum = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})	
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-	end,
+        CameraRemote:FireClient(
+            Player,
+            "ChangeUICooldown",
+            { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+        )
+        DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+    end,
 
-	["SecondAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local HumanoidRootPart,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
-		
-		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName) 		
-	end,
+    ["SecondAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local HumanoidRootPart, Humanoid =
+            Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-	["ThirdAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local HumanoidRootPart,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+        CameraRemote:FireClient(
+            Player,
+            "ChangeUICooldown",
+            { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+        )
+        DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+    end,
 
-		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName) 	
-	end,
+    ["ThirdAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local HumanoidRootPart, Humanoid =
+            Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
 
-	["FourthAbility"] = function(Player,CharacterName,KeyData,MoveData,ExtraData)
-		local Character = Player.Character
-		local Root,Humanoid = Character:FindFirstChild("HumanoidRootPart"),Character:FindFirstChild("Humanoid")
+        CameraRemote:FireClient(
+            Player,
+            "ChangeUICooldown",
+            { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+        )
+        DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+    end,
 
-		CameraRemote:FireClient(Player, "ChangeUICooldown",{Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName})
-		DebounceManager.SetDebounce(Character,KeyData.SerializedKey,CharacterName)
-	end;
+    ["FourthAbility"] = function(Player, CharacterName, KeyData, MoveData, ExtraData)
+        local Character = Player.Character
+        local Root, Humanoid = Character:FindFirstChild("HumanoidRootPart"), Character:FindFirstChild("Humanoid")
+
+        CameraRemote:FireClient(
+            Player,
+            "ChangeUICooldown",
+            { Cooldown = MoveData.Cooldown, Key = KeyData.SerializedKey, ToolName = CharacterName }
+        )
+        DebounceManager.SetDebounce(Character, KeyData.SerializedKey, CharacterName)
+    end,
 }
-
-
 
 return Beatrice

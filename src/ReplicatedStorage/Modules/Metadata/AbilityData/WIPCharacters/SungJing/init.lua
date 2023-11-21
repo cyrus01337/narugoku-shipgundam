@@ -1,16 +1,14 @@
 return {
-	["FirstAbility"] = {
-		Name = "Almighty Push",
+    ["FirstAbility"] = {
+        Name = "Almighty Push",
 
-		StartTime = os.clock(),
-		Cooldown = 5,
+        StartTime = os.clock(),
+        Cooldown = 5,
+    },
+    ["SecondAbility"] = {
+        Name = "Almighty Pull",
 
-	},
-	["SecondAbility"] = {
-		Name = "Almighty Pull",
-		
-		StartTime = os.clock(),
-		Cooldown = 5,
-
-	}
+        StartTime = os.clock(),
+        Cooldown = 5,
+    },
 }

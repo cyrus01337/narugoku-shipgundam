@@ -19,24 +19,21 @@ local StateManager = require(Modules.Shared.StateManager)
 
 --||Module||--
 local ChargeManager = {}
-local ChargingPlayers = {}-- ChargeManager[ChargingPlayers][Player] = {StartTime = os.clock(), ChargeDuration = 1}}
+local ChargingPlayers = {} -- ChargeManager[ChargingPlayers][Player] = {StartTime = os.clock(), ChargeDuration = 1}}
 
-
-
-function ChargeManager.QueuePlayer(Player,Time)
-	 ChargingPlayers[Player] = {
-		StartTime = os.clock(),
-		ChargeDuration = .5,
-	}
+function ChargeManager.QueuePlayer(Player, Time)
+    ChargingPlayers[Player] = {
+        StartTime = os.clock(),
+        ChargeDuration = 0.5,
+    }
 end
 
 --RunService.Heartbeat:Connect(function(DeltaTime)
 --	if #ChargingPlayers > 0 then
-	--	for _, Player in ipairs(ChargingPlayers) do
-			
-	--	end
-	--end
+--	for _, Player in ipairs(ChargingPlayers) do
+
+--	end
+--end
 --end)
 
 return ChargeManager
-

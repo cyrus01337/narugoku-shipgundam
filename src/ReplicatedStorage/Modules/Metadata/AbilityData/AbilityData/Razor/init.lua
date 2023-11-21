@@ -1,58 +1,58 @@
 return {
-	["FirstAbility"] = {
-		Name = "Volley Throw",
+    ["FirstAbility"] = {
+        Name = "Volley Throw",
 
-		StartTime = 0,
-		Cooldown = 18,
-		
-		StunTime = 1,
-		
-		Copyable = true,
-		Bool = false,
+        StartTime = 0,
+        Cooldown = 18,
 
-		Damage = 15,
-	},
+        StunTime = 1,
 
-	["SecondAbility"] = {
-		Name = "Volely Kick",
-		
-		Copyable = true,
-		Bool = false,
+        Copyable = true,
+        Bool = false,
 
-		StartTime = 0,
-		Cooldown = 20,
-		
-		StunTime = 1,
-		
-		Damage = 12,
-	},
-	
-	["ThirdAbility"] = {
-		Name = "Exploding Ball",
+        Damage = 15,
+    },
 
-		StartTime = 0,
-		Cooldown = 28,
-		
-		StunTime = 1,
-		
-		Copyable = true,
-		Guardbreak = true,
-		Bool = false,
+    ["SecondAbility"] = {
+        Name = "Volely Kick",
 
-		Damage = 20,
-	},
-	
-	["FourthAbility"] = {
-		Name = "Razor Chop",
-		
-		Copyable = true,
-		Guardbreak = true,
-		Bool = false,
+        Copyable = true,
+        Bool = false,
 
-		StartTime = 0,
-		Cooldown = 10,
-		StunTime = 1.25,
-		
-		Damage = 18,
-	}
+        StartTime = 0,
+        Cooldown = 20,
+
+        StunTime = 1,
+
+        Damage = 12,
+    },
+
+    ["ThirdAbility"] = {
+        Name = "Exploding Ball",
+
+        StartTime = 0,
+        Cooldown = 28,
+
+        StunTime = 1,
+
+        Copyable = true,
+        Guardbreak = true,
+        Bool = false,
+
+        Damage = 20,
+    },
+
+    ["FourthAbility"] = {
+        Name = "Razor Chop",
+
+        Copyable = true,
+        Guardbreak = true,
+        Bool = false,
+
+        StartTime = 0,
+        Cooldown = 10,
+        StunTime = 1.25,
+
+        Damage = 18,
+    },
 }

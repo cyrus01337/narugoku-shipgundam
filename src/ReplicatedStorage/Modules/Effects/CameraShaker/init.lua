@@ -17,119 +17,112 @@ local CameraShakeState = CameraShakeInstance.CameraShakeState
 local defaultPosInfluence = V3(0.15, 0.15, 0.15)
 local defaultRotInfluence = V3(1, 1, 1)
 
-
 CameraShaker.CameraShakeInstance = CameraShakeInstance
 CameraShaker.Presets = require(script.CameraShakePresets)
 
-
 function CameraShaker.new(renderPriority, callback)
+    assert(type(renderPriority) == "number", "RenderPriority must be a number (e.g.: Enum.RenderPriority.Camera.Value)")
+    assert(type(callback) == "function", "Callback must be a function")
 
-	assert(type(renderPriority) == "number", "RenderPriority must be a number (e.g.: Enum.RenderPriority.Camera.Value)")
-	assert(type(callback) == "function", "Callback must be a function")
+    local self = setmetatable({
+        _running = false,
+        _renderName = "CameraShaker",
+        _renderPriority = renderPriority,
+        _posAddShake = v3Zero,
+        _rotAddShake = v3Zero,
+        _camShakeInstances = {},
+        _removeInstances = {},
+        _callback = callback,
+    }, CameraShaker)
 
-	local self = setmetatable({
-		_running = false;
-		_renderName = "CameraShaker";
-		_renderPriority = renderPriority;
-		_posAddShake = v3Zero;
-		_rotAddShake = v3Zero;
-		_camShakeInstances = {};
-		_removeInstances = {};
-		_callback = callback;
-	}, CameraShaker)
-
-	return self
-
+    return self
 end
-
 
 function CameraShaker:Start()
-	if (self._running) then return end
-	self._running = true
-	local callback = self._callback
-	game:GetService("RunService"):BindToRenderStep(self._renderName, self._renderPriority, function(dt)
-		profileBegin(profileTag)
-		local cf = self:Update(dt)
-		profileEnd()
-		callback(cf)
-	end)
+    if self._running then
+        return
+    end
+    self._running = true
+    local callback = self._callback
+    game:GetService("RunService"):BindToRenderStep(self._renderName, self._renderPriority, function(dt)
+        profileBegin(profileTag)
+        local cf = self:Update(dt)
+        profileEnd()
+        callback(cf)
+    end)
 end
-
 
 function CameraShaker:Stop()
-	if (not self._running) then return end
-	game:GetService("RunService"):UnbindFromRenderStep(self._renderName)
-	self._running = false
+    if not self._running then
+        return
+    end
+    game:GetService("RunService"):UnbindFromRenderStep(self._renderName)
+    self._running = false
 end
-
 
 function CameraShaker:Update(dt)
+    local posAddShake = v3Zero
+    local rotAddShake = v3Zero
 
-	local posAddShake = v3Zero
-	local rotAddShake = v3Zero
+    local instances = self._camShakeInstances
 
-	local instances = self._camShakeInstances
+    -- Update all instances:
+    for i = 1, #instances do
+        local c = instances[i]
+        local state = c:GetState()
 
-	-- Update all instances:
-	for i = 1,#instances do
+        if state == CameraShakeState.Inactive and c.DeleteOnInactive then
+            self._removeInstances[#self._removeInstances + 1] = i
+        elseif state ~= CameraShakeState.Inactive then
+            posAddShake = posAddShake + (c:UpdateShake(dt) * c.PositionInfluence)
+            rotAddShake = rotAddShake + (c:UpdateShake(dt) * c.RotationInfluence)
+        end
+    end
 
-		local c = instances[i]
-		local state = c:GetState()
+    -- Remove dead instances:
+    for i = #self._removeInstances, 1, -1 do
+        local instIndex = self._removeInstances[i]
+        table.remove(instances, instIndex)
+        self._removeInstances[i] = nil
+    end
 
-		if (state == CameraShakeState.Inactive and c.DeleteOnInactive) then
-			self._removeInstances[#self._removeInstances + 1] = i
-		elseif (state ~= CameraShakeState.Inactive) then
-			posAddShake = posAddShake + (c:UpdateShake(dt) * c.PositionInfluence)
-			rotAddShake = rotAddShake + (c:UpdateShake(dt) * c.RotationInfluence)
-		end
-
-	end
-
-	-- Remove dead instances:
-	for i = #self._removeInstances,1,-1 do
-		local instIndex = self._removeInstances[i]
-		table.remove(instances, instIndex)
-		self._removeInstances[i] = nil
-	end
-
-	return CF(posAddShake) *
-		ANG(0, RAD(rotAddShake.Y), 0) *
-		ANG(RAD(rotAddShake.X), 0, RAD(rotAddShake.Z))
+    return CF(posAddShake) * ANG(0, RAD(rotAddShake.Y), 0) * ANG(RAD(rotAddShake.X), 0, RAD(rotAddShake.Z))
 end
-
 
 function CameraShaker:Shake(shakeInstance)
-	assert(type(shakeInstance) == "table" and shakeInstance._camShakeInstance, "ShakeInstance must be of type CameraShakeInstance")
-	self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
-	return shakeInstance
+    assert(
+        type(shakeInstance) == "table" and shakeInstance._camShakeInstance,
+        "ShakeInstance must be of type CameraShakeInstance"
+    )
+    self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
+    return shakeInstance
 end
-
 
 function CameraShaker:ShakeSustain(shakeInstance)
-	assert(type(shakeInstance) == "table" and shakeInstance._camShakeInstance, "ShakeInstance must be of type CameraShakeInstance")
-	self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
-	shakeInstance:StartFadeIn(shakeInstance.fadeInDuration)
-	return shakeInstance
+    assert(
+        type(shakeInstance) == "table" and shakeInstance._camShakeInstance,
+        "ShakeInstance must be of type CameraShakeInstance"
+    )
+    self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
+    shakeInstance:StartFadeIn(shakeInstance.fadeInDuration)
+    return shakeInstance
 end
-
 
 function CameraShaker:ShakeOnce(magnitude, roughness, fadeInTime, fadeOutTime, posInfluence, rotInfluence)
-	local shakeInstance = CameraShakeInstance.new(magnitude, roughness, fadeInTime, fadeOutTime)
-	shakeInstance.PositionInfluence = (typeof(posInfluence) == "Vector3" and posInfluence or defaultPosInfluence)
-	shakeInstance.RotationInfluence = (typeof(rotInfluence) == "Vector3" and rotInfluence or defaultRotInfluence)
-	self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
-	return shakeInstance
+    local shakeInstance = CameraShakeInstance.new(magnitude, roughness, fadeInTime, fadeOutTime)
+    shakeInstance.PositionInfluence = (typeof(posInfluence) == "Vector3" and posInfluence or defaultPosInfluence)
+    shakeInstance.RotationInfluence = (typeof(rotInfluence) == "Vector3" and rotInfluence or defaultRotInfluence)
+    self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
+    return shakeInstance
 end
-
 
 function CameraShaker:StartShake(magnitude, roughness, fadeInTime, posInfluence, rotInfluence)
-	local shakeInstance = CameraShakeInstance.new(magnitude, roughness, fadeInTime)
-	shakeInstance.PositionInfluence = (typeof(posInfluence) == "Vector3" and posInfluence or defaultPosInfluence)
-	shakeInstance.RotationInfluence = (typeof(rotInfluence) == "Vector3" and rotInfluence or defaultRotInfluence)
-	shakeInstance:StartFadeIn(fadeInTime)
-	self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
-	return shakeInstance
+    local shakeInstance = CameraShakeInstance.new(magnitude, roughness, fadeInTime)
+    shakeInstance.PositionInfluence = (typeof(posInfluence) == "Vector3" and posInfluence or defaultPosInfluence)
+    shakeInstance.RotationInfluence = (typeof(rotInfluence) == "Vector3" and rotInfluence or defaultRotInfluence)
+    shakeInstance:StartFadeIn(fadeInTime)
+    self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
+    return shakeInstance
 end
-
 
 return CameraShaker

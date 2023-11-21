@@ -1,51 +1,51 @@
 return {
-	["FirstAbility"] = {
-		Name = "Thunderflash and Clap Sixfold",
+    ["FirstAbility"] = {
+        Name = "Thunderflash and Clap Sixfold",
 
-		StartTime = 0,
-		Cooldown = 15,
+        StartTime = 0,
+        Cooldown = 15,
 
-		Guardbreak = true,
-		BlockDeduction = .25,
+        Guardbreak = true,
+        BlockDeduction = 0.25,
 
-		Damage = 50,
-		StunTime = .775,	
-	},
+        Damage = 50,
+        StunTime = 0.775,
+    },
 
-	["SecondAbility"] = {
-		Name = "Rumble and Flash",
+    ["SecondAbility"] = {
+        Name = "Rumble and Flash",
 
-		Damage = 2,
-		StunTime = 2,
-		EndLag = 1,
+        Damage = 2,
+        StunTime = 2,
+        EndLag = 1,
 
-		Guardbreak = true,
+        Guardbreak = true,
 
-		StartTime = 0,
-		Cooldown = 20,
-	},
+        StartTime = 0,
+        Cooldown = 20,
+    },
 
-	["ThirdAbility"] = {
-		Name = "-",
+    ["ThirdAbility"] = {
+        Name = "-",
 
-		Damage = 2,
-		StunTime = 1,
+        Damage = 2,
+        StunTime = 1,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		StartTime = 0,
-		Cooldown = 1,
-	},
+        StartTime = 0,
+        Cooldown = 1,
+    },
 
-	["FourthAbility"] = {
-		Name = "-",	
+    ["FourthAbility"] = {
+        Name = "-",
 
-		Damage = 30,
-		StunTime = 1,
+        Damage = 30,
+        StunTime = 1,
 
-		Guardbreak = false,
+        Guardbreak = false,
 
-		StartTime = 0,
-		Cooldown = 1,
-	},
+        StartTime = 0,
+        Cooldown = 1,
+    },
 }

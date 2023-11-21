@@ -1,50 +1,50 @@
 return {
-	["FirstAbility"] = {
-		Name = "Push",
-		
-		Copyable = true,
-		Bool = false,
+    ["FirstAbility"] = {
+        Name = "Push",
 
-		StartTime = os.clock(),
-		Cooldown = 12,
+        Copyable = true,
+        Bool = false,
 
-		Damage = 15,
-	},
+        StartTime = os.clock(),
+        Cooldown = 12,
 
-	["SecondAbility"] = {
-		Name = "Al~Shamac",
-		
-		Copyable = true,
-		Guardbreak = true,
-		Bool = false,
+        Damage = 15,
+    },
 
-		StartTime = os.clock(),
-		Cooldown = 20,
+    ["SecondAbility"] = {
+        Name = "Al~Shamac",
 
-		Damage = 8,
-	},
-	
-	["ThirdAbility"] = {
-		Name = "Barrier",
-		
-		Copyable = false,
-		Bool = false,
+        Copyable = true,
+        Guardbreak = true,
+        Bool = false,
 
-		StartTime = os.clock(),
-		Cooldown = 15,
-	},
-	
-	["FourthAbility"] = {
-		Name = "Spectrum Bombs",
-		
-		Copyable = true,
-		Bool = false,
+        StartTime = os.clock(),
+        Cooldown = 20,
 
-		ZeBall = 1,
-		
-		StartTime = os.clock(),
-		Cooldown = 20,
+        Damage = 8,
+    },
 
-		Damage = 5,
-	}
+    ["ThirdAbility"] = {
+        Name = "Barrier",
+
+        Copyable = false,
+        Bool = false,
+
+        StartTime = os.clock(),
+        Cooldown = 15,
+    },
+
+    ["FourthAbility"] = {
+        Name = "Spectrum Bombs",
+
+        Copyable = true,
+        Bool = false,
+
+        ZeBall = 1,
+
+        StartTime = os.clock(),
+        Cooldown = 20,
+
+        Damage = 5,
+    },
 }

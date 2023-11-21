@@ -29,28 +29,22 @@ local Mouse = Player:GetMouse()
 
 local Humanoid = Character:WaitForChild("Humanoid")
 
-
 local Arthur = {
-	["FirstAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})
-	end,
-	
-	["SecondAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})		
-	end,
+    ["FirstAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
 
-	["ThirdAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})		
-	end,
+    ["SecondAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
 
-	["FourthAbility"] = function(SerializedKey,KeyName)
-		ServerRemote:FireServer(SerializedKey,KeyName,{})		
-	end,
+    ["ThirdAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
+
+    ["FourthAbility"] = function(SerializedKey, KeyName)
+        ServerRemote:FireServer(SerializedKey, KeyName, {})
+    end,
 }
 
-
-
-
-
 return Arthur
-

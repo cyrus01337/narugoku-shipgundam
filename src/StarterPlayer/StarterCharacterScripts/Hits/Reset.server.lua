@@ -16,16 +16,18 @@ local TaskScheduler = require(Utility.TaskScheduler)
 local ValueIndex = script.Parent
 
 ValueIndex.Changed:Connect(function()
-	local Debounce = false
-	local Connection; Connection = ValueIndex.Changed:Connect(function()
-		if not Debounce then
-			Debounce = true
-		end
-		Connection = Connection and Connection:Disconnect(); Connection = nil;
-	end)
-	delay(.85,function()
-		if not Debounce then
-			ValueIndex.Value = 0
-		end
-	end)
+    local Debounce = false
+    local Connection
+    Connection = ValueIndex.Changed:Connect(function()
+        if not Debounce then
+            Debounce = true
+        end
+        Connection = Connection and Connection:Disconnect()
+        Connection = nil
+    end)
+    delay(0.85, function()
+        if not Debounce then
+            ValueIndex.Value = 0
+        end
+    end)
 end)
