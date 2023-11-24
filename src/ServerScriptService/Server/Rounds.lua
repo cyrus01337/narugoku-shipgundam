@@ -35,7 +35,7 @@ local function debugTimer(name: string, duration: number, shouldCancel: DebugTim
         task.wait(1)
 
         if shouldCancel ~= nil and shouldCancel() then
-            return
+            break
         end
     end
 end
