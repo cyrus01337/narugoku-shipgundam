@@ -149,6 +149,7 @@ function Rounds.intermission()
         local playerHum: Humanoid = player.Character.Humanoid
         playerHum.Health = math.huge
         playerHum.MaxHealth = math.huge
+        player.leaderstats.Points = 0
 
         ProfileService:Replicate(player)
         table.insert(Store.playersFighting, player)
