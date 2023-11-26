@@ -1,3 +1,4 @@
+-- TODO: Refactor
 --|| Services ||--
 local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -64,6 +65,7 @@ return function(Player, Request, Character, Datastore, Type) -- Player:Instance,
                 v:Destroy()
             end
         end
+        print(Player.Name, "with character", Character)
         Data.Character = Character
         -- cyrus01337: Eventually, the selected character will be reset every
         -- time the player rejoins the game, so to prepare for this we will be
