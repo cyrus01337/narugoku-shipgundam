@@ -23,6 +23,7 @@ local Rounds = {
         Battlefield = BATTLEFIELD_SPAWN,
     },
 }
+local gameStarted = false
 
 type DebugTimerCallback = () -> boolean
 
@@ -141,9 +142,13 @@ local function rewardPlayers(players: Types.Array<Player>)
 end
 
 function Rounds.intermission()
-    local toReward = getPlayersLegibleForReward(Store.playersFighting)
+    if gameStarted then
+        local toReward = getPlayersLegibleForReward(Store.playersFighting)
 
-    rewardPlayers(toReward)
+        rewardPlayers(toReward)
+    end
+
+    gameStarted = true
 
     for _, player in Store.playersFighting do
         local playerHum: Humanoid = player.Character.Humanoid
