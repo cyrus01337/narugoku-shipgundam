@@ -1,6 +1,8 @@
+local Debris = game:GetService("Debris")
+
 wait()
 if script.Parent.Humanoid.RigType ~= Enum.HumanoidRigType.R6 then
-    game.Workspace.Debris:AddItem(script, 1)
+    Debris:AddItem(script, 1)
 else
     wait()
     function getAttachment0(attachmentName)

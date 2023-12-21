@@ -1,26 +1,16 @@
---|| Services ||--
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Debris = game:GetService("Debris")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
 
---|| Modules ||--
-game:WaitForChild("ReplicatedStorage")
-
-local Modules = ReplicatedStorage:WaitForChild("Modules")
-local Shared = Modules:WaitForChild("Shared")
-
-local SoundManager = require(Shared:WaitForChild("SoundManager"))
-
+-- local SoundManager = require(Shared:WaitForChild("SoundManager"))
 local TweenData = require(script.Tweens)
 
---|| Variables ||--
-local Player = Players.LocalPlayer
-local PlayerMouse = Player:GetMouse()
-local Character = Player.Character or Player.CharacterAdded:Wait()
-
-local Camera = workspace.CurrentCamera
+local player = Players.LocalPlayer
+local playerMouse = player:GetMouse()
+local modules = ReplicatedStorage:WaitForChild("Modules")
+local remotes = ReplicatedStorage:WaitForChild("Remotes")
+local Shared = modules:WaitForChild("Shared")
 
 script.Parent:WaitForChild("Logo")
 script.Parent:WaitForChild("Play")
@@ -137,6 +127,7 @@ for i, v in ipairs(Buttons) do
             if v.Name == "Training" then
                 print("clicked Training")
             elseif v.Name == "Play" then
+                -- TODO: Refactor
                 local Circle = script.Tweens.Circle:Clone()
                 Circle.Parent = script.Parent
 
@@ -192,41 +183,38 @@ for i, v in ipairs(Buttons) do
                 --	Tween:Play()
                 --	Tween:Destroy()
                 --end)()
-                coroutine.resume(coroutine.create(function()
-                    wait(1.65)
+                wait(1.65 * 2)
 
-                    script.Parent.Logo:Destroy()
+                script.Parent.Logo:Destroy()
 
-                    coroutine.wrap(function()
-                        wait(1.65)
-                        local Tween2 = TweenService:Create(
-                            Circle,
-                            TweenInfo.new(0.35, Enum.EasingStyle.Circular, Enum.EasingDirection.Out, 0, false, 0),
-                            { ImageTransparency = 1 }
-                        )
-                        Tween2:Play()
-                        Tween2:Destroy()
-                        Player:WaitForChild("PlayerGui").InCamera.Value = false
+                local Tween2 = TweenService:Create(
+                    Circle,
+                    TweenInfo.new(0.35, Enum.EasingStyle.Circular, Enum.EasingDirection.Out, 0, false, 0),
+                    { ImageTransparency = 1 }
+                )
+                Tween2:Play()
+                Tween2:Destroy()
+                player:WaitForChild("PlayerGui").InCamera.Value = false
 
-                        CloseConnection:Disconnect()
-                        CloseConnection = nil
-                        Connection:Disconnect()
-                        Connection = nil
-                        local Connection
-                        Connection = Tween2.Completed:Connect(function()
-                            --Player:WaitForChild("PlayerGui").InCamera.Value = false;
-                            script.Parent.Enabled = false
+                CloseConnection:Disconnect()
+                CloseConnection = nil
+                Connection:Disconnect()
+                Connection = nil
+                local Connection
+                Connection = Tween2.Completed:Connect(function()
+                    --Player:WaitForChild("PlayerGui").InCamera.Value = false;
+                    script.Parent.Enabled = false
 
-                            Connection:Disconnect()
-                            Connection = nil
-                        end)
-                    end)()
-                end))
+                    Connection:Disconnect()
+                    Connection = nil
+                end)
+
+                remotes.EnteredGame:FireServer()
             elseif v.Name == "Private_Servers" then
                 print("clicked private server")
             end
 
-            local x, y = PlayerMouse.X - v.F1.AbsolutePosition.X, PlayerMouse.Y - v.F1.AbsolutePosition.Y
+            local x, y = playerMouse.X - v.F1.AbsolutePosition.X, playerMouse.Y - v.F1.AbsolutePosition.Y
             local Circle = script.Tweens.Circle:Clone()
             Circle.Position = UDim2.new(0, x, 0, y, 0)
             Circle.Parent = v.F1

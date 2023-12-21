@@ -1,0 +1,3 @@
+return {
+    NO_CHARACTER = "",
+}

@@ -1,6 +1,8 @@
+-- TODO: Refactor
 --|| Services ||--
 local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 -- local ServerStorage = game:GetService("ServerStorage")
 
 --|| Directories ||--
@@ -19,6 +21,7 @@ local CharacterInfo = require(CharacterData.CharacterInfo)
 local StateManager = require(Shared.StateManager)
 
 local ProfileService = require(ServerScriptService.Server.ProfileService)
+local Store = require(ServerStorage.Modules.Store)
 
 local ToSwapCharacter = require(script.ToSwapCharacter)
 
@@ -33,7 +36,7 @@ return function(Player, Request, Character, Datastore, Type) -- Player:Instance,
         local ModeData = StateManager:ReturnData(Player.Character or Player.CharacterAdded:Wait(), "Mode")
         ModeData.Mode = false
 
-        player:WaitForChild("Mode").Value = 0
+        -- Player:WaitForChild("Mode").Value = 0
 
         local WarningText = " Alucard is banned."
 
@@ -62,7 +65,12 @@ return function(Player, Request, Character, Datastore, Type) -- Player:Instance,
                 v:Destroy()
             end
         end
+        print(Player.Name, "with character", Character)
         Data.Character = Character
+        -- cyrus01337: Eventually, the selected character will be reset every
+        -- time the player rejoins the game, so to prepare for this we will be
+        -- using non-persistent state through a localised state store
+        Store.selectedCharacter = Character
         ProfileService:Replicate(Player)
 
         Player:ClearCharacterAppearance()
